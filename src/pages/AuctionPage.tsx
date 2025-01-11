@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AuctionPage: React.FC = () => {
-  return (
-    <div>AuctionPage</div>
-  )
-}
+  const navigate: NavigateFunction = useNavigate();
+  const [team, setTeam] = useState<string>("");
 
-export default AuctionPage
+  useEffect(() => {
+    const curr = localStorage.getItem("team");
+    if (curr) {
+      setTeam(curr);
+    } else {
+      navigate("/");
+      toast.error("Please select a team");
+    }
+  }, []);
+
+  return <div>Current Team: {team.toLocaleUpperCase()}</div>;
+};
+
+export default AuctionPage;
