@@ -1,10 +1,67 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import {
+  marqueeAllRounder as mar,
+  marqueeBatter as mbat,
+  marqueeBowler as mbowl,
+  marqueePlayers as mp,
+  marqueeWkBatter as mwk,
+} from "../utils/players.ts";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
   const [team, setTeam] = useState<string>("");
+  const [marqueePlayers, setMarqueePlayers] = useState<
+    [
+      {
+        name: string;
+        role: string;
+        base: number;
+        country: string;
+      }
+    ]
+  >(mp);
+  const [marqueeBatter, setMarqueeBatter] = useState<
+    [
+      {
+        name: string;
+        role: string;
+        base: number;
+        country: string;
+      }
+    ]
+  >(mbat);
+  const [marqueeBowler, setMarqueeBowler] = useState<
+    [
+      {
+        name: string;
+        role: string;
+        base: number;
+        country: string;
+      }
+    ]
+  >(mbowl);
+  const [marqueeAllRounder, setMarqueeAllRounder] = useState<
+    [
+      {
+        name: string;
+        role: string;
+        base: number;
+        country: string;
+      }
+    ]
+  >(mar);
+  const [marqueeWkBatter, setMarqueeWkBatter] = useState<
+    [
+      {
+        name: string;
+        role: string;
+        base: number;
+        country: string;
+      }
+    ]
+  >(mwk);
 
   useEffect(() => {
     const curr = localStorage.getItem("team");
@@ -26,7 +83,7 @@ const AuctionPage: React.FC = () => {
           {/* // Purse bros */}
           <div className="bg-gray-100 h-full overflow-y-auto p-1">
             <ul className="list-none space-y-1">
-            <li className="flex justify-between items-center border-b border-gray-300">
+              <li className="flex justify-between items-center border-b border-gray-300">
                 <span>Team</span>
                 <span>Spent</span>
                 <span>Remaining</span>
@@ -83,32 +140,31 @@ const AuctionPage: React.FC = () => {
               </li>
             </ul>
           </div>
-          
+
           {/* // Player Info for Bid */}
-          <div className="bg-red-200 h-full flex items-center justify-center">
+          <div className="bg-gray-200 h-full flex items-center justify-center">
             2
           </div>
 
           {/* // User Team Information */}
-          <div className="bg-red-300 h-full flex items-center justify-center">
+          <div className="bg-gray-300 h-full flex items-center justify-center">
             3
           </div>
         </div>
 
         <div className="grid grid-cols-3">
-
           {/* // Teams Bid Status */}
-          <div className="bg-blue-100 h-full flex items-center justify-center">
+          <div className="bg-gray-100 h-full flex items-center justify-center">
             4
           </div>
 
           {/* // Current Bid */}
-          <div className="bg-blue-200 h-full flex items-center justify-center">
+          <div className="bg-gray-200 h-full flex items-center justify-center">
             5
           </div>
 
           {/* // Recent */}
-          <div className="bg-blue-300 h-full flex items-center justify-center">
+          <div className="bg-gray-300 h-full flex items-center justify-center">
             6
           </div>
         </div>

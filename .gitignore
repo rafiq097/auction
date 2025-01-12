@@ -23,4 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 
-src/utils/players.js
+src/utils/players.ts
