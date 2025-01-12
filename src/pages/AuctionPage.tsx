@@ -9,10 +9,13 @@ import {
   marqueeWkBatter as mwk,
 } from "../utils/players.ts";
 import { CR } from "../utils/getCR.ts";
+import { teamsAtom } from "../atoms/teams.ts";
+import { useRecoilState } from "recoil";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
   const [team, setTeam] = useState<string>("");
+  const [teams, setTeams] = useRecoilState(teamsAtom);
   const [players, setPlayers] = useState<
     {
       name: string;
@@ -64,56 +67,13 @@ const AuctionPage: React.FC = () => {
                 <span>Spent</span>
                 <span>Remaining</span>
               </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>RCB</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>MI</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>CSK</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>DC</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>KKR</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>SRH</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>RR</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>PBKS</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>LSG</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
-              <li className="flex justify-between items-center border-b border-gray-300">
-                <span>GT</span>
-                <span>00CR</span>
-                <span>120CR</span>
-              </li>
+              {teams.map((team) => (
+                <li className="flex justify-between items-center border-b border-gray-300">
+                  <span>{team.name}</span>
+                  <span>{team.spent}</span>
+                  <span>{team.remaining}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
