@@ -8,50 +8,21 @@ import {
   marqueePlayers as mp,
   marqueeWkBatter as mwk,
 } from "../utils/players.ts";
+import { CR } from "../utils/getCR.ts";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
   const [team, setTeam] = useState<string>("");
-  const [marqueePlayers, setMarqueePlayers] = useState<
+  const [players, setPlayers] = useState<
     {
       name: string;
       role: string;
       base: number;
       country: string;
+      type: string;
     }[]
-  >(mp);
-  const [marqueeBatter, setMarqueeBatter] = useState<
-    {
-      name: string;
-      role: string;
-      base: number;
-      country: string;
-    }[]
-  >(mbat);
-  const [marqueeBowler, setMarqueeBowler] = useState<
-    {
-      name: string;
-      role: string;
-      base: number;
-      country: string;
-    }[]
-  >(mbowl);
-  const [marqueeAllRounder, setMarqueeAllRounder] = useState<
-    {
-      name: string;
-      role: string;
-      base: number;
-      country: string;
-    }[]
-  >(mar);
-  const [marqueeWkBatter, setMarqueeWkBatter] = useState<
-    {
-      name: string;
-      role: string;
-      base: number;
-      country: string;
-    }[]
-  >(mwk);
+  >([...mp, ...mbat, ...mbowl, ...mwk, ...mar]);
+  const [curr, setCurr] = useState<number>(0);
 
   useEffect(() => {
     const curr = localStorage.getItem("team");
@@ -62,6 +33,21 @@ const AuctionPage: React.FC = () => {
       toast.error("Please select a team");
     }
   }, []);
+
+  const handleContinue = (): void => {
+    setCurr(curr + 1);
+  };
+
+  const handleBid = (): void => {
+    let price = players[curr].base;
+    price += 2000000;
+
+    setPlayers((prevPlayers) => {
+      const updatedPlayers = [...prevPlayers];
+      updatedPlayers[curr].base = price;
+      return updatedPlayers;
+    });
+  };
 
   return (
     <>
@@ -133,12 +119,64 @@ const AuctionPage: React.FC = () => {
 
           {/* // Player Info for Bid */}
           <div className="bg-gray-200 h-full flex items-center justify-center">
-            2
+            <div className="p-6 bg-gray-50 rounded-lg shadow-lg max-w-lg">
+              <h1 className="text-2xl font-bold mb-4">{players[curr].type}</h1>
+              <h2 className="text-xl font-semibold mb-2">
+                {players[curr].name}
+              </h2>
+              <p className="text-gray-600 mb-2">Role: {players[curr].role}</p>
+              <p className="text-gray-600 mb-2">
+                Base Price: {CR(players[curr].base)} CR
+              </p>
+              <p className="text-gray-600 mb-4">
+                Country: {players[curr].country}
+              </p>
+
+              <div className="flex justify-between">
+                <button
+                  className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300 mr-4"
+                  onClick={handleContinue}
+                >
+                  Continue
+                </button>
+                <button
+                  className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
+                  onClick={handleBid}
+                >
+                  Bid
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* // User Team Information */}
-          <div className="bg-gray-300 h-full flex items-center justify-center">
-            3
+          <div className="bg-gray-300 h-full">
+            <h1 className="text-xl font-bold mb-4">
+              Your Team: {team.toLocaleUpperCase()}
+            </h1>
+            <ul className="rounded">
+              <li className="mb-2 text-gray-700 font-medium">Batters: {0}</li>
+              <li className="mb-2 text-gray-700 font-medium">Bowlers: {0}</li>
+              <li className="mb-2 text-gray-700 font-medium">
+                All-Rounders: {0}
+              </li>
+              <li className="mb-2 text-gray-700 font-medium">
+                Wicketkeepers: {0}
+              </li>
+              <li className="mb-2 text-gray-700 font-medium">
+                Overseas Players: {0}
+              </li>
+              <li className="mt-4 text-lg font-bold text-gray-900">
+                Total: {0} / 25
+              </li>
+            </ul>
+
+            <button
+              className="rounded-md bg-blue-400"
+              onClick={() => navigate("/teams")}
+            >
+              Other Teams
+            </button>
           </div>
         </div>
 
