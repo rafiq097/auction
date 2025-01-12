@@ -13,54 +13,44 @@ const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
   const [team, setTeam] = useState<string>("");
   const [marqueePlayers, setMarqueePlayers] = useState<
-    [
-      {
-        name: string;
-        role: string;
-        base: number;
-        country: string;
-      }
-    ]
+    {
+      name: string;
+      role: string;
+      base: number;
+      country: string;
+    }[]
   >(mp);
   const [marqueeBatter, setMarqueeBatter] = useState<
-    [
-      {
-        name: string;
-        role: string;
-        base: number;
-        country: string;
-      }
-    ]
+    {
+      name: string;
+      role: string;
+      base: number;
+      country: string;
+    }[]
   >(mbat);
   const [marqueeBowler, setMarqueeBowler] = useState<
-    [
-      {
-        name: string;
-        role: string;
-        base: number;
-        country: string;
-      }
-    ]
+    {
+      name: string;
+      role: string;
+      base: number;
+      country: string;
+    }[]
   >(mbowl);
   const [marqueeAllRounder, setMarqueeAllRounder] = useState<
-    [
-      {
-        name: string;
-        role: string;
-        base: number;
-        country: string;
-      }
-    ]
+    {
+      name: string;
+      role: string;
+      base: number;
+      country: string;
+    }[]
   >(mar);
   const [marqueeWkBatter, setMarqueeWkBatter] = useState<
-    [
-      {
-        name: string;
-        role: string;
-        base: number;
-        country: string;
-      }
-    ]
+    {
+      name: string;
+      role: string;
+      base: number;
+      country: string;
+    }[]
   >(mwk);
 
   useEffect(() => {
