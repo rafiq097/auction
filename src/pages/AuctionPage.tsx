@@ -42,17 +42,21 @@ const AuctionPage: React.FC = () => {
       console.log("No more players bro.");
       return;
     }
-  
+
     const num = Math.floor(Math.random() * teams.length);
-  
+
     const player = players[curr];
-    let randomPrice = parseFloat(CR(player.base + Math.floor(Math.random() * (10 * player.base))).toFixed(1));
-  
+    let randomPrice = parseFloat(
+      CR(player.base + Math.floor(Math.random() * (10 * player.base))).toFixed(
+        1
+      )
+    );
+
     const updatedTeams = teams.map((team, index) => {
       if (index === num) {
         const newSpent = team.spent + randomPrice;
         const newRemaining = team.remaining - randomPrice;
-  
+
         return {
           ...team,
           spent: newSpent,
@@ -62,11 +66,10 @@ const AuctionPage: React.FC = () => {
       }
       return team;
     });
-  
+
     setTeams(updatedTeams);
     setCurr(curr + 1);
   };
-  
 
   const handleBid = (): void => {
     let price = players[curr].base;
@@ -96,7 +99,10 @@ const AuctionPage: React.FC = () => {
                 <span>Remaining</span>
               </li>
               {teams.map((team) => (
-                <li key={team.name} className="flex justify-between items-center border-b border-gray-300">
+                <li
+                  key={team.name}
+                  className="flex justify-between items-center border-b border-gray-300"
+                >
                   <span>{team.name}</span>
                   <span>{team.spent.toFixed(1)}</span>
                   <span>{team.remaining.toFixed(1)}</span>
@@ -107,7 +113,7 @@ const AuctionPage: React.FC = () => {
 
           {/* // Player Info for Bid */}
           <div className="bg-gray-200 h-full flex items-center justify-center">
-            <div className="p-6 bg-gray-50 rounded-lg shadow-lg max-w-lg">
+            <div className="p-10 bg-gray-50 rounded-lg shadow-lg max-w-lg">
               <h1 className="text-2xl font-bold mb-4">{players[curr].type}</h1>
               <h2 className="text-xl font-semibold mb-2">
                 {players[curr].name}
@@ -122,13 +128,13 @@ const AuctionPage: React.FC = () => {
 
               <div className="flex justify-between">
                 <button
-                  className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300 mr-4"
+                  className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mr-4"
                   onClick={handleContinue}
                 >
-                  Continue
+                  Skip
                 </button>
                 <button
-                  className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
+                  className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
                   onClick={handleBid}
                 >
                   Bid
@@ -137,6 +143,13 @@ const AuctionPage: React.FC = () => {
             </div>
           </div>
 
+          {/* // Teams Bid Status */}
+          <div className="bg-gray-100 h-full">
+            Bidding Status
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3">
           {/* // User Team Information */}
           <div className="bg-gray-300 h-full">
             <h1 className="text-xl font-bold mb-4">
@@ -166,16 +179,9 @@ const AuctionPage: React.FC = () => {
               Other Teams
             </button>
           </div>
-        </div>
-
-        <div className="grid grid-cols-3">
-          {/* // Teams Bid Status */}
-          <div className="bg-gray-100 h-full flex items-center justify-center">
-            4
-          </div>
 
           {/* // Current Bid */}
-          <div className="bg-gray-200 h-full flex items-center justify-center">
+          <div className="bg-gray-100 h-full flex items-center justify-center">
             5
           </div>
 
