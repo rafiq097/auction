@@ -26,6 +26,15 @@ const AuctionPage: React.FC = () => {
     }[]
   >([...mp, ...mbat, ...mbowl, ...mwk, ...mar]);
   const [curr, setCurr] = useState<number>(0);
+  const [soldBro, setSoldBro] = useState<{
+    name: string;
+    role: string;
+    base: number;
+    country: string;
+    type: string;
+    price: number;
+    team: string;
+  }>();
 
   useEffect(() => {
     const curr = localStorage.getItem("team");
@@ -67,6 +76,8 @@ const AuctionPage: React.FC = () => {
       return team;
     });
 
+    const soldPlayer = { ...player, price: randomPrice, team: teams[num].name };
+    setSoldBro(soldPlayer);
     setTeams(updatedTeams);
     setCurr(curr + 1);
   };
@@ -93,7 +104,7 @@ const AuctionPage: React.FC = () => {
           {/* // Purse bros */}
           <div className="bg-gray-100 h-full overflow-y-auto p-1">
             <ul className="list-none space-y-1">
-              <li className="flex justify-between items-center border-b border-gray-300">
+              <li className="bg-gray-200 flex justify-between items-center border-b border-gray-300">
                 <span>Team</span>
                 <span>Spent</span>
                 <span>Remaining</span>
@@ -111,8 +122,8 @@ const AuctionPage: React.FC = () => {
             </ul>
           </div>
 
-          {/* // Player Info for Bid */}
-          <div className="bg-gray-200 h-full flex items-center justify-center">
+          {/* // Player bros Bid */}
+          <div className="bg-gray-300 h-full flex items-center justify-center">
             <div className="p-10 bg-gray-50 rounded-lg shadow-lg max-w-lg">
               <h1 className="text-2xl font-bold mb-4">{players[curr].type}</h1>
               <h2 className="text-xl font-semibold mb-2">
@@ -143,13 +154,36 @@ const AuctionPage: React.FC = () => {
             </div>
           </div>
 
-          {/* // Teams Bid Status */}
-          <div className="bg-gray-100 h-full">
-            Bidding Status
-          </div>
+          {/* // Teams bros Bid Status */}
+          <div className="bg-gray-100 h-full">Bidding Status</div>
         </div>
 
         <div className="grid grid-cols-3">
+          {/* // Last Bid */}
+          <div className="bg-gray-300 h-full flex items-center justify-center">
+            {soldBro ? (
+              <div className="p-5 bg-gray-100 rounded-lg shadow-lg max-w-lg">
+                Last Sold Bro
+                <h1 className="text-2xl font-bold mb-4">{soldBro.type}</h1>
+                <h2 className="text-xl font-semibold mb-2">{soldBro.name}</h2>
+                <p className="text-gray-600 mb-2">Role: {soldBro.role}</p>
+                <p className="text-gray-600 mb-2">
+                  Base Price: {CR(soldBro.base)} CR
+                </p>
+                <p className="text-gray-600 mb-2">Country: {soldBro.country}</p>
+                <p className="text-gray-600 mb-2">
+                  Selling Price: {soldBro.price} CR
+                </p>
+                <p className="text-gray-600 mb-2">Sold to : {soldBro.team}</p>
+              </div>
+            ) : null}
+          </div>
+
+          {/* // Recent */}
+          <div className="bg-gray-100 h-full flex items-center justify-center">
+            6
+          </div>
+
           {/* // User Team Information */}
           <div className="bg-gray-300 h-full">
             <h1 className="text-xl font-bold mb-4">
@@ -178,16 +212,6 @@ const AuctionPage: React.FC = () => {
             >
               Other Teams
             </button>
-          </div>
-
-          {/* // Current Bid */}
-          <div className="bg-gray-100 h-full flex items-center justify-center">
-            5
-          </div>
-
-          {/* // Recent */}
-          <div className="bg-gray-300 h-full flex items-center justify-center">
-            6
           </div>
         </div>
       </div>
