@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { NavigateFunction, useNavigate, Routes, Route } from "react-router-dom";
 import "./App.css";
 import StartPage from "./pages/StartPage";
@@ -15,7 +15,7 @@ function App(): JSX.Element {
   useEffect(() => {
     const curr = localStorage.getItem("team");
     if (curr) {
-      setTeam(curr);
+      setTeam(JSON.parse(curr));
       navigate("/auction");
     } else {
       // navigate("/select");

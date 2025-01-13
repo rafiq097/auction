@@ -79,6 +79,9 @@ const AuctionPage: React.FC = () => {
 
     const soldPlayer = { ...player, price: randomPrice, team: teams[num].name };
     if (team.name == teams[num].name) {
+      if (player.country != "India") {
+        setTeam({ ...team, overseas: team.overseas + 1 });
+      }
       if (player.role == "batter") {
         setTeam({ ...team, batters: team.batters + 1 });
       } else if (player.role == "bowler") {
@@ -87,8 +90,6 @@ const AuctionPage: React.FC = () => {
         setTeam({ ...team, wks: team.wks + 1 });
       } else if (player.role == "all-rounder") {
         setTeam({ ...team, allr: team.allr + 1 });
-      } else if (player.country != "India") {
-        setTeam({ ...team, overseas: team.overseas + 1 });
       }
     }
 
@@ -116,6 +117,7 @@ const AuctionPage: React.FC = () => {
       {console.log(teams)}
       <div className="grid grid-rows-2 h-screen">
         <div className="grid grid-cols-3">
+
           {/* // Purse bros */}
           <div className="bg-gray-100 h-full overflow-y-auto p-1">
             <ul className="list-none space-y-1">
@@ -200,7 +202,6 @@ const AuctionPage: React.FC = () => {
           </div>
 
           {/* // User Team Information */}
-              {console.log(team)}
           <div className="bg-gray-300 h-full">
             <h1 className="text-xl font-bold mb-4">
               Your Team: {team.name}
