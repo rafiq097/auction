@@ -67,9 +67,9 @@ const StartPage: React.FC = () => {
               title="name"
               className="mt-1 block w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 mb-6"
             >
-              <option value="rcb">RCB</option>
-              <option value="csk">CSK</option>
-              <option value="mi">MI</option>
+              <option value="RCB">RCB</option>
+              <option value="CSK">CSK</option>
+              <option value="MI">MI</option>
             </select>
           </div>
           <button

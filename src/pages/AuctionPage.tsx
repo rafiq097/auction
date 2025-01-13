@@ -88,6 +88,20 @@ const AuctionPage: React.FC = () => {
     });
 
     const soldPlayer = { ...player, price: randomPrice, team: teams[num].name };
+    if (team.name == teams[num].name) {
+      if (player.role == "batter") {
+        setTeam({ ...team, batters: team.batters + 1 });
+      } else if (player.role == "bowler") {
+        setTeam({ ...team, bowlers: team.bowlers + 1 });
+      } else if (player.role == "wk-batter") {
+        setTeam({ ...team, wks: team.wks + 1 });
+      } else if (player.role == "all-rounder") {
+        setTeam({ ...team, allr: team.allr + 1 });
+      } else if (player.country != "India") {
+        setTeam({ ...team, overseas: team.overseas + 1 });
+      }
+    }
+
     setSoldBro(soldPlayer);
     setTeams(updatedTeams);
     setCurr(curr + 1);
@@ -201,19 +215,29 @@ const AuctionPage: React.FC = () => {
               Your Team: {team.name.toLocaleUpperCase()}
             </h1>
             <ul className="rounded">
-              <li className="mb-2 text-gray-700 font-medium">Batters: {0}</li>
-              <li className="mb-2 text-gray-700 font-medium">Bowlers: {0}</li>
               <li className="mb-2 text-gray-700 font-medium">
-                All-Rounders: {0}
+                Batters: {team.batters}
               </li>
               <li className="mb-2 text-gray-700 font-medium">
-                Wicketkeepers: {0}
+                Bowlers: {team.bowlers}
               </li>
               <li className="mb-2 text-gray-700 font-medium">
-                Overseas Players: {0}
+                All-Rounders: {team.allr}
+              </li>
+              <li className="mb-2 text-gray-700 font-medium">
+                Wicketkeepers: {team.wks}
+              </li>
+              <li className="mb-2 text-gray-700 font-medium">
+                Overseas Players: {team.overseas}
               </li>
               <li className="mt-4 text-lg font-bold text-gray-900">
-                Total: {0} / 25
+                Total:{" "}
+                {team.batters +
+                  team.bowlers +
+                  team.allr +
+                  team.wks +
+                  team.overseas}{" "}
+                / 25
               </li>
             </ul>
 
