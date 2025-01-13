@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { userTeamAtom } from "../atoms/userTeamAtom.ts";
+import { useRecoilState } from "recoil";
 
 const StartPage: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
-  const [team, setTeam] = useState<string>();
+  const [team, setTeam] = useRecoilState(userTeamAtom);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -11,14 +13,34 @@ const StartPage: React.FC = () => {
       e.currentTarget.elements.namedItem("team") as HTMLSelectElement
     ).value;
     localStorage.setItem("team", selectedTeam);
-    setTeam(selectedTeam);
+    setTeam({
+      name: selectedTeam,
+      spent: 0,
+      remaining: 120,
+      players: [],
+      batters: 0,
+      bowlers: 0,
+      wks: 0,
+      allr: 0,
+      overseas: 0,
+    });
     navigate("/auction");
   };
 
   useEffect(() => {
     const selectedTeam = localStorage.getItem("team");
     if (selectedTeam) {
-      setTeam(selectedTeam);
+      setTeam({
+        name: selectedTeam,
+        spent: 0,
+        remaining: 120,
+        players: [],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      });
     }
   }, []);
 
@@ -29,7 +51,7 @@ const StartPage: React.FC = () => {
           Select Your Team
         </h1>
         <h4 className="font-bold text-center text-gray-800 mb-6">
-          Current Team: {team?.toLocaleUpperCase()}
+          Current Team: {team.name?.toLocaleUpperCase()}
         </h4>
         <form onSubmit={handleSubmit}>
           <div>

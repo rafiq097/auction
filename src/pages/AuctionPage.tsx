@@ -9,12 +9,13 @@ import {
   marqueeWkBatter as mwk,
 } from "../utils/players.ts";
 import { CR } from "../utils/getCR.ts";
-import { teamsAtom } from "../atoms/teamsAtom.ts";
 import { useRecoilState } from "recoil";
+import { teamsAtom } from "../atoms/teamsAtom.ts";
+import { userTeamAtom } from "../atoms/userTeamAtom.ts";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
-  const [team, setTeam] = useState<string>("");
+  const [team, setTeam] = useRecoilState(userTeamAtom);
   const [teams, setTeams] = useRecoilState(teamsAtom);
   const [players, setPlayers] = useState<
     {
@@ -39,7 +40,17 @@ const AuctionPage: React.FC = () => {
   useEffect(() => {
     const curr = localStorage.getItem("team");
     if (curr) {
-      setTeam(curr);
+      setTeam({
+        name: curr,
+        spent: 0,
+        remaining: 120,
+        players: [],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      });
     } else {
       navigate("/");
       toast.error("Please select a team");
@@ -109,6 +120,8 @@ const AuctionPage: React.FC = () => {
                 <span>Spent</span>
                 <span>Remaining</span>
               </li>
+              {console.log(team)}
+              {console.log(teams)}
               {teams.map((team) => (
                 <li
                   key={team.name}
@@ -179,7 +192,7 @@ const AuctionPage: React.FC = () => {
             ) : null}
           </div>
 
-          {/* // Recent */}
+          {/* // Bid war */}
           <div className="bg-gray-100 h-full flex items-center justify-center">
             6
           </div>
@@ -187,7 +200,7 @@ const AuctionPage: React.FC = () => {
           {/* // User Team Information */}
           <div className="bg-gray-300 h-full">
             <h1 className="text-xl font-bold mb-4">
-              Your Team: {team.toLocaleUpperCase()}
+              Your Team: {team.name.toLocaleUpperCase()}
             </h1>
             <ul className="rounded">
               <li className="mb-2 text-gray-700 font-medium">Batters: {0}</li>
