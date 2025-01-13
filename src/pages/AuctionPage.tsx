@@ -120,8 +120,6 @@ const AuctionPage: React.FC = () => {
                 <span>Spent</span>
                 <span>Remaining</span>
               </li>
-              {console.log(team)}
-              {console.log(teams)}
               {teams.map((team) => (
                 <li
                   key={team.name}
