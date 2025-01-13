@@ -5,10 +5,12 @@ import StartPage from "./pages/StartPage";
 import AuctionPage from "./pages/AuctionPage";
 import TeamsPage from "./pages/TeamsPage";
 import toast, { Toaster } from "react-hot-toast";
+import { userTeamAtom } from "./atoms/userTeamAtom.ts";
+import { useRecoilState } from "recoil";
 
 function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
-  const [team, setTeam] = useState<string>("");
+  const [team, setTeam] = useRecoilState(userTeamAtom);
 
   useEffect(() => {
     const curr = localStorage.getItem("team");

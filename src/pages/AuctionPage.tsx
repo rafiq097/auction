@@ -40,17 +40,7 @@ const AuctionPage: React.FC = () => {
   useEffect(() => {
     const curr = localStorage.getItem("team");
     if (curr) {
-      setTeam({
-        name: curr,
-        spent: 0,
-        remaining: 120,
-        players: [],
-        batters: 0,
-        bowlers: 0,
-        wks: 0,
-        allr: 0,
-        overseas: 0,
-      });
+      setTeam(JSON.parse(curr));
     } else {
       navigate("/");
       toast.error("Please select a team");
@@ -58,7 +48,7 @@ const AuctionPage: React.FC = () => {
   }, []);
 
   const handleContinue = (): void => {
-    if (curr >= players.length) {
+    if (curr >= players.length - 1) {
       console.log("No more players bro.");
       return;
     }
@@ -210,9 +200,10 @@ const AuctionPage: React.FC = () => {
           </div>
 
           {/* // User Team Information */}
+              {console.log(team)}
           <div className="bg-gray-300 h-full">
             <h1 className="text-xl font-bold mb-4">
-              Your Team: {team.name.toLocaleUpperCase()}
+              Your Team: {team.name}
             </h1>
             <ul className="rounded">
               <li className="mb-2 text-gray-700 font-medium">

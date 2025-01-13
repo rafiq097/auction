@@ -34,4 +34,39 @@ export const userTeamAtom = atom<Team>({
     allr: 0,
     overseas: 0,
   },
+
+  effects: [
+    ({ onSet, setSelf }) => {
+      const savedTeam = localStorage.getItem("team");
+      if (savedTeam) {
+        try {
+          setSelf(JSON.parse(savedTeam));
+        } catch (error) {
+          console.error("Error parsing localStorage teams data:", error);
+        }
+      }
+
+      onSet((newValue) => {
+        try {
+          console.log("new ", newValue);
+          localStorage.setItem("team", JSON.stringify(newValue));
+        } catch (error) {
+          console.error("Error saving teams data to localStorage:", error);
+        }
+      });
+
+      const handleStorageChange = (event: StorageEvent) => {
+        if (event.key === "team") {
+          setSelf(JSON.parse(event.newValue || "{}"));
+        }
+      };
+
+      window.addEventListener("storage", handleStorageChange);
+
+      return () => {
+        window.removeEventListener("storage", handleStorageChange);
+      };
+    },
+  ],
+
 });

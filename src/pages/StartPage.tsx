@@ -12,7 +12,21 @@ const StartPage: React.FC = () => {
     const selectedTeam = (
       e.currentTarget.elements.namedItem("team") as HTMLSelectElement
     ).value;
-    localStorage.setItem("team", selectedTeam);
+
+    localStorage.setItem(
+      "team",
+      JSON.stringify({
+        name: selectedTeam,
+        spent: 0,
+        remaining: 120,
+        players: [],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      })
+    );
     setTeam({
       name: selectedTeam,
       spent: 0,
@@ -30,17 +44,7 @@ const StartPage: React.FC = () => {
   useEffect(() => {
     const selectedTeam = localStorage.getItem("team");
     if (selectedTeam) {
-      setTeam({
-        name: selectedTeam,
-        spent: 0,
-        remaining: 120,
-        players: [],
-        batters: 0,
-        bowlers: 0,
-        wks: 0,
-        allr: 0,
-        overseas: 0,
-      });
+      setTeam(JSON.parse(selectedTeam));
     }
   }, []);
 
