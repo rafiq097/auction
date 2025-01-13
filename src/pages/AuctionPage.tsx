@@ -9,7 +9,7 @@ import {
   marqueeWkBatter as mwk,
 } from "../utils/players.ts";
 import { CR } from "../utils/getCR.ts";
-import { teamsAtom } from "../atoms/teams.ts";
+import { teamsAtom } from "../atoms/teamsAtom.ts";
 import { useRecoilState } from "recoil";
 
 const AuctionPage: React.FC = () => {
@@ -38,8 +38,35 @@ const AuctionPage: React.FC = () => {
   }, []);
 
   const handleContinue = (): void => {
+    if (curr >= players.length) {
+      console.log("No more players bro.");
+      return;
+    }
+  
+    const num = Math.floor(Math.random() * teams.length);
+  
+    const player = players[curr];
+    let randomPrice = parseFloat(CR(player.base + Math.floor(Math.random() * (10 * player.base))).toFixed(1));
+  
+    const updatedTeams = teams.map((team, index) => {
+      if (index === num) {
+        const newSpent = team.spent + randomPrice;
+        const newRemaining = team.remaining - randomPrice;
+  
+        return {
+          ...team,
+          spent: newSpent,
+          remaining: newRemaining,
+          players: [...team.players, { ...player, price: randomPrice }],
+        };
+      }
+      return team;
+    });
+  
+    setTeams(updatedTeams);
     setCurr(curr + 1);
   };
+  
 
   const handleBid = (): void => {
     let price = players[curr].base;
@@ -57,6 +84,7 @@ const AuctionPage: React.FC = () => {
       {/* <div className="text-center text-lg font-bold mb-4">
         Current Team: {team.toLocaleUpperCase()}
       </div> */}
+      {console.log(teams)}
       <div className="grid grid-rows-2 h-screen">
         <div className="grid grid-cols-3">
           {/* // Purse bros */}
@@ -68,10 +96,10 @@ const AuctionPage: React.FC = () => {
                 <span>Remaining</span>
               </li>
               {teams.map((team) => (
-                <li className="flex justify-between items-center border-b border-gray-300">
+                <li key={team.name} className="flex justify-between items-center border-b border-gray-300">
                   <span>{team.name}</span>
-                  <span>{team.spent}</span>
-                  <span>{team.remaining}</span>
+                  <span>{team.spent.toFixed(1)}</span>
+                  <span>{team.remaining.toFixed(1)}</span>
                 </li>
               ))}
             </ul>
