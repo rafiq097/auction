@@ -156,6 +156,10 @@ const AuctionPage: React.FC = () => {
 
   const handleBid = (): void => {
     let price = players[curr].base;
+    if (team.remaining < price) {
+      toast.error("No Purse to Bid Bro");
+      return;
+    }
     price += 2000000;
 
     setBiddingBros((prevBros) =>
