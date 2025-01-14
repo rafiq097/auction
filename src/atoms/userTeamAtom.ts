@@ -48,7 +48,6 @@ export const userTeamAtom = atom<Team>({
 
       onSet((newValue) => {
         try {
-          console.log("new ", newValue);
           localStorage.setItem("team", JSON.stringify(newValue));
         } catch (error) {
           console.error("Error saving teams data to localStorage:", error);

@@ -70,18 +70,22 @@ const AuctionPage: React.FC = () => {
 
   const handleContinue = (): void => {
     if (curr >= players.length || soldBro?.name === players[curr].name) {
-      console.log("No more players bro.");
+      alert("No more players bro.");
       return;
     }
-    
-    const num = Math.floor(Math.random() * teams.length);
 
     const player = players[curr];
     let randomPrice = parseFloat(
-      CR(
-        player.base + Math.floor(Math.random() * 15) * player.base
-      ).toFixed(1)
+      CR(player.base + Math.floor(Math.random() * 15) * player.base).toFixed(1)
     );
+
+    let num = Math.floor(Math.random() * teams.length);
+    while (
+      teams[num].name === team.name &&
+      teams[num].remaining < randomPrice
+    ) {
+      num = Math.floor(Math.random() * teams.length);
+    }
 
     const updatedTeams = teams.map((team, index) => {
       if (index === num) {
@@ -99,6 +103,7 @@ const AuctionPage: React.FC = () => {
     });
 
     const soldPlayer = { ...player, price: randomPrice, team: teams[num].name };
+    setCurrentBid({ name: teams[num].name, bid: soldPlayer.price });
     if (team.name == teams[num].name) {
       if (player.country != "India") {
         setTeam({ ...team, overseas: team.overseas + 1 });
@@ -116,10 +121,9 @@ const AuctionPage: React.FC = () => {
 
     setSoldBro(soldPlayer);
     setTeams(updatedTeams);
-    setCurrentBid({ name: teams[num].name, bid: soldPlayer.price });
 
     if (curr >= players.length - 1) {
-      console.log("No more players bro.");
+      alert("No more players bro.");
       return;
     }
     setCurr(curr + 1);
@@ -298,9 +302,15 @@ const AuctionPage: React.FC = () => {
             <div className="text-center">
               {currentBid ? (
                 <>
-                  <p className="text-4xl text-green-600 font-extrabold">
-                    ₹{CR(currentBid.bid).toFixed(1)}
-                  </p>
+                  {currentBid.bid > 20000 ? (
+                    <p className="text-4xl text-green-600 font-extrabold">
+                      ₹{CR(currentBid.bid).toFixed(1)}
+                    </p>
+                  ) : (
+                    <p className="text-4xl text-green-600 font-extrabold">
+                      ₹{currentBid.bid}
+                    </p>
+                  )}
                   <p className="text-lg text-red-700 font-medium mt-2">
                     Bidder: <span className="font-bold">{currentBid.name}</span>
                   </p>
