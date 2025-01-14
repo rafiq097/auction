@@ -69,18 +69,18 @@ const AuctionPage: React.FC = () => {
   }, []);
 
   const handleContinue = (): void => {
-    if (curr >= players.length - 1) {
+    if (curr >= players.length || soldBro?.name === players[curr].name) {
       console.log("No more players bro.");
       return;
     }
-
+    
     const num = Math.floor(Math.random() * teams.length);
 
     const player = players[curr];
     let randomPrice = parseFloat(
-      CR(player.base + Math.floor(Math.random() * (10 * player.base))).toFixed(
-        1
-      )
+      CR(
+        player.base + Math.floor(Math.random() * 15) * player.base
+      ).toFixed(1)
     );
 
     const updatedTeams = teams.map((team, index) => {
@@ -116,6 +116,12 @@ const AuctionPage: React.FC = () => {
 
     setSoldBro(soldPlayer);
     setTeams(updatedTeams);
+    setCurrentBid({ name: teams[num].name, bid: soldPlayer.price });
+
+    if (curr >= players.length - 1) {
+      console.log("No more players bro.");
+      return;
+    }
     setCurr(curr + 1);
   };
 
@@ -128,21 +134,28 @@ const AuctionPage: React.FC = () => {
       updatedPlayers[curr].base = price;
       return updatedPlayers;
     });
+    console.log(price, team.name);
 
     setCurrentBid({ name: team.name, bid: price });
     let num = Math.floor(Math.random() * teams.length);
-    while(teams[num].name != team.name && teams[num].remaining >= price) {
+    while (teams[num].name === team.name && teams[num].remaining < price) {
       num = Math.floor(Math.random() * teams.length);
     }
 
+    // price = players[curr].base;
     price += 2000000;
+
     setPlayers((prevPlayers) => {
       const updatedPlayers = [...prevPlayers];
       updatedPlayers[curr].base = price;
       return updatedPlayers;
     });
-    setTimeout(() => setCurrentBid({ name: teams[num].name, bid: price }), 2000);
-    
+    console.log(price, teams[num].name);
+    setTimeout(
+      () => setCurrentBid({ name: teams[num].name, bid: price }),
+      2000
+    );
+
     // const updatedTeams = teams.map((team, index) => {
     //   if (index === num) {
     //     const newSpent = team.spent + price;
@@ -172,7 +185,7 @@ const AuctionPage: React.FC = () => {
       {/* <div className="text-center text-lg font-bold mb-4">
         Current Team: {team.toLocaleUpperCase()}
       </div> */}
-      {console.log(teams)}
+      {/* {console.log(teams)} */}
       <div className="grid grid-rows-2 h-screen">
         <div className="grid grid-cols-3">
           {/* // Purse bros */}
