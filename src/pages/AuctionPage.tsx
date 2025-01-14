@@ -40,18 +40,19 @@ const AuctionPage: React.FC = () => {
     {
       name: string;
       bid: number;
+      round: number;
     }[]
   >([
-    { name: "RCB", bid: 0 },
-    { name: "MI", bid: 0 },
-    { name: "CSK", bid: 0 },
-    { name: "DC", bid: 0 },
-    { name: "KKR", bid: 0 },
-    { name: "SRH", bid: 0 },
-    { name: "RR", bid: 0 },
-    { name: "PBKS", bid: 0 },
-    { name: "GT", bid: 0 },
-    { name: "LSG", bid: 0 },
+    { name: "RCB", bid: 0, round: 0 },
+    { name: "MI", bid: 0, round: 0 },
+    { name: "CSK", bid: 0, round: 0 },
+    { name: "DC", bid: 0, round: 0 },
+    { name: "KKR", bid: 0, round: 0 },
+    { name: "SRH", bid: 0, round: 0 },
+    { name: "RR", bid: 0, round: 0 },
+    { name: "PBKS", bid: 0, round: 0 },
+    { name: "GT", bid: 0, round: 0 },
+    { name: "LSG", bid: 0, round: 0 },
   ]);
   const [currentBid, setCurrentBid] = useState<{
     name: string;
@@ -121,6 +122,19 @@ const AuctionPage: React.FC = () => {
 
     setSoldBro(soldPlayer);
     setTeams(updatedTeams);
+    setCurrentBid({ name: "", bid: 0 });
+    setBiddingBros([
+      { name: "RCB", bid: 0, round: 0 },
+      { name: "MI", bid: 0, round: 0 },
+      { name: "CSK", bid: 0, round: 0 },
+      { name: "DC", bid: 0, round: 0 },
+      { name: "KKR", bid: 0, round: 0 },
+      { name: "SRH", bid: 0, round: 0 },
+      { name: "RR", bid: 0, round: 0 },
+      { name: "PBKS", bid: 0, round: 0 },
+      { name: "GT", bid: 0, round: 0 },
+      { name: "LSG", bid: 0, round: 0 },
+    ]);
 
     if (curr >= players.length - 1) {
       alert("No more players bro.");
@@ -138,14 +152,14 @@ const AuctionPage: React.FC = () => {
         bro.name === team.name ? { ...bro, bid: price } : bro
       )
     );
- 
+
     setPlayers((prevPlayers) => {
       const updatedPlayers = [...prevPlayers];
       updatedPlayers[curr].base = price;
       return updatedPlayers;
     });
-
     setCurrentBid({ name: team.name, bid: price });
+
     let num = Math.floor(Math.random() * teams.length);
     while (teams[num].name === team.name && teams[num].remaining < price) {
       num = Math.floor(Math.random() * teams.length);
@@ -154,38 +168,62 @@ const AuctionPage: React.FC = () => {
     // price = players[curr].base;
     let otherPrice = price + 2000000;
 
-    setTimeout(() => {
-      setCurrentBid({ name: teams[num].name, bid: otherPrice });
+    const index = biddingBros.findIndex(
+      (team) => team.name === teams[num].name
+    );
+    if (biddingBros[index].round == 2) {
+      alert("Congratulations You Won the Bid");
+      const soldPlayer = { ...players[curr], price: price, team: team.name };
+      if (players[curr].country != "India") {
+        setTeam({ ...team, overseas: team.overseas + 1 });
+      }
+      if (players[curr].role == "batter") {
+        setTeam({ ...team, batters: team.batters + 1 });
+      } else if (players[curr].role == "bowler") {
+        setTeam({ ...team, bowlers: team.bowlers + 1 });
+      } else if (players[curr].role == "wk-batter") {
+        setTeam({ ...team, wks: team.wks + 1 });
+      } else if (players[curr].role == "all-rounder") {
+        setTeam({ ...team, allr: team.allr + 1 });
+      }
+      setSoldBro(soldPlayer);
+      setCurr(curr + 1);
 
-      setBiddingBros((prevBros) =>
-        prevBros.map((bro) =>
-          bro.name === teams[num].name ? { ...bro, bid: otherPrice } : bro
-        )
-      );
+      const updatedTeams = teams.map((x) => {
+        if (x.name === team.name) {
+          const newSpent = x.spent + CR(price);
+          const newRemaining = x.remaining - CR(price);
 
-      setPlayers((prevPlayers) => {
-        const updatedPlayers = [...prevPlayers];
-        updatedPlayers[curr].base = otherPrice;
-        return updatedPlayers;
+          return {
+            ...x,
+            spent: newSpent,
+            remaining: newRemaining,
+            players: [...x.players, { ...players[curr], price }],
+          };
+        }
+        return x;
       });
-    }, 1000);
 
-    // const updatedTeams = teams.map((team, index) => {
-    //   if (index === num) {
-    //     const newSpent = team.spent + price;
-    //     const newRemaining = team.remaining - price;
+      setTeams(updatedTeams);
+    } else {
+      setTimeout(() => {
+        setCurrentBid({ name: teams[num].name, bid: otherPrice });
 
-    //     return {
-    //       ...team,
-    //       spent: newSpent,
-    //       remaining: newRemaining,
-    //       players: [...team.players, { ...players[curr], price }],
-    //     };
-    //   }
-    //   return team;
-    // });
+        setBiddingBros((prevBros) =>
+          prevBros.map((bro) =>
+            bro.name === teams[num].name
+              ? { ...bro, bid: otherPrice, round: bro.round + 1 }
+              : bro
+          )
+        );
 
-    // setTeams(updatedTeams);
+        setPlayers((prevPlayers) => {
+          const updatedPlayers = [...prevPlayers];
+          updatedPlayers[curr].base = otherPrice;
+          return updatedPlayers;
+        });
+      }, 700);
+    }
   };
 
   const handleReset = (): void => {
