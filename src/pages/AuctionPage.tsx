@@ -26,6 +26,17 @@ const AuctionPage: React.FC = () => {
       type: string;
     }[]
   >([...mp, ...mbat, ...mbowl, ...mwk, ...mar]);
+  const [tempPlayers, setTempPlayers] = useState<
+    {
+      name: string;
+      role: string;
+      base: number;
+      country: string;
+      type: string;
+    }[]
+  >(
+    [...mp, ...mbat, ...mbowl, ...mwk, ...mar].map((player) => ({ ...player }))
+  );
   const [curr, setCurr] = useState<number>(0);
   const [soldBro, setSoldBro] = useState<{
     name: string;
@@ -71,7 +82,7 @@ const AuctionPage: React.FC = () => {
 
   const handleContinue = (): void => {
     if (curr >= players.length || soldBro?.name === players[curr].name) {
-      alert("No more players bro.");
+      toast.error("No more players bro.");
       return;
     }
 
@@ -137,7 +148,7 @@ const AuctionPage: React.FC = () => {
     ]);
 
     if (curr >= players.length - 1) {
-      alert("No more players bro.");
+      toast("No more players bro.");
       return;
     }
     setCurr(curr + 1);
@@ -171,9 +182,15 @@ const AuctionPage: React.FC = () => {
     const index = biddingBros.findIndex(
       (team) => team.name === teams[num].name
     );
-    if (biddingBros[index].round == 2) {
-      alert("Congratulations You Won the Bid");
-      const soldPlayer = { ...players[curr], price: price, team: team.name };
+    if (biddingBros[index].round == 4) {
+      toast.success("Congratulations You Won the Bid");
+
+      const soldPlayer = {
+        ...players[curr],
+        base: tempPlayers[curr].base,
+        price: price,
+        team: team.name,
+      };
       if (players[curr].country != "India") {
         setTeam({ ...team, overseas: team.overseas + 1 });
       }
@@ -188,6 +205,19 @@ const AuctionPage: React.FC = () => {
       }
       setSoldBro(soldPlayer);
       setCurr(curr + 1);
+      setCurrentBid({ name: "", bid: 0 });
+      setBiddingBros([
+        { name: "RCB", bid: 0, round: 0 },
+        { name: "MI", bid: 0, round: 0 },
+        { name: "CSK", bid: 0, round: 0 },
+        { name: "DC", bid: 0, round: 0 },
+        { name: "KKR", bid: 0, round: 0 },
+        { name: "SRH", bid: 0, round: 0 },
+        { name: "RR", bid: 0, round: 0 },
+        { name: "PBKS", bid: 0, round: 0 },
+        { name: "GT", bid: 0, round: 0 },
+        { name: "LSG", bid: 0, round: 0 },
+      ]);
 
       const updatedTeams = teams.map((x) => {
         if (x.name === team.name) {
@@ -222,6 +252,7 @@ const AuctionPage: React.FC = () => {
           updatedPlayers[curr].base = otherPrice;
           return updatedPlayers;
         });
+        toast.error(`Team ${teams[num].name} bid at ${CR(otherPrice)}CR`);
       }, 700);
     }
   };
@@ -278,7 +309,7 @@ const AuctionPage: React.FC = () => {
               </h2>
               <p className="text-gray-600 mb-2">Role: {players[curr].role}</p>
               <p className="text-gray-600 mb-2">
-                Base Price: {CR(players[curr].base)} CR
+                Base Price: {CR(tempPlayers[curr].base)} CR
               </p>
               <p className="text-gray-600 mb-4">
                 Country: {players[curr].country}
@@ -335,7 +366,7 @@ const AuctionPage: React.FC = () => {
                 </p>
                 <p className="text-gray-600 mb-2">Country: {soldBro.country}</p>
                 <p className="text-gray-600 mb-2">
-                  Selling Price: {soldBro.price} CR
+                  Selling Price: {CR(soldBro.price)} CR
                 </p>
                 <p className="text-gray-600 mb-2">Sold to : {soldBro.team}</p>
               </div>
