@@ -7,16 +7,22 @@ import {
   marqueeBowler as mbowl,
   marqueePlayers as mp,
   marqueeWkBatter as mwk,
+  batters as bat,
+  bowlers as bowl,
+  allRounders as ar,
+  wkBatters as wk,
 } from "../utils/players.ts";
 import { CR } from "../utils/getCR.ts";
 import { useRecoilState } from "recoil";
 import { teamsAtom } from "../atoms/teamsAtom.ts";
 import { userTeamAtom } from "../atoms/userTeamAtom.ts";
+import { currAtom } from "../atoms/currAtom.ts";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
   const [team, setTeam] = useRecoilState(userTeamAtom);
   const [teams, setTeams] = useRecoilState(teamsAtom);
+  const [curr, setCurr] = useRecoilState(currAtom);
   const [players, setPlayers] = useState<
     {
       name: string;
@@ -25,7 +31,7 @@ const AuctionPage: React.FC = () => {
       country: string;
       type: string;
     }[]
-  >([...mp, ...mbat, ...mbowl, ...mwk, ...mar]);
+  >([...mp, ...mbat, ...mbowl, ...mwk, ...mar, ...bat, ...bowl, ...ar, ...wk]);
   const [tempPlayers, setTempPlayers] = useState<
     {
       name: string;
@@ -35,9 +41,8 @@ const AuctionPage: React.FC = () => {
       type: string;
     }[]
   >(
-    [...mp, ...mbat, ...mbowl, ...mwk, ...mar].map((player) => ({ ...player }))
+    [...mp, ...mbat, ...mbowl, ...mwk, ...mar, ...bat, ...bowl, ...ar, ...wk].map((player) => ({ ...player }))
   );
-  const [curr, setCurr] = useState<number>(0);
   const [soldBro, setSoldBro] = useState<{
     name: string;
     role: string;
