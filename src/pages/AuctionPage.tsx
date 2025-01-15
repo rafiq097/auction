@@ -86,10 +86,12 @@ const AuctionPage: React.FC = () => {
       return;
     }
 
-    const player = players[curr];
+    const player = tempPlayers[curr];
     let randomPrice = parseFloat(
       CR(player.base + Math.floor(Math.random() * 15) * player.base).toFixed(1)
     );
+    if(currentBid?.bid)
+      randomPrice = CR(currentBid.bid + 20000000);
 
     let num = Math.floor(Math.random() * teams.length);
     while (
@@ -192,7 +194,7 @@ const AuctionPage: React.FC = () => {
       const soldPlayer = {
         ...players[curr],
         base: tempPlayers[curr].base,
-        price: price,
+        price: CR(price),
         team: team.name,
       };
       if (players[curr].country != "India") {
@@ -370,7 +372,7 @@ const AuctionPage: React.FC = () => {
                 </p>
                 <p className="text-gray-600 mb-2">Country: {soldBro.country}</p>
                 <p className="text-gray-600 mb-2">
-                  Selling Price: {CR(soldBro.price)} CR
+                  Selling Price: {soldBro.price} CR
                 </p>
                 <p className="text-gray-600 mb-2">Sold to : {soldBro.team}</p>
               </div>
