@@ -327,7 +327,7 @@ const AuctionPage: React.FC = () => {
                   </button>
                 </div>
                 <h1 className="text-2xl font-bold mb-2">
-                  {players[curr].type}
+                  {players[curr].type} - {curr}
                 </h1>
                 <h2 className="text-xl font-semibold mb-2">
                   {players[curr].name}
@@ -356,7 +356,19 @@ const AuctionPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <h2 className="text-xl text-red-500 font-semibold mb-2">Auction Completed</h2>
+              <div>
+                <h2 className="text-xl text-red-500 font-semibold mb-2">
+                  Auction Completed
+                </h2>
+                <div className="flex justify-center">
+                  <button
+                    className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mb-2"
+                    onClick={handleReset}
+                  >
+                    Reset Auction
+                  </button>
+                </div>
+              </div>
             )}
           </div>
 
@@ -429,25 +441,23 @@ const AuctionPage: React.FC = () => {
           </div>
 
           {/* // User Team Information */}
-          <div className="bg-gray-300 h-full">
-            <h1 className="text-xl font-bold mb-4">Your Team: {team.name}</h1>
-            <ul className="rounded">
-              <li className="mb-2 text-gray-700 font-medium">
-                Batters: {team.batters}
-              </li>
-              <li className="mb-2 text-gray-700 font-medium">
-                Bowlers: {team.bowlers}
-              </li>
-              <li className="mb-2 text-gray-700 font-medium">
+          <div className="bg-white shadow-lg rounded-lg p-4">
+            <h1 className="flex justify-center text-xl font-bold text-gray-800 mb-4">
+              Your Team: {team.name}
+            </h1>
+            <ul className="text-gray-600 space-y-2">
+              <li className="flex justify-center ">Batters: {team.batters}</li>
+              <li className="flex justify-center ">Bowlers: {team.bowlers}</li>
+              <li className="flex justify-center ">
                 All-Rounders: {team.allr}
               </li>
-              <li className="mb-2 text-gray-700 font-medium">
+              <li className="flex justify-center ">
                 Wicketkeepers: {team.wks}
               </li>
-              <li className="mb-2 text-gray-700 font-medium">
+              <li className="flex justify-center ">
                 Overseas Players: {team.overseas}
               </li>
-              <li className="mt-4 text-lg font-bold text-gray-900">
+              <li className="flex justify-center font-bold text-lg">
                 Total:{" "}
                 {team.batters +
                   team.bowlers +
@@ -457,12 +467,11 @@ const AuctionPage: React.FC = () => {
                 / 25
               </li>
             </ul>
-
             <button
-              className="rounded-md bg-blue-400"
+              className="mt-4 w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"
               onClick={() => navigate("/teams")}
             >
-              Other Teams
+              View Other Teams
             </button>
           </div>
         </div>
