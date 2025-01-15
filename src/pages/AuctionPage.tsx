@@ -41,7 +41,17 @@ const AuctionPage: React.FC = () => {
       type: string;
     }[]
   >(
-    [...mp, ...mbat, ...mbowl, ...mwk, ...mar, ...bat, ...bowl, ...ar, ...wk].map((player) => ({ ...player }))
+    [
+      ...mp,
+      ...mbat,
+      ...mbowl,
+      ...mwk,
+      ...mar,
+      ...bat,
+      ...bowl,
+      ...ar,
+      ...wk,
+    ].map((player) => ({ ...player }))
   );
   const [soldBro, setSoldBro] = useState<{
     name: string;
@@ -86,17 +96,16 @@ const AuctionPage: React.FC = () => {
   }, []);
 
   const handleContinue = (): void => {
-    if (curr >= players.length || soldBro?.name === players[curr].name) {
-      toast.error("No more players bro.");
-      return;
-    }
+    // if (curr >= players.length || soldBro?.name === players[curr].name) {
+    //   toast.error("No more players bro.");
+    //   return;
+    // }
 
     const player = tempPlayers[curr];
     let randomPrice = parseFloat(
       CR(player.base + Math.floor(Math.random() * 15) * player.base).toFixed(1)
     );
-    if(currentBid?.bid)
-      randomPrice = CR(currentBid.bid + 20000000);
+    if (currentBid?.bid) randomPrice = CR(currentBid.bid + 20000000);
 
     let num = Math.floor(Math.random() * teams.length);
     while (
@@ -154,10 +163,10 @@ const AuctionPage: React.FC = () => {
       { name: "LSG", bid: 0, round: 0 },
     ]);
 
-    if (curr >= players.length - 1) {
-      toast("No more players bro.");
-      return;
-    }
+    // if (curr >= players.length - 1) {
+    //   toast("No more players bro.");
+    //   return;
+    // }
     setCurr(curr + 1);
   };
 
@@ -215,7 +224,6 @@ const AuctionPage: React.FC = () => {
         setTeam({ ...team, allr: team.allr + 1 });
       }
       setSoldBro(soldPlayer);
-      setCurr(curr + 1);
       setCurrentBid({ name: "", bid: 0 });
       setBiddingBros([
         { name: "RCB", bid: 0, round: 0 },
@@ -239,13 +247,15 @@ const AuctionPage: React.FC = () => {
             ...x,
             spent: newSpent,
             remaining: newRemaining,
-            players: [...x.players, { ...players[curr], price }],
+            players: [...x.players, { ...players[curr], price: CR(price) }],
           };
         }
         return x;
       });
 
       setTeams(updatedTeams);
+
+      setCurr(curr + 1);
     } else {
       setTimeout(() => {
         setCurrentBid({ name: teams[num].name, bid: otherPrice });
@@ -306,42 +316,48 @@ const AuctionPage: React.FC = () => {
 
           {/* // Player bros Bid */}
           <div className="bg-gray-300 h-full flex items-center justify-center">
-            <div className="p-6 bg-gray-50 rounded-lg shadow-lg max-w-lg">
-              <div className="flex justify-center">
-                <button
-                  className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mb-2"
-                  onClick={handleReset}
-                >
-                  Reset Auction
-                </button>
-              </div>
-              <h1 className="text-2xl font-bold mb-2">{players[curr].type}</h1>
-              <h2 className="text-xl font-semibold mb-2">
-                {players[curr].name}
-              </h2>
-              <p className="text-gray-600 mb-2">Role: {players[curr].role}</p>
-              <p className="text-gray-600 mb-2">
-                Base Price: {CR(tempPlayers[curr].base)} CR
-              </p>
-              <p className="text-gray-600 mb-4">
-                Country: {players[curr].country}
-              </p>
+            {curr < players.length ? (
+              <div className="p-6 bg-gray-50 rounded-lg shadow-lg max-w-lg">
+                <div className="flex justify-center">
+                  <button
+                    className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mb-2"
+                    onClick={handleReset}
+                  >
+                    Reset Auction
+                  </button>
+                </div>
+                <h1 className="text-2xl font-bold mb-2">
+                  {players[curr].type}
+                </h1>
+                <h2 className="text-xl font-semibold mb-2">
+                  {players[curr].name}
+                </h2>
+                <p className="text-gray-600 mb-2">Role: {players[curr].role}</p>
+                <p className="text-gray-600 mb-2">
+                  Base Price: {CR(tempPlayers[curr].base)} CR
+                </p>
+                <p className="text-gray-600 mb-4">
+                  Country: {players[curr].country}
+                </p>
 
-              <div className="flex justify-between">
-                <button
-                  className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mr-4"
-                  onClick={handleContinue}
-                >
-                  Skip
-                </button>
-                <button
-                  className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
-                  onClick={handleBid}
-                >
-                  Bid
-                </button>
+                <div className="flex justify-between">
+                  <button
+                    className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mr-4"
+                    onClick={handleContinue}
+                  >
+                    Skip
+                  </button>
+                  <button
+                    className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
+                    onClick={handleBid}
+                  >
+                    Bid
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <h2 className="text-xl text-red-500 font-semibold mb-2">Auction Completed</h2>
+            )}
           </div>
 
           {/* // Teams bros Bid Status */}
@@ -395,7 +411,7 @@ const AuctionPage: React.FC = () => {
                 <>
                   {currentBid.bid > 20000 ? (
                     <p className="text-4xl text-green-600 font-extrabold">
-                      ₹{CR(currentBid.bid).toFixed(1)}
+                      ₹{CR(currentBid.bid).toFixed(1)} CR
                     </p>
                   ) : (
                     <p className="text-4xl text-green-600 font-extrabold">
