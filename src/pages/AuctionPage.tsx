@@ -271,6 +271,7 @@ const AuctionPage: React.FC = () => {
   const handleReset = (): void => {
     localStorage.removeItem("team");
     localStorage.removeItem("teams");
+    localStorage.removeItem("curr");
     window.location.href = "/";
   };
 
