@@ -41,9 +41,9 @@ const TeamsPage: React.FC = () => {
       {teams.map((team) => (
         <div
           key={team.name}
-          className="bg-white shadow-lg rounded-xl p-6 mb-8 border border-gray-200 hover:shadow-xl transition duration-300"
+          className="bg-white shadow-lg rounded-xl p-6 mb-8 border border-gray-400 hover:shadow-xl transition duration-300"
         >
-          <h2 className="text-2xl font-bold mb-6 text-center text-gray-700 border-b pb-4">
+          <h2 className="text-2xl font-bold mb-6 text-center text-black-800 border-b pb-4">
             {team.name}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -53,7 +53,7 @@ const TeamsPage: React.FC = () => {
                 key={idx}
                 className="bg-gray-50 border border-gray-300 rounded-lg p-5 hover:bg-gray-100"
               >
-                <h3 className="text-lg font-semibold mb-4 text-center text-gray-600">
+                <h3 className="text-lg font-semibold mb-4 text-center text-black-700">
                   {role
                     .replace("-", " ")
                     .replace(/\b\w/g, (char) => char.toUpperCase())}
@@ -70,7 +70,7 @@ const TeamsPage: React.FC = () => {
                           <FaPlane className="ml-2 text-blue-500" />
                         )}
                       </span>
-                      <span className="text-gray-500 font-medium text-sm">
+                      <span className="text-gray-800 font-medium text-sm">
                         ₹{player.price} CR
                       </span>
                     </li>
