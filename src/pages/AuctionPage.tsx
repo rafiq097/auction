@@ -9,6 +9,7 @@ import { userTeamAtom } from "../atoms/userTeamAtom.ts";
 import { currAtom } from "../atoms/currAtom.ts";
 import { getPlusPrice } from "../utils/getPlusPrice.ts";
 import { getRandomPrice } from "../utils/getRandomPrice.ts";
+import { getRounds } from "../utils/getRounds.ts";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -146,6 +147,7 @@ const AuctionPage: React.FC = () => {
     }
     randomPrice *= Math.random() * (1.7 - 1.2) + 1.2;
     randomPrice = Math.ceil(randomPrice);
+    if (currentBid?.bid) randomPrice = currentBid.bid + 200;
 
     let validBros = 0;
     for (let i = 0; i < teams.length; i++) {
@@ -255,7 +257,8 @@ const AuctionPage: React.FC = () => {
     const index = biddingBros.findIndex(
       (team) => team.name === teams[num].name
     );
-    if (biddingBros[index].round == 9) {
+    let rounds = getRounds(players[curr]);
+    if (biddingBros[index].round == rounds) {
       toast.success("Congratulations You Won the Bid");
 
       const soldPlayer = {
@@ -278,6 +281,7 @@ const AuctionPage: React.FC = () => {
       }
       setSoldBro(soldPlayer);
       setCurrentBid({ name: "", bid: 0 });
+      console.log(biddingBros);
       setBiddingBros([
         { name: "RCB", bid: 0, round: 0 },
         { name: "MI", bid: 0, round: 0 },
@@ -431,6 +435,7 @@ const AuctionPage: React.FC = () => {
               <li className="bg-gray-200 flex justify-between items-center border-b border-gray-300">
                 <span>Team</span>
                 <span>Last Bid Price</span>
+                <span>Times</span>
               </li>
               {biddingBros.map((team) => (
                 <li
@@ -439,6 +444,7 @@ const AuctionPage: React.FC = () => {
                 >
                   <span>{team.name}</span>
                   <span>{CR(team.bid).toFixed(2)}</span>
+                  <span>{team.round}</span>
                 </li>
               ))}
             </ul>
