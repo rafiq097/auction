@@ -8,6 +8,7 @@ import { teamsAtom } from "../atoms/teamsAtom.ts";
 import { userTeamAtom } from "../atoms/userTeamAtom.ts";
 import { currAtom } from "../atoms/currAtom.ts";
 import { getPlusPrice } from "../utils/getPlusPrice.ts";
+import { getRandomPrice } from "../utils/getRandomPrice.ts";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const AuctionPage: React.FC = () => {
       Base: number;
       RTM?: string;
     }[]
-  >([...bros]);
+  >(bros);
   const [tempPlayers, setTempPlayers] = useState<
     {
       Sno: number;
@@ -65,7 +66,7 @@ const AuctionPage: React.FC = () => {
       Base: number;
       RTM?: string;
     }[]
-  >([...bros].map((player) => ({ ...player })));
+  >(JSON.parse(JSON.stringify(bros)));
   const [soldBro, setSoldBro] = useState<{
     Sno: number;
     Set_No: number;
@@ -90,6 +91,7 @@ const AuctionPage: React.FC = () => {
     Base: number;
     RTM?: string;
     team: string;
+    base: number;
     price: number;
   }>();
   const [biddingBros, setBiddingBros] = useState<
@@ -132,15 +134,32 @@ const AuctionPage: React.FC = () => {
     // }
 
     const player = tempPlayers[curr];
-    let randomPrice = parseFloat(
-      CR(player.Base + Math.floor(Math.random() * 11) * player.Base).toFixed(1)
-    );
-    // if (currentBid?.bid) randomPrice = CR(currentBid.bid + 200);
+    let randomPrice = CR(player.Base);
+
+    console.log(randomPrice);
+
+    let totalCaps = player.IPL_caps || 0;
+    randomPrice += totalCaps * 0.1;
+    let last = player.Last_IPL_played || 0;
+    if (last >= 7) {
+      randomPrice *= 1.2;
+    }
+    randomPrice *= Math.random() * (1.7 - 1.2) + 1.2;
+    randomPrice = Math.ceil(randomPrice);
+
+    let validBros = 0;
+    for (let i = 0; i < teams.length; i++) {
+      if (teams[i].remaining >= randomPrice) validBros++;
+    }
+    if (validBros == 0) {
+      toast.error("No team is Eligible to Buy");
+      setCurr(curr + 1);
+    }
 
     let num = Math.floor(Math.random() * teams.length);
     while (
       teams[num].name === team.name ||
-      teams[num].remaining < randomPrice
+      teams[num].remaining < CR(randomPrice)
     ) {
       num = Math.floor(Math.random() * teams.length);
     }
@@ -160,7 +179,12 @@ const AuctionPage: React.FC = () => {
       return team;
     });
 
-    const soldPlayer = { ...player, price: randomPrice, team: teams[num].name };
+    const soldPlayer = {
+      ...player,
+      base: player.Base,
+      price: randomPrice,
+      team: teams[num].name,
+    };
     // setCurrentBid({ name: teams[num].name, bid: soldPlayer.price });
     if (team.name == teams[num].name) {
       if (player.Country != "India") {
@@ -231,7 +255,7 @@ const AuctionPage: React.FC = () => {
     const index = biddingBros.findIndex(
       (team) => team.name === teams[num].name
     );
-    if (biddingBros[index].round == 4) {
+    if (biddingBros[index].round == 9) {
       toast.success("Congratulations You Won the Bid");
 
       const soldPlayer = {
@@ -302,7 +326,9 @@ const AuctionPage: React.FC = () => {
           updatedPlayers[curr].Base = otherPrice;
           return updatedPlayers;
         });
-        toast.error(`Team ${teams[num].name} bid at ${CR(otherPrice)}CR`);
+        toast.error(
+          `Team ${teams[num].name} bid at ${CR(otherPrice).toFixed(2)}CR`
+        );
       }, 700);
     }
   };
@@ -336,8 +362,8 @@ const AuctionPage: React.FC = () => {
                   className="flex justify-between items-center border-b border-gray-300"
                 >
                   <span>{team.name}</span>
-                  <span>{team.spent.toFixed(1)}</span>
-                  <span>{team.remaining.toFixed(1)}</span>
+                  <span>{team.spent.toFixed(2)}</span>
+                  <span>{team.remaining.toFixed(2)}</span>
                 </li>
               ))}
             </ul>
@@ -412,7 +438,7 @@ const AuctionPage: React.FC = () => {
                   className="flex justify-between items-center border-b border-gray-300"
                 >
                   <span>{team.name}</span>
-                  <span>{CR(team.bid).toFixed(1)}</span>
+                  <span>{CR(team.bid).toFixed(2)}</span>
                 </li>
               ))}
             </ul>
@@ -425,13 +451,13 @@ const AuctionPage: React.FC = () => {
             {soldBro ? (
               <div className="p-5 bg-gray-100 rounded-lg shadow-lg max-w-lg">
                 Last Sold Bro
-                <h1 className="text-2xl font-bold mb-4">{soldBro.Set}</h1>
+                <h1 className="text-2xl font-bold mb-2">Set: {soldBro.Set}</h1>
                 <h2 className="text-xl font-semibold mb-2">
                   {soldBro.First_Name + " " + soldBro.Surname}
                 </h2>
                 <p className="text-gray-600 mb-2">Role: {soldBro.Role}</p>
                 <p className="text-gray-600 mb-2">
-                  Base Price: {CR(soldBro.Base)} CR
+                  Base Price: {CR(soldBro.base)} CR
                 </p>
                 <p className="text-gray-600 mb-2">Country: {soldBro.Country}</p>
                 <p className="text-gray-600 mb-2">
@@ -451,7 +477,7 @@ const AuctionPage: React.FC = () => {
               {currentBid ? (
                 <>
                   <p className="text-4xl text-green-600 font-extrabold">
-                    ₹{CR(currentBid.bid).toFixed(1)} CR
+                    ₹{CR(currentBid.bid).toFixed(2)} CR
                   </p>
                   <p className="text-lg text-red-700 font-medium mt-2">
                     Bidder: <span className="font-bold">{currentBid.name}</span>
