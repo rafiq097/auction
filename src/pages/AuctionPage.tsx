@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil";
 import { teamsAtom } from "../atoms/teamsAtom.ts";
 import { userTeamAtom } from "../atoms/userTeamAtom.ts";
 import { currAtom } from "../atoms/currAtom.ts";
+import { getPlusPrice } from "../utils/getPlusPrice.ts";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ const AuctionPage: React.FC = () => {
     Capped?: string;
     Base: number;
     RTM?: string;
-    team: string
+    team: string;
     price: number;
   }>();
   const [biddingBros, setBiddingBros] = useState<
@@ -205,7 +206,7 @@ const AuctionPage: React.FC = () => {
       toast.error("No Purse to Bid Bro");
       return;
     }
-    price += 20;
+    price += getPlusPrice(price);
 
     setBiddingBros((prevBros) =>
       prevBros.map((bro) =>
@@ -225,8 +226,7 @@ const AuctionPage: React.FC = () => {
       num = Math.floor(Math.random() * teams.length);
     }
 
-    // price = players[curr].base;
-    let otherPrice = price + 20;
+    let otherPrice = price + getPlusPrice(price);
 
     const index = biddingBros.findIndex(
       (team) => team.name === teams[num].name
@@ -355,9 +355,7 @@ const AuctionPage: React.FC = () => {
                     Reset Auction
                   </button>
                 </div>
-                <h1 className="text-2xl font-bold mb-2">
-                  {players[curr].Set}
-                </h1>
+                <h1 className="text-2xl font-bold mb-2">{players[curr].Set}</h1>
                 <h2 className="text-xl font-semibold mb-2">
                   {players[curr].First_Name + " " + players[curr].Surname}
                 </h2>
@@ -428,7 +426,9 @@ const AuctionPage: React.FC = () => {
               <div className="p-5 bg-gray-100 rounded-lg shadow-lg max-w-lg">
                 Last Sold Bro
                 <h1 className="text-2xl font-bold mb-4">{soldBro.Set}</h1>
-                <h2 className="text-xl font-semibold mb-2">{soldBro.First_Name + " " + soldBro.Surname}</h2>
+                <h2 className="text-xl font-semibold mb-2">
+                  {soldBro.First_Name + " " + soldBro.Surname}
+                </h2>
                 <p className="text-gray-600 mb-2">Role: {soldBro.Role}</p>
                 <p className="text-gray-600 mb-2">
                   Base Price: {CR(soldBro.Base)} CR
@@ -450,15 +450,9 @@ const AuctionPage: React.FC = () => {
             <div className="text-center">
               {currentBid ? (
                 <>
-                  {currentBid.bid > 200 ? (
-                    <p className="text-4xl text-green-600 font-extrabold">
-                      ₹{CR(currentBid.bid).toFixed(1)} CR
-                    </p>
-                  ) : (
-                    <p className="text-4xl text-green-600 font-extrabold">
-                      ₹{currentBid.bid}
-                    </p>
-                  )}
+                  <p className="text-4xl text-green-600 font-extrabold">
+                    ₹{CR(currentBid.bid).toFixed(1)} CR
+                  </p>
                   <p className="text-lg text-red-700 font-medium mt-2">
                     Bidder: <span className="font-bold">{currentBid.name}</span>
                   </p>
