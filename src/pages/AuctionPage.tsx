@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import {
-  marqueeAllRounder as mar,
-  marqueeBatter as mbat,
-  marqueeBowler as mbowl,
-  marqueePlayers as mp,
-  marqueeWkBatter as mwk,
-  batters as bat,
-  bowlers as bowl,
-  allRounders as ar,
-  wkBatters as wk,
-} from "../utils/players.ts";
+import { players as bros } from "../utils/list.ts";
 import { CR } from "../utils/getCR.ts";
 import { useRecoilState } from "recoil";
 import { teamsAtom } from "../atoms/teamsAtom.ts";
@@ -25,42 +15,81 @@ const AuctionPage: React.FC = () => {
   const [curr, setCurr] = useRecoilState(currAtom);
   const [players, setPlayers] = useState<
     {
-      name: string;
-      role: string;
-      base: number;
-      country: string;
-      type: string;
+      Sno: number;
+      Set_No: number;
+      Set: string;
+      First_Name: string;
+      Surname?: string;
+      Country: string;
+      State?: string;
+      DOB: string;
+      Age: number;
+      Role?: string;
+      Bat_type?: string;
+      Bowl_type?: string;
+      Test_caps?: number;
+      ODI_caps?: number;
+      T20_caps?: number;
+      IPL_caps?: number;
+      prev?: string;
+      Last_Team?: string;
+      Last_IPL_played?: number;
+      Capped?: string;
+      Base: number;
+      RTM?: string;
     }[]
-  >([...mp, ...mbat, ...mbowl, ...mwk, ...mar, ...bat, ...bowl, ...ar, ...wk]);
+  >([...bros]);
   const [tempPlayers, setTempPlayers] = useState<
     {
-      name: string;
-      role: string;
-      base: number;
-      country: string;
-      type: string;
+      Sno: number;
+      Set_No: number;
+      Set: string;
+      First_Name: string;
+      Surname?: string;
+      Country: string;
+      State?: string;
+      DOB: string;
+      Age: number;
+      Role?: string;
+      Bat_type?: string;
+      Bowl_type?: string;
+      Test_caps?: number;
+      ODI_caps?: number;
+      T20_caps?: number;
+      IPL_caps?: number;
+      prev?: string;
+      Last_Team?: string;
+      Last_IPL_played?: number;
+      Capped?: string;
+      Base: number;
+      RTM?: string;
     }[]
-  >(
-    [
-      ...mp,
-      ...mbat,
-      ...mbowl,
-      ...mwk,
-      ...mar,
-      ...bat,
-      ...bowl,
-      ...ar,
-      ...wk,
-    ].map((player) => ({ ...player }))
-  );
+  >([...bros].map((player) => ({ ...player })));
   const [soldBro, setSoldBro] = useState<{
-    name: string;
-    role: string;
-    base: number;
-    country: string;
-    type: string;
+    Sno: number;
+    Set_No: number;
+    Set: string;
+    First_Name: string;
+    Surname?: string;
+    Country: string;
+    State?: string;
+    DOB: string;
+    Age: number;
+    Role?: string;
+    Bat_type?: string;
+    Bowl_type?: string;
+    Test_caps?: number;
+    ODI_caps?: number;
+    T20_caps?: number;
+    IPL_caps?: number;
+    prev?: string;
+    Last_Team?: string;
+    Last_IPL_played?: number;
+    Capped?: string;
+    Base: number;
+    RTM?: string;
+    team: string
     price: number;
-    team: string;
   }>();
   const [biddingBros, setBiddingBros] = useState<
     {
@@ -103,9 +132,9 @@ const AuctionPage: React.FC = () => {
 
     const player = tempPlayers[curr];
     let randomPrice = parseFloat(
-      CR(player.base + Math.floor(Math.random() * 15) * player.base).toFixed(1)
+      CR(player.Base + Math.floor(Math.random() * 11) * player.Base).toFixed(1)
     );
-    if (currentBid?.bid) randomPrice = CR(currentBid.bid + 20000000);
+    // if (currentBid?.bid) randomPrice = CR(currentBid.bid + 200);
 
     let num = Math.floor(Math.random() * teams.length);
     while (
@@ -133,16 +162,16 @@ const AuctionPage: React.FC = () => {
     const soldPlayer = { ...player, price: randomPrice, team: teams[num].name };
     // setCurrentBid({ name: teams[num].name, bid: soldPlayer.price });
     if (team.name == teams[num].name) {
-      if (player.country != "India") {
+      if (player.Country != "India") {
         setTeam({ ...team, overseas: team.overseas + 1 });
       }
-      if (player.role == "batter") {
+      if (player.Role == "BATTER") {
         setTeam({ ...team, batters: team.batters + 1 });
-      } else if (player.role == "bowler") {
+      } else if (player.Role == "BOWLER") {
         setTeam({ ...team, bowlers: team.bowlers + 1 });
-      } else if (player.role == "wk-batter") {
+      } else if (player.Role == "WICKETKEEPER") {
         setTeam({ ...team, wks: team.wks + 1 });
-      } else if (player.role == "all-rounder") {
+      } else if (player.Role == "ALL-ROUNDER") {
         setTeam({ ...team, allr: team.allr + 1 });
       }
     }
@@ -171,12 +200,12 @@ const AuctionPage: React.FC = () => {
   };
 
   const handleBid = (): void => {
-    let price = players[curr].base;
+    let price = players[curr].Base;
     if (team.remaining < CR(price)) {
       toast.error("No Purse to Bid Bro");
       return;
     }
-    price += 2000000;
+    price += 20;
 
     setBiddingBros((prevBros) =>
       prevBros.map((bro) =>
@@ -186,7 +215,7 @@ const AuctionPage: React.FC = () => {
 
     setPlayers((prevPlayers) => {
       const updatedPlayers = [...prevPlayers];
-      updatedPlayers[curr].base = price;
+      updatedPlayers[curr].Base = price;
       return updatedPlayers;
     });
     setCurrentBid({ name: team.name, bid: price });
@@ -197,7 +226,7 @@ const AuctionPage: React.FC = () => {
     }
 
     // price = players[curr].base;
-    let otherPrice = price + 2000000;
+    let otherPrice = price + 20;
 
     const index = biddingBros.findIndex(
       (team) => team.name === teams[num].name
@@ -207,20 +236,20 @@ const AuctionPage: React.FC = () => {
 
       const soldPlayer = {
         ...players[curr],
-        base: tempPlayers[curr].base,
+        base: tempPlayers[curr].Base,
         price: CR(price),
         team: team.name,
       };
-      if (players[curr].country != "India") {
+      if (players[curr].Country != "India") {
         setTeam({ ...team, overseas: team.overseas + 1 });
       }
-      if (players[curr].role == "batter") {
+      if (players[curr].Role == "BATTER") {
         setTeam({ ...team, batters: team.batters + 1 });
-      } else if (players[curr].role == "bowler") {
+      } else if (players[curr].Role == "BOWLER") {
         setTeam({ ...team, bowlers: team.bowlers + 1 });
-      } else if (players[curr].role == "wk-batter") {
+      } else if (players[curr].Role == "WICKETKEEPER") {
         setTeam({ ...team, wks: team.wks + 1 });
-      } else if (players[curr].role == "all-rounder") {
+      } else if (players[curr].Role == "ALL-ROUNDER") {
         setTeam({ ...team, allr: team.allr + 1 });
       }
       setSoldBro(soldPlayer);
@@ -270,7 +299,7 @@ const AuctionPage: React.FC = () => {
 
         setPlayers((prevPlayers) => {
           const updatedPlayers = [...prevPlayers];
-          updatedPlayers[curr].base = otherPrice;
+          updatedPlayers[curr].Base = otherPrice;
           return updatedPlayers;
         });
         toast.error(`Team ${teams[num].name} bid at ${CR(otherPrice)}CR`);
@@ -327,17 +356,17 @@ const AuctionPage: React.FC = () => {
                   </button>
                 </div>
                 <h1 className="text-2xl font-bold mb-2">
-                  {players[curr].type} - {curr}
+                  {players[curr].Set}
                 </h1>
                 <h2 className="text-xl font-semibold mb-2">
-                  {players[curr].name}
+                  {players[curr].First_Name + " " + players[curr].Surname}
                 </h2>
-                <p className="text-gray-600 mb-2">Role: {players[curr].role}</p>
+                <p className="text-gray-600 mb-2">Role: {players[curr].Role}</p>
                 <p className="text-gray-600 mb-2">
-                  Base Price: {CR(tempPlayers[curr].base)} CR
+                  Base Price: {CR(tempPlayers[curr].Base)} CR
                 </p>
                 <p className="text-gray-600 mb-4">
-                  Country: {players[curr].country}
+                  Country: {players[curr].Country}
                 </p>
 
                 <div className="flex justify-between">
@@ -398,13 +427,13 @@ const AuctionPage: React.FC = () => {
             {soldBro ? (
               <div className="p-5 bg-gray-100 rounded-lg shadow-lg max-w-lg">
                 Last Sold Bro
-                <h1 className="text-2xl font-bold mb-4">{soldBro.type}</h1>
-                <h2 className="text-xl font-semibold mb-2">{soldBro.name}</h2>
-                <p className="text-gray-600 mb-2">Role: {soldBro.role}</p>
+                <h1 className="text-2xl font-bold mb-4">{soldBro.Set}</h1>
+                <h2 className="text-xl font-semibold mb-2">{soldBro.First_Name + " " + soldBro.Surname}</h2>
+                <p className="text-gray-600 mb-2">Role: {soldBro.Role}</p>
                 <p className="text-gray-600 mb-2">
-                  Base Price: {CR(soldBro.base)} CR
+                  Base Price: {CR(soldBro.Base)} CR
                 </p>
-                <p className="text-gray-600 mb-2">Country: {soldBro.country}</p>
+                <p className="text-gray-600 mb-2">Country: {soldBro.Country}</p>
                 <p className="text-gray-600 mb-2">
                   Selling Price: {soldBro.price} CR
                 </p>
@@ -421,7 +450,7 @@ const AuctionPage: React.FC = () => {
             <div className="text-center">
               {currentBid ? (
                 <>
-                  {currentBid.bid > 20000 ? (
+                  {currentBid.bid > 200 ? (
                     <p className="text-4xl text-green-600 font-extrabold">
                       ₹{CR(currentBid.bid).toFixed(1)} CR
                     </p>

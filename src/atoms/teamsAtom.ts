@@ -1,12 +1,28 @@
 import { atom } from "recoil";
 
 export type Player = {
-  name: string;
-  role: string;
-  base: number;
-  country: string;
-  type: string;
-  price: number;
+  Sno: number;
+  Set_No: number;
+  Set: string;
+  First_Name: string;
+  Surname?: string;
+  Country: string;
+  State?: string;
+  DOB: string;
+  Age: number;
+  Role?: string;
+  Bat_type?: string;
+  Bowl_type?: string;
+  Test_caps?: number;
+  ODI_caps?: number;
+  T20_caps?: number;
+  IPL_caps?: number;
+  prev?: string;
+  Last_Team?: string;
+  Last_IPL_played?: number;
+  Capped?: string;
+  Base: number;
+  RTM?: string;
 };
 
 export type Team = {
