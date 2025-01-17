@@ -24,6 +24,3 @@ dist-ssr
 *.sw?
 
 src/utils/players.ts
-src/utils/list.ts
-list.xlsx
-list.json
