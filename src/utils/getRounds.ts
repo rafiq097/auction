@@ -7,7 +7,7 @@ export const getRounds = (player: any): number => {
     (player.T20_caps || 0) +
     (player.IPL_caps || 0);
 
-  rounds += experience / 100;
+  rounds += parseFloat((experience / 100).toFixed(0));
 
-  return Math.max(3, Math.min(rounds, 7));
+  return Math.max(3, Math.min(rounds, 5));
 };

@@ -74,6 +74,13 @@ const StartPage: React.FC = () => {
               <option value="RCB">RCB</option>
               <option value="CSK">CSK</option>
               <option value="MI">MI</option>
+              <option value="SRH">SRH</option>
+              <option value="KKR">KKR</option>
+              <option value="RR">RR</option>
+              <option value="DC">DC</option>
+              <option value="LSG">LSG</option>
+              <option value="GT">GT</option>
+              <option value="PBKS">PBKS</option>
             </select>
           </div>
           <button

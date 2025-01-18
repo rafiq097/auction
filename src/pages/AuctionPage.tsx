@@ -147,15 +147,17 @@ const AuctionPage: React.FC = () => {
     }
     randomPrice *= Math.random() * (1.7 - 1.2) + 1.2;
     randomPrice = Math.ceil(randomPrice);
-    if (currentBid?.bid) randomPrice = currentBid.bid + 200;
+    if (currentBid?.bid) randomPrice = Math.max(randomPrice, CR(currentBid.bid) + 2);
 
     let validBros = 0;
     for (let i = 0; i < teams.length; i++) {
       if (teams[i].remaining >= randomPrice) validBros++;
     }
     if (validBros == 0) {
+      setCurrentBid({ name: "", bid: 0 });
       toast.error("No team is Eligible to Buy");
       setCurr(curr + 1);
+      return;
     }
 
     let num = Math.floor(Math.random() * teams.length);
@@ -227,6 +229,8 @@ const AuctionPage: React.FC = () => {
   };
 
   const handleBid = (): void => {
+    console.log(getRounds(players[curr]));
+
     let price = players[curr].Base;
     if (team.remaining < CR(price)) {
       toast.error("No Purse to Bid Bro");
@@ -257,8 +261,17 @@ const AuctionPage: React.FC = () => {
     const index = biddingBros.findIndex(
       (team) => team.name === teams[num].name
     );
-    let rounds = getRounds(players[curr]);
-    if (biddingBros[index].round == rounds) {
+
+    let validBros = 0;
+    for (let i = 0; i < teams.length; i++) {
+      if (teams[i].remaining >= CR(price)) validBros++;
+    }
+    if (validBros == 0) {
+      toast.error("No team is Eligible to Buy");
+      setCurr(curr + 1);
+    }
+
+    if (biddingBros[index].round == getRounds(players[curr]) || validBros == 0) {
       toast.success("Congratulations You Won the Bid");
 
       const soldPlayer = {
