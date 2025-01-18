@@ -23,6 +23,7 @@ export type Player = {
   Capped?: string;
   Base: number;
   RTM?: string;
+  price: number;
 };
 
 export type Team = {

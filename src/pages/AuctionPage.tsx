@@ -147,11 +147,13 @@ const AuctionPage: React.FC = () => {
     }
     randomPrice *= Math.random() * (1.7 - 1.2) + 1.2;
     randomPrice = Math.ceil(randomPrice);
-    if (currentBid?.bid) randomPrice = Math.max(randomPrice, CR(currentBid.bid) + 2);
+    if (currentBid?.bid)
+      randomPrice = Math.max(randomPrice, CR(currentBid.bid) + 2);
 
     let validBros = 0;
     for (let i = 0; i < teams.length; i++) {
-      if (teams[i].remaining >= randomPrice) validBros++;
+      if (teams[i].name != team.name && teams[i].remaining >= randomPrice)
+        validBros++;
     }
     if (validBros == 0) {
       setCurrentBid({ name: "", bid: 0 });
@@ -163,10 +165,11 @@ const AuctionPage: React.FC = () => {
     let num = Math.floor(Math.random() * teams.length);
     while (
       teams[num].name === team.name ||
-      teams[num].remaining < CR(randomPrice)
+      teams[num].remaining < randomPrice
     ) {
       num = Math.floor(Math.random() * teams.length);
     }
+    console.log(teams[num], randomPrice);
 
     const updatedTeams = teams.map((team, index) => {
       if (index === num) {
@@ -264,14 +267,14 @@ const AuctionPage: React.FC = () => {
 
     let validBros = 0;
     for (let i = 0; i < teams.length; i++) {
-      if (teams[i].remaining >= CR(price)) validBros++;
-    }
-    if (validBros == 0) {
-      toast.error("No team is Eligible to Buy");
-      setCurr(curr + 1);
+      if (teams[i].name != team.name && teams[i].remaining >= CR(price))
+        validBros++;
     }
 
-    if (biddingBros[index].round == getRounds(players[curr]) || validBros == 0) {
+    if (
+      biddingBros[index].round == getRounds(players[curr]) ||
+      validBros == 0
+    ) {
       toast.success("Congratulations You Won the Bid");
 
       const soldPlayer = {
@@ -280,21 +283,25 @@ const AuctionPage: React.FC = () => {
         price: CR(price),
         team: team.name,
       };
-      if (players[curr].Country != "India") {
-        setTeam({ ...team, overseas: team.overseas + 1 });
+
+      let updatedTeam = { ...team };
+
+      if (players[curr].Country !== "India") {
+        updatedTeam.overseas += 1;
       }
-      if (players[curr].Role == "BATTER") {
-        setTeam({ ...team, batters: team.batters + 1 });
-      } else if (players[curr].Role == "BOWLER") {
-        setTeam({ ...team, bowlers: team.bowlers + 1 });
-      } else if (players[curr].Role == "WICKETKEEPER") {
-        setTeam({ ...team, wks: team.wks + 1 });
-      } else if (players[curr].Role == "ALL-ROUNDER") {
-        setTeam({ ...team, allr: team.allr + 1 });
+      if (players[curr].Role === "BATTER") {
+        updatedTeam.batters += 1;
+      } else if (players[curr].Role === "BOWLER") {
+        updatedTeam.bowlers += 1;
+      } else if (players[curr].Role === "WICKETKEEPER") {
+        updatedTeam.wks += 1;
+      } else if (players[curr].Role === "ALL-ROUNDER") {
+        updatedTeam.allr += 1;
       }
+      setTeam(updatedTeam);
+
       setSoldBro(soldPlayer);
       setCurrentBid({ name: "", bid: 0 });
-      console.log(biddingBros);
       setBiddingBros([
         { name: "RCB", bid: 0, round: 0 },
         { name: "MI", bid: 0, round: 0 },
