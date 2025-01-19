@@ -73,7 +73,8 @@ const TeamsPage: React.FC = () => {
           className="bg-white shadow-lg rounded-xl p-6 mb-8 border border-gray-400 hover:shadow-xl transition duration-300"
         >
           <h2 className="text-2xl font-bold mb-6 text-center text-black-800 border-b pb-4">
-            {idx == 0 ? "Your Team: " : null} {team.name}
+            {idx == 0 ? "Your Team: " : null} {team.name} -{" "}
+            {team.players.length}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Bros */}

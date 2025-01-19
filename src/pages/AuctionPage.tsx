@@ -8,7 +8,6 @@ import { teamsAtom } from "../atoms/teamsAtom.ts";
 import { userTeamAtom } from "../atoms/userTeamAtom.ts";
 import { currAtom } from "../atoms/currAtom.ts";
 import { getPlusPrice } from "../utils/getPlusPrice.ts";
-import { getRandomPrice } from "../utils/getRandomPrice.ts";
 import { getRounds } from "../utils/getRounds.ts";
 
 const AuctionPage: React.FC = () => {
@@ -129,24 +128,20 @@ const AuctionPage: React.FC = () => {
   }, []);
 
   const handleContinue = (): void => {
-    // if (curr >= players.length || soldBro?.name === players[curr].name) {
-    //   toast.error("No more players bro.");
-    //   return;
-    // }
-
     const player = tempPlayers[curr];
     let randomPrice = CR(player.Base);
 
-    console.log(randomPrice);
-
     let totalCaps = player.IPL_caps || 0;
     randomPrice += totalCaps * 0.1;
+
     let last = player.Last_IPL_played || 0;
     if (last >= 7) {
       randomPrice *= 1.2;
     }
+
     randomPrice *= Math.random() * (1.7 - 1.2) + 1.2;
     randomPrice = Math.ceil(randomPrice);
+
     if (currentBid?.bid)
       randomPrice = Math.max(randomPrice, CR(currentBid.bid) + 2);
 
@@ -155,6 +150,7 @@ const AuctionPage: React.FC = () => {
       if (teams[i].name != team.name && teams[i].remaining >= randomPrice)
         validBros++;
     }
+
     if (validBros == 0) {
       setCurrentBid({ name: "", bid: 0 });
       toast.error("No team is Eligible to Buy");
@@ -192,6 +188,7 @@ const AuctionPage: React.FC = () => {
       price: randomPrice,
       team: teams[num].name,
     };
+
     // setCurrentBid({ name: teams[num].name, bid: soldPlayer.price });
     if (team.name == teams[num].name) {
       if (player.Country != "India") {
@@ -239,6 +236,14 @@ const AuctionPage: React.FC = () => {
       toast.error("No Purse to Bid Bro");
       return;
     }
+    if (
+      team.batters + team.bowlers + team.allr + team.wks + team.overseas >=
+      25
+    ) {
+      toast.error("Max Team Size reached");
+      return;
+    }
+
     price += getPlusPrice(price);
 
     setBiddingBros((prevBros) =>
@@ -370,7 +375,7 @@ const AuctionPage: React.FC = () => {
         Current Team: {team.toLocaleUpperCase()}
       </div> */}
       {/* {console.log(teams)} */}
-      <div className="grid grid-rows-2 h-screen">
+      <div className="grid grid-rows-2 h-screen bg-gray-100">
         <div className="grid grid-cols-3">
           {/* // Purse bros */}
           <div className="bg-gray-100 h-full overflow-y-auto p-1">
@@ -405,7 +410,9 @@ const AuctionPage: React.FC = () => {
                     Reset Auction
                   </button>
                 </div>
-                <h1 className="text-2xl font-bold mb-2">{players[curr].Set}</h1>
+                <h1 className="text-2xl font-bold mb-2">
+                  Set: {players[curr].Set}
+                </h1>
                 <h2 className="text-xl font-semibold mb-2">
                   {players[curr].First_Name + " " + players[curr].Surname}
                 </h2>
@@ -516,7 +523,7 @@ const AuctionPage: React.FC = () => {
           </div>
 
           {/* // User Team Information */}
-          <div className="bg-white shadow-lg rounded-lg p-4">
+          <div className="bg-gray-300 shadow-lg rounded-lg p-4">
             <h1 className="flex justify-center text-xl font-bold text-gray-800 mb-4">
               Your Team: {team.name}
             </h1>
@@ -533,13 +540,7 @@ const AuctionPage: React.FC = () => {
                 Overseas Players: {team.overseas}
               </li>
               <li className="flex justify-center font-bold text-lg">
-                Total:{" "}
-                {team.batters +
-                  team.bowlers +
-                  team.allr +
-                  team.wks +
-                  team.overseas}{" "}
-                / 25
+                Total: {team.batters + team.bowlers + team.allr + team.wks} / 25
               </li>
             </ul>
             <button
