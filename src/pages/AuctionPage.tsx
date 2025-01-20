@@ -9,6 +9,7 @@ import { userTeamAtom } from "../atoms/userTeamAtom.ts";
 import { currAtom } from "../atoms/currAtom.ts";
 import { getPlusPrice } from "../utils/getPlusPrice.ts";
 import { getRounds } from "../utils/getRounds.ts";
+import { getRandomPrice } from "../utils/getRandomPrice.ts";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -116,6 +117,7 @@ const AuctionPage: React.FC = () => {
     name: string;
     bid: number;
   }>();
+  const [userBidded, setUserBidded] = useState<boolean>(false);
 
   useEffect(() => {
     const curr = localStorage.getItem("team");
@@ -129,6 +131,10 @@ const AuctionPage: React.FC = () => {
 
   useEffect(() => {
     const simulate = (): void => {
+      if (userBidded) return;
+
+      const player = tempPlayers[curr];
+      let randomPrice = getRandomPrice(player);
       let price = players[curr].Base;
 
       setPlayers((prevPlayers) => {
@@ -138,11 +144,14 @@ const AuctionPage: React.FC = () => {
       });
 
       let num = Math.floor(Math.random() * teams.length);
-      while (teams[num].name === team.name && teams[num].remaining < price) {
+      while (
+        teams[num].name === team.name ||
+        teams[num].remaining < CR(price)
+      ) {
         num = Math.floor(Math.random() * teams.length);
       }
 
-      let otherPrice = price + getPlusPrice(price);
+      setCurrentBid({ name: teams[num].name, bid: price });
 
       const index = biddingBros.findIndex(
         (team) => team.name === teams[num].name
@@ -153,38 +162,91 @@ const AuctionPage: React.FC = () => {
         if (teams[i].name != team.name && teams[i].remaining >= CR(price))
           validBros++;
       }
+
+      if (validBros === 0) {
+        setCurrentBid({ name: "", bid: 0 });
+        toast.error("No team is Eligible to Buy");
+        setCurr(curr + 1);
+        return;
+      }
+
+      const biddingInterval = setInterval(() => {
+        let otherPrice = players[curr].Base + getPlusPrice(players[curr].Base);
+
+        if (CR(otherPrice) >= randomPrice) {
+          clearInterval(biddingInterval);
+          toast.success(
+            `Player sold to ${teams[num].name} for ${CR(otherPrice).toFixed(
+              2
+            )}CR`
+          );
+          setCurrentBid({ name: teams[num].name, bid: otherPrice });
+          setCurr(curr + 1);
+          return;
+        }
+
+        const teamBid = biddingBros.find((bro) => bro.name === teams[num].name);
+        if (teamBid && teamBid.round >= getRounds(player)) {
+          clearInterval(biddingInterval);
+          toast.success(
+            `Player sold to ${teamBid.name} for ${CR(otherPrice).toFixed(2)}CR`
+          );
+          setCurrentBid({ name: teamBid.name, bid: otherPrice });
+          setCurr(curr + 1);
+          return;
+        }
+
+        let num2 = Math.floor(Math.random() * teams.length);
+        while (
+          teams[num2].name === currentBid?.name ||
+          teams[num2].name === team.name ||
+          teams[num2].remaining < CR(otherPrice)
+        ) {
+          num2 = Math.floor(Math.random() * teams.length);
+        }
+
+        setCurrentBid({ name: teams[num2].name, bid: otherPrice });
+
+        setBiddingBros((prevBros) =>
+          prevBros.map((bro) =>
+            bro.name === teams[num2].name
+              ? { ...bro, bid: otherPrice, round: bro.round + 1 }
+              : bro
+          )
+        );
+
+        setPlayers((prevPlayers) => {
+          const updatedPlayers = [...prevPlayers];
+          updatedPlayers[curr].Base = otherPrice;
+          return updatedPlayers;
+        });
+
+        toast.error(
+          `Team ${teams[num2].name} bid at ${CR(otherPrice).toFixed(2)}CR`
+        );
+      }, 1000);
     };
 
     const timer = setTimeout(() => {
-      if (!currentBid?.bid) {
+      if (!userBidded) {
         simulate();
       }
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [curr, userBidded]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setUserBidded(false);
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [curr]);
+  }, [setUserBidded]);
 
   const handleContinue = (): void => {
     const player = tempPlayers[curr];
-    let randomPrice = CR(player.Base);
-
-    let totalCaps = player.IPL_caps || 0;
-    randomPrice += totalCaps * 0.1;
-
-    let last = player.Last_IPL_played || 0;
-    if (last >= 7) {
-      randomPrice *= 1.2;
-    }
-
-    randomPrice *= Math.random() * (1.7 - 1.2) + 1.2;
-    if (player.Age >= 35) randomPrice *= 0.6;
-    if (randomPrice > 40) randomPrice *= 0.5;
-    if (randomPrice > 30) randomPrice *= 0.7;
-    if (randomPrice > 20) randomPrice *= 0.9;
-    if (randomPrice > 20) randomPrice *= 0.9;
-
-    randomPrice = Math.round(randomPrice * 4) / 4;
-    randomPrice = parseFloat(randomPrice.toFixed(2));
+    let randomPrice = getRandomPrice(player);
 
     if (currentBid?.bid)
       randomPrice = Math.max(randomPrice, CR(currentBid.bid) + 2);
@@ -265,10 +327,6 @@ const AuctionPage: React.FC = () => {
       { name: "LSG", bid: 0, round: 0 },
     ]);
 
-    // if (curr >= players.length - 1) {
-    //   toast("No more players bro.");
-    //   return;
-    // }
     setCurr(curr + 1);
   };
 
@@ -301,7 +359,7 @@ const AuctionPage: React.FC = () => {
     setCurrentBid({ name: team.name, bid: price });
 
     let num = Math.floor(Math.random() * teams.length);
-    while (teams[num].name === team.name && teams[num].remaining < price) {
+    while (teams[num].name === team.name || teams[num].remaining < CR(price)) {
       num = Math.floor(Math.random() * teams.length);
     }
 
@@ -474,7 +532,9 @@ const AuctionPage: React.FC = () => {
                   </button>
                   <button
                     className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
-                    onClick={handleBid}
+                    onClick={() => {
+                      setUserBidded(true), handleBid();
+                    }}
                   >
                     Bid
                   </button>

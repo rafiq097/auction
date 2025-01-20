@@ -9,5 +9,5 @@ export const getRounds = (player: any): number => {
 
   rounds += parseFloat((experience / 100).toFixed(0));
 
-  return Math.max(3, Math.min(rounds, 5));
+  return Math.max(3, Math.min(rounds, 7));
 };

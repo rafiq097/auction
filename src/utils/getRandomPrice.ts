@@ -1,4 +1,6 @@
-export const getRandomPrice = (x: {
+import { CR } from "./getCR";
+
+export const getRandomPrice = (player: {
   Country: string;
   Age: number;
   Test_caps?: number;
@@ -9,24 +11,29 @@ export const getRandomPrice = (x: {
   Capped?: string;
   Base: number;
 }): number => {
-  let price = x.Base;
+  let randomPrice = CR(player.Base);
 
-  if (x.Age < 25) {
-    price *= 1.1;
-  } else if (x.Age < 35) {
-    price *= 1.3;
+  let totalCaps = player.IPL_caps || 0;
+  randomPrice += totalCaps * 0.1;
+
+  let last = player.Last_IPL_played || 0;
+  if (last >= 7) {
+    randomPrice *= 1.2;
   }
 
-  const totalCaps =
-    (x.Test_caps || 0) +
-    (x.ODI_caps || 0) +
-    (x.T20_caps || 0) +
-    (x.IPL_caps || 0);
-  price += totalCaps * 0.5;
+  randomPrice *= Math.random() * (1.7 - 1.2) + 1.2;
+  if (player.Age >= 35) randomPrice *= 0.6;
+  else if (player.Age >= 30) randomPrice *= 0.8;
+  else if (player.Age >= 25) randomPrice *= 0.9;
+  else randomPrice *= 0.7;
 
-  if (x.IPL_caps && x.IPL_caps > 50 && (x.Last_IPL_played || 0) >= 7) {
-    price *= 1.5;
-  }
+  if (randomPrice > 40) randomPrice *= 0.5;
+  if (randomPrice > 30) randomPrice *= 0.7;
+  if (randomPrice > 20) randomPrice *= 0.9;
+  if (randomPrice > 20) randomPrice *= 0.9;
 
-  return price;
+  randomPrice = Math.round(randomPrice * 4) / 4;
+  randomPrice = parseFloat(randomPrice.toFixed(2));
+
+  return randomPrice;
 };
