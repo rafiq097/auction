@@ -41,7 +41,7 @@ const AuctionPage: React.FC = () => {
       RTM?: string;
     }[]
   >(bros);
-  const [tempPlayers, setTempPlayers] = useState<
+  const [tempPlayers] = useState<
     {
       Sno: number;
       Set_No: number;
@@ -127,6 +127,43 @@ const AuctionPage: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const simulate = (): void => {
+      let price = players[curr].Base;
+
+      setPlayers((prevPlayers) => {
+        const updatedPlayers = [...prevPlayers];
+        updatedPlayers[curr].Base = price;
+        return updatedPlayers;
+      });
+
+      let num = Math.floor(Math.random() * teams.length);
+      while (teams[num].name === team.name && teams[num].remaining < price) {
+        num = Math.floor(Math.random() * teams.length);
+      }
+
+      let otherPrice = price + getPlusPrice(price);
+
+      const index = biddingBros.findIndex(
+        (team) => team.name === teams[num].name
+      );
+
+      let validBros = 0;
+      for (let i = 0; i < teams.length; i++) {
+        if (teams[i].name != team.name && teams[i].remaining >= CR(price))
+          validBros++;
+      }
+    };
+
+    const timer = setTimeout(() => {
+      if (!currentBid?.bid) {
+        simulate();
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [curr]);
+
   const handleContinue = (): void => {
     const player = tempPlayers[curr];
     let randomPrice = CR(player.Base);
@@ -140,7 +177,14 @@ const AuctionPage: React.FC = () => {
     }
 
     randomPrice *= Math.random() * (1.7 - 1.2) + 1.2;
-    randomPrice = Math.ceil(randomPrice);
+    if (player.Age >= 35) randomPrice *= 0.6;
+    if (randomPrice > 40) randomPrice *= 0.5;
+    if (randomPrice > 30) randomPrice *= 0.7;
+    if (randomPrice > 20) randomPrice *= 0.9;
+    if (randomPrice > 20) randomPrice *= 0.9;
+
+    randomPrice = Math.round(randomPrice * 4) / 4;
+    randomPrice = parseFloat(randomPrice.toFixed(2));
 
     if (currentBid?.bid)
       randomPrice = Math.max(randomPrice, CR(currentBid.bid) + 2);
@@ -236,10 +280,7 @@ const AuctionPage: React.FC = () => {
       toast.error("No Purse to Bid Bro");
       return;
     }
-    if (
-      team.batters + team.bowlers + team.allr + team.wks + team.overseas >=
-      25
-    ) {
+    if (team.batters + team.bowlers + team.allr + team.wks >= 25) {
       toast.error("Max Team Size reached");
       return;
     }
@@ -358,7 +399,7 @@ const AuctionPage: React.FC = () => {
         toast.error(
           `Team ${teams[num].name} bid at ${CR(otherPrice).toFixed(2)}CR`
         );
-      }, 700);
+      }, 1000);
     }
   };
 

@@ -10,7 +10,7 @@ import { useRecoilState } from "recoil";
 
 function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
-  const [team, setTeam] = useRecoilState(userTeamAtom);
+  const [, setTeam] = useRecoilState(userTeamAtom);
 
   useEffect(() => {
     const curr = localStorage.getItem("team");
