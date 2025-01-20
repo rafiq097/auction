@@ -23,7 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-src/utils/players.ts
-src/utils/list.ts
-list.xlsx
-list.json
+client/src/utils/players.ts
+client/src/utils/list.ts
+client/list.xlsx
+client/list.json
+
+server

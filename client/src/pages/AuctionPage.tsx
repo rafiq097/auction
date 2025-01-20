@@ -117,7 +117,6 @@ const AuctionPage: React.FC = () => {
     name: string;
     bid: number;
   }>();
-  const [userBidded, setUserBidded] = useState<boolean>(false);
 
   useEffect(() => {
     const curr = localStorage.getItem("team");
@@ -128,121 +127,6 @@ const AuctionPage: React.FC = () => {
       toast.error("Please select a team");
     }
   }, []);
-
-  useEffect(() => {
-    const simulate = (): void => {
-      if (userBidded) return;
-
-      const player = tempPlayers[curr];
-      let randomPrice = getRandomPrice(player);
-      let price = players[curr].Base;
-
-      setPlayers((prevPlayers) => {
-        const updatedPlayers = [...prevPlayers];
-        updatedPlayers[curr].Base = price;
-        return updatedPlayers;
-      });
-
-      let num = Math.floor(Math.random() * teams.length);
-      while (
-        teams[num].name === team.name ||
-        teams[num].remaining < CR(price)
-      ) {
-        num = Math.floor(Math.random() * teams.length);
-      }
-
-      setCurrentBid({ name: teams[num].name, bid: price });
-
-      const index = biddingBros.findIndex(
-        (team) => team.name === teams[num].name
-      );
-
-      let validBros = 0;
-      for (let i = 0; i < teams.length; i++) {
-        if (teams[i].name != team.name && teams[i].remaining >= CR(price))
-          validBros++;
-      }
-
-      if (validBros === 0) {
-        setCurrentBid({ name: "", bid: 0 });
-        toast.error("No team is Eligible to Buy");
-        setCurr(curr + 1);
-        return;
-      }
-
-      const biddingInterval = setInterval(() => {
-        let otherPrice = players[curr].Base + getPlusPrice(players[curr].Base);
-
-        if (CR(otherPrice) >= randomPrice) {
-          clearInterval(biddingInterval);
-          toast.success(
-            `Player sold to ${teams[num].name} for ${CR(otherPrice).toFixed(
-              2
-            )}CR`
-          );
-          setCurrentBid({ name: teams[num].name, bid: otherPrice });
-          setCurr(curr + 1);
-          return;
-        }
-
-        const teamBid = biddingBros.find((bro) => bro.name === teams[num].name);
-        if (teamBid && teamBid.round >= getRounds(player)) {
-          clearInterval(biddingInterval);
-          toast.success(
-            `Player sold to ${teamBid.name} for ${CR(otherPrice).toFixed(2)}CR`
-          );
-          setCurrentBid({ name: teamBid.name, bid: otherPrice });
-          setCurr(curr + 1);
-          return;
-        }
-
-        let num2 = Math.floor(Math.random() * teams.length);
-        while (
-          teams[num2].name === currentBid?.name ||
-          teams[num2].name === team.name ||
-          teams[num2].remaining < CR(otherPrice)
-        ) {
-          num2 = Math.floor(Math.random() * teams.length);
-        }
-
-        setCurrentBid({ name: teams[num2].name, bid: otherPrice });
-
-        setBiddingBros((prevBros) =>
-          prevBros.map((bro) =>
-            bro.name === teams[num2].name
-              ? { ...bro, bid: otherPrice, round: bro.round + 1 }
-              : bro
-          )
-        );
-
-        setPlayers((prevPlayers) => {
-          const updatedPlayers = [...prevPlayers];
-          updatedPlayers[curr].Base = otherPrice;
-          return updatedPlayers;
-        });
-
-        toast.error(
-          `Team ${teams[num2].name} bid at ${CR(otherPrice).toFixed(2)}CR`
-        );
-      }, 1000);
-    };
-
-    const timer = setTimeout(() => {
-      if (!userBidded) {
-        simulate();
-      }
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [curr, userBidded]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setUserBidded(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [setUserBidded]);
 
   const handleContinue = (): void => {
     const player = tempPlayers[curr];
@@ -532,9 +416,7 @@ const AuctionPage: React.FC = () => {
                   </button>
                   <button
                     className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
-                    onClick={() => {
-                      setUserBidded(true), handleBid();
-                    }}
+                    onClick={handleBid}
                   >
                     Bid
                   </button>
