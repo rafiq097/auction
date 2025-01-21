@@ -117,6 +117,7 @@ const AuctionPage: React.FC = () => {
     name: string;
     bid: number;
   }>();
+  const [userBidded, setUserBidded] = useState<boolean>(false);
 
   useEffect(() => {
     const curr = localStorage.getItem("team");
@@ -127,6 +128,131 @@ const AuctionPage: React.FC = () => {
       toast.error("Please select a team");
     }
   }, []);
+
+  useEffect(() => {
+    const simulate = (): void => {
+      const player = tempPlayers[curr];
+      let randomPrice = getRandomPrice(player);
+      console.log(randomPrice);
+
+      let price = players[curr].Base;
+      price += getPlusPrice(price);
+
+      setPlayers((prevPlayers) => {
+        const updatedPlayers = [...prevPlayers];
+        updatedPlayers[curr].Base = price;
+        return updatedPlayers;
+      });
+
+      let validBros = 0;
+      for (let i = 0; i < teams.length; i++) {
+        if (teams[i].name != team.name && teams[i].remaining >= randomPrice)
+          validBros++;
+      }
+
+      if (validBros == 0) {
+        setCurrentBid({ name: "", bid: 0 });
+        toast.error("No team is Eligible to Buy");
+        setCurr(curr + 1);
+        return;
+      }
+
+      let num = Math.floor(Math.random() * teams.length);
+      while (
+        teams[num].name === currentBid?.name ||
+        teams[num].name === team.name ||
+        teams[num].remaining < randomPrice
+      ) {
+        num = Math.floor(Math.random() * teams.length);
+      }
+      console.log(teams[num].name, price);
+
+      if (CR(price) >= randomPrice) {
+        price = CR(price);
+        const updatedTeams = teams.map((team, index) => {
+          if (index === num) {
+            const newSpent = team.spent + price;
+            const newRemaining = team.remaining - price;
+
+            return {
+              ...team,
+              spent: newSpent,
+              remaining: newRemaining,
+              players: [...team.players, { ...player, price: price }],
+            };
+          }
+          return team;
+        });
+
+        const soldPlayer = {
+          ...player,
+          base: player.Base,
+          price: price,
+          team: teams[num].name,
+        };
+
+        if (team.name == teams[num].name) {
+          if (player.Country != "India") {
+            setTeam({ ...team, overseas: team.overseas + 1 });
+          }
+          if (player.Role == "BATTER") {
+            setTeam({ ...team, batters: team.batters + 1 });
+          } else if (player.Role == "BOWLER") {
+            setTeam({ ...team, bowlers: team.bowlers + 1 });
+          } else if (player.Role == "WICKETKEEPER") {
+            setTeam({ ...team, wks: team.wks + 1 });
+          } else if (player.Role == "ALL-ROUNDER") {
+            setTeam({ ...team, allr: team.allr + 1 });
+          }
+        }
+        toast.success(
+          `Team ${teams[num].name} bought ${player.First_Name} ${player.Surname} at ${price}CR`
+        );
+
+        setSoldBro(soldPlayer);
+        setTeams(updatedTeams);
+        setCurrentBid({ name: "", bid: 0 });
+        setBiddingBros([
+          { name: "RCB", bid: 0, round: 0 },
+          { name: "MI", bid: 0, round: 0 },
+          { name: "CSK", bid: 0, round: 0 },
+          { name: "DC", bid: 0, round: 0 },
+          { name: "KKR", bid: 0, round: 0 },
+          { name: "SRH", bid: 0, round: 0 },
+          { name: "RR", bid: 0, round: 0 },
+          { name: "PBKS", bid: 0, round: 0 },
+          { name: "GT", bid: 0, round: 0 },
+          { name: "LSG", bid: 0, round: 0 },
+        ]);
+
+        setCurr(curr + 1);
+      } else {
+        toast.error(`Team ${teams[num].name} bid at ${CR(price).toFixed(2)}CR`);
+
+        setCurrentBid({ name: teams[num].name, bid: price });
+
+        setBiddingBros((prevBros) =>
+          prevBros.map((bro) =>
+            bro.name === teams[num].name
+              ? { ...bro, bid: price, round: bro.round + 1 }
+              : bro
+          )
+        );
+      }
+    };
+
+    const timer = setInterval(() => {
+      if (!userBidded) simulate();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [curr]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setUserBidded(false);
+    }, 3000);
+  }, [userBidded]);
 
   const handleContinue = (): void => {
     const player = tempPlayers[curr];
@@ -195,6 +321,9 @@ const AuctionPage: React.FC = () => {
       }
     }
 
+    toast.success(
+      `Team ${teams[num].name} bought ${player.First_Name} ${player.Surname} at ${randomPrice}CR`
+    );
     setSoldBro(soldPlayer);
     setTeams(updatedTeams);
     setCurrentBid({ name: "", bid: 0 });
