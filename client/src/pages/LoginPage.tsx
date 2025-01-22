@@ -55,7 +55,7 @@ function LoginPage(): JSX.Element {
   return (
     <>
       <div className="h-screen flex">
-        <div className="w-full bg-gray-800 flex items-center justify-center p-8">
+        <div className="w-full bg-blue-400 flex items-center justify-center p-8">
           <div className="text-center">
             {(
               <>
