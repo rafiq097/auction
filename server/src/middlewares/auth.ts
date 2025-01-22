@@ -22,7 +22,7 @@ const verifyToken = async (
       return;
     }
 
-    const decoded = jwt.verify(token, (process.env.JWT_SECRET || ""));
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decoded);
     req.user = decoded;
     req.token = token;
