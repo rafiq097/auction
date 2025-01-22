@@ -40,13 +40,13 @@ app.get('/verify', verifyToken, (req: any, res: Response) => {
 
 //Server
 const PORT = process.env.PORT || 5000;
-app.get("/", (req, res) => {
-    res.send("<h1>SAD</h1>");
-})
+// app.get("/", (req, res) => {
+//     res.send("<h1>SAD</h1>");
+// })
 
-// app.get('*', (req: Request, res: Response) => {
-//     res.sendFile(path.join(__dirname, '../..', 'client', 'dist', 'index.html'));
-// });
+app.get('*', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '../..', 'client', 'dist', 'index.html'));
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on PORT ${PORT}`);
