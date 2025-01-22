@@ -161,7 +161,7 @@ const AuctionPage: React.FC = () => {
       while (
         teams[num].name === currentBid?.name ||
         teams[num].name === team.name ||
-        teams[num].remaining < randomPrice
+        teams[num].remaining < CR(price)
       ) {
         num = Math.floor(Math.random() * teams.length);
       }

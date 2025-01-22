@@ -27,5 +27,3 @@ client/src/utils/players.ts
 client/src/utils/list.ts
 client/list.xlsx
 client/list.json
-
-server
