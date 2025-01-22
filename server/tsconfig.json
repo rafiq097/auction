@@ -1,14 +1,11 @@
 {
-  "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "rootDir": "./",
-    "outDir": "./dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,  
-    "strict": true,
-    "skipLibCheck": true
+  "compilerOptions": {                 
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "baseUrl": "src",
+    "outDir": "dist",                              
+    "sourceMap": true,   
+    "noImplicitAny": true                            
   },
-  "include": ["server.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"],
 }

@@ -7,7 +7,7 @@ const toIST = (date: Date): Date => {
   return new Date(date.getTime());
 };
 
-const loginUser = async (req: Request, res: Response): Promise<void> => {
+const loginUser = async (req: Request, res: Response) => {
   console.log("login called");
   try {
     console.log(req.body);
@@ -46,7 +46,7 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find({});
     res.status(200).send({ users: users });

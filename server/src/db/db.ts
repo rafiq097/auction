@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const db = async (url: string): Promise<void> => {
+    console.log(url);
     try {
         await mongoose.connect(url
             // , 

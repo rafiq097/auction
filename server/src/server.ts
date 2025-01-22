@@ -11,7 +11,7 @@ dotenv.config();
 const app: Application = express();
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
+app.use(express.static(path.join(__dirname, '../..', 'client', 'dist')));
 // app.use(cors());
 app.use(cors({
     origin: '*',
@@ -22,8 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 //DB
-db((process.env.MONGO_URI || ""));
-
+db(process.env.MONGO_URI);
 
 //Routes
 app.use("/users", userRoutes);
@@ -41,13 +40,13 @@ app.get('/verify', verifyToken, (req: any, res: Response) => {
 
 //Server
 const PORT = process.env.PORT || 5000;
-// app.get("/", (req, res) => {
-//     res.send("<h1>SAD</h1>");
-// })
+app.get("/", (req, res) => {
+    res.send("<h1>SAD</h1>");
+})
 
-app.get('*', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
-});
+// app.get('*', (req: Request, res: Response) => {
+//     res.sendFile(path.join(__dirname, '../..', 'client', 'dist', 'index.html'));
+// });
 
 app.listen(PORT, () => {
     console.log(`Server running on PORT ${PORT}`);
