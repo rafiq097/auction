@@ -12,6 +12,7 @@ import { getRounds } from "../utils/getRounds.ts";
 import { getRandomPrice } from "../utils/getRandomPrice.ts";
 import axios from "axios";
 import userAtom from "../atoms/userAtom.ts";
+import Card from "../components/Card.tsx";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -121,6 +122,7 @@ const AuctionPage: React.FC = () => {
     bid: number;
   }>();
   const [userBidded, setUserBidded] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(false);
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -266,7 +268,6 @@ const AuctionPage: React.FC = () => {
           )
         );
       }
-
     };
 
     const timer = setInterval(() => {
@@ -509,6 +510,9 @@ const AuctionPage: React.FC = () => {
     window.location.href = "/";
   };
 
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
   return (
     <>
       {/* <div className="text-center text-lg font-bold mb-4">
@@ -539,7 +543,7 @@ const AuctionPage: React.FC = () => {
           </div>
 
           {/* // Player bros Bid */}
-          <div className="bg-gray-300 h-full flex items-center justify-center">
+          <div className="bg-gray-200 h-full flex items-center justify-center">
             {curr < players.length ? (
               <div className="p-6 bg-gray-50 rounded-lg shadow-lg max-w-lg">
                 <div className="flex justify-center">
@@ -554,9 +558,22 @@ const AuctionPage: React.FC = () => {
                   Set: {players[curr].Set}
                 </h1>
                 <h2 className="text-xl font-semibold mb-2">
-                  {players[curr].First_Name + " " + players[curr].Surname}
+                  {players[curr].First_Name + " " + players[curr].Surname + " "}
+                  <button
+                    className="text-blue-500 text-sm underline hover:text-blue-700"
+                    onClick={handleShowModal}
+                  >
+                    Full Info
+                  </button>
                 </h2>
-                <p className="text-gray-600 mb-2">Role: {players[curr].Role}</p>
+                <p className="text-gray-600 mb-2">
+                  Role:{" "}
+                  {players[curr].Role === "BATTER"
+                    ? `${players[curr].Role} - ${players[curr].Bat_type}`
+                    : players[curr].Role === "BOWLER"
+                    ? `${players[curr].Role} - ${players[curr].Bowl_type}`
+                    : players[curr].Role}
+                </p>
                 <p className="text-gray-600 mb-2">
                   Base Price: {CR(tempPlayers[curr].Base)} CR
                 </p>
@@ -578,6 +595,12 @@ const AuctionPage: React.FC = () => {
                     Bid
                   </button>
                 </div>
+
+                {showModal && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <Card player={players[curr]} onClose={handleCloseModal} />
+                  </div>
+                )}
               </div>
             ) : (
               <div>
@@ -620,7 +643,7 @@ const AuctionPage: React.FC = () => {
 
         <div className="grid grid-cols-3">
           {/* // Last Bid */}
-          <div className="bg-gray-300 h-full flex items-center justify-center">
+          <div className="bg-gray-200 h-full flex items-center justify-center">
             {soldBro ? (
               <div className="p-5 bg-gray-100 rounded-lg shadow-lg max-w-lg">
                 Last Sold Bro
@@ -628,7 +651,14 @@ const AuctionPage: React.FC = () => {
                 <h2 className="text-xl font-semibold mb-2">
                   {soldBro.First_Name + " " + soldBro.Surname}
                 </h2>
-                <p className="text-gray-600 mb-2">Role: {soldBro.Role}</p>
+                <p className="text-gray-600 mb-2">
+                  Role:{" "}
+                  {soldBro.Role === "BATTER"
+                    ? `${soldBro.Role} - ${soldBro.Bat_type}`
+                    : soldBro.Role === "BOWLER"
+                    ? `${soldBro.Role} - ${soldBro.Bowl_type}`
+                    : soldBro.Role}
+                </p>
                 <p className="text-gray-600 mb-2">
                   Base Price: {CR(soldBro.base)} CR
                 </p>
@@ -663,7 +693,7 @@ const AuctionPage: React.FC = () => {
           </div>
 
           {/* // User Team Information */}
-          <div className="bg-gray-300 shadow-lg rounded-lg p-4">
+          <div className="bg-gray-200 shadow-lg rounded-lg p-4">
             <h1 className="flex justify-center text-xl font-bold text-gray-800 mb-4">
               Your Team: {team.name}
             </h1>
