@@ -257,7 +257,9 @@ const AuctionPage: React.FC = () => {
 
         setCurr(curr + 1);
       } else {
-        toast.error(`Team ${teams[num].name} bid at ${CR(price).toFixed(2)}CR`);
+        toast(`Team ${teams[num].name} bid at ${CR(price).toFixed(2)}CR`, {
+          icon: "🔨",
+        });
 
         setCurrentBid({ name: teams[num].name, bid: price });
         setBiddingBros((prevBros) =>
@@ -350,8 +352,11 @@ const AuctionPage: React.FC = () => {
       }
     }
 
-    toast.success(
-      `Team ${teams[num].name} bought ${player.First_Name} ${player.Surname} at ${randomPrice}CR`
+    toast(
+      `${teams[num].name} bought ${player.First_Name} ${player.Surname} at ${randomPrice}CR`,
+      {
+        icon: "🎉",
+      }
     );
     setSoldBro(soldPlayer);
     setTeams(updatedTeams);
@@ -400,8 +405,17 @@ const AuctionPage: React.FC = () => {
     });
     setCurrentBid({ name: team.name, bid: price });
 
+    let validBros = 0;
+    for (let i = 0; i < teams.length; i++) {
+      if (teams[i].name != team.name && teams[i].remaining >= CR(price))
+        validBros++;
+    }
+
     let num = Math.floor(Math.random() * teams.length);
-    while (teams[num].name === team.name || teams[num].remaining < CR(price)) {
+    while (
+      validBros &&
+      (teams[num].name === team.name || teams[num].remaining < CR(price))
+    ) {
       num = Math.floor(Math.random() * teams.length);
     }
 
@@ -411,17 +425,13 @@ const AuctionPage: React.FC = () => {
       (team) => team.name === teams[num].name
     );
 
-    let validBros = 0;
-    for (let i = 0; i < teams.length; i++) {
-      if (teams[i].name != team.name && teams[i].remaining >= CR(price))
-        validBros++;
-    }
-
     if (
       biddingBros[index].round == getRounds(players[curr]) ||
       validBros == 0
     ) {
-      toast.success("Congratulations You Won the Bid");
+      toast("Congratulations You Won the Bid", {
+        icon: "🥳",
+      });
 
       const soldPlayer = {
         ...players[curr],
@@ -496,9 +506,9 @@ const AuctionPage: React.FC = () => {
           updatedPlayers[curr].Base = otherPrice;
           return updatedPlayers;
         });
-        toast.error(
-          `Team ${teams[num].name} bid at ${CR(otherPrice).toFixed(2)}CR`
-        );
+        toast(`Team ${teams[num].name} bid at ${CR(otherPrice).toFixed(2)}CR`, {
+          icon: "🔨",
+        });
       }, 1000);
     }
   };
