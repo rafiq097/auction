@@ -5,11 +5,39 @@ import { useRecoilState } from "recoil";
 import { teamsAtom } from "../atoms/teamsAtom.ts";
 import { userTeamAtom } from "../atoms/userTeamAtom.ts";
 import { FaPlane } from "react-icons/fa";
+import axios from "axios";
+import userAtom from "../atoms/userAtom.ts";
 
 const TeamsPage: React.FC = () => {
   const navigate = useNavigate();
   const [team, setTeam] = useRecoilState(userTeamAtom);
   const [teams, setTeams] = useRecoilState(teamsAtom);
+  const [, setUserData] = useRecoilState(userAtom);
+
+  const verify = async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const res = await axios.get("/verify", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserData(res.data.user);
+      } catch (err: any) {
+        console.log(err.message);
+        localStorage.removeItem("token");
+        setUserData(null);
+        toast.error("Session expired. Please login again.");
+        navigate("/login");
+      }
+    } else {
+      toast.error("Please login to continue");
+      navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    verify();
+  }, []);
 
   useEffect(() => {
     const swap = () => {

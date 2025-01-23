@@ -2,10 +2,14 @@ import React, { useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { userTeamAtom } from "../atoms/userTeamAtom.ts";
 import { useRecoilState } from "recoil";
+import axios from "axios";
+import userAtom from "../atoms/userAtom.ts";
+import { toast } from "react-hot-toast";
 
 const StartPage: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
   const [team, setTeam] = useRecoilState(userTeamAtom);
+  const [, setUserData] = useRecoilState(userAtom);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,12 +45,42 @@ const StartPage: React.FC = () => {
     navigate("/auction");
   };
 
-  useEffect(() => {
-    const selectedTeam = localStorage.getItem("team");
-    if (selectedTeam) {
-      setTeam(JSON.parse(selectedTeam));
+
+  const verify = async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const res = await axios.get("/verify", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserData(res.data.user);
+      } catch (err: any) {
+        console.log(err.message);
+        localStorage.removeItem("token");
+        setUserData(null);
+        toast.error("Session expired. Please login again.");
+        navigate("/login");
+      }
+    } else {
+      toast.error("Please login to continue");
+      navigate("/login");
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    verify();
+  }, [setUserData, navigate, location.pathname]);
+
+  useEffect(() => {
+    const temp = localStorage.getItem("team");
+    if (temp) {
+      setTeam(JSON.parse(temp));
+      navigate("/auction");
+    } else {
+      toast.error("Please select a team");
+      navigate("/");
+    }
+  }, [setUserData, navigate, location.pathname]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-300">

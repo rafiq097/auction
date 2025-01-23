@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { NavigateFunction, useNavigate, Routes, Route } from "react-router-dom";
+import { NavigateFunction, useNavigate, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
 import StartPage from "./pages/StartPage";
 import AuctionPage from "./pages/AuctionPage";
@@ -15,6 +15,7 @@ function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
   const [, setTeam] = useRecoilState(userTeamAtom);
   const [userData, setUserData] = useRecoilState(userAtom);
+  const location = useLocation();
 
   useEffect(() => {
     const curr = localStorage.getItem("team");
@@ -36,12 +37,13 @@ function App(): JSX.Element {
         })
         .then((res) => {
           setUserData(res.data.user);
-          navigate("/");
+          // navigate("/");
         })
         .catch((err) => {
           console.log(err.message);
           localStorage.removeItem("token");
           setUserData(null);
+          navigate("/login");
         });
     }
   }, [setUserData, navigate]);
@@ -49,18 +51,22 @@ function App(): JSX.Element {
   return (
     <>
       <Toaster />
-      <Routes>
-        <Route path="/" element={!userData ? <LoginPage /> : <StartPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/auction"
-          element={!userData ? <LoginPage /> : <AuctionPage />}
-        />
-        <Route
-          path="/teams"
-          element={!userData ? <LoginPage /> : <TeamsPage />}
-        />
-      </Routes>
+      {/* <Routes> */}
+      {location.pathname === "/" || location.pathname === "/auction" || location.pathname === "/teams" ? (
+            <Routes>
+              <Route path="/" element={<StartPage />} />
+              <Route path="/auction" element={<AuctionPage />} />
+              <Route path="/teams" element={<TeamsPage />} />
+            </Routes>
+        ) : (
+            <Routes>
+              <Route
+                path="/login"
+                element={!userData ? <LoginPage /> : <Navigate to="/" />}
+              />
+            </Routes>
+        )}
+      {/* </Routes> */}
     </>
   );
 }

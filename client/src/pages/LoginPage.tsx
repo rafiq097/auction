@@ -52,6 +52,10 @@ function LoginPage(): JSX.Element {
     }
   };
 
+  // const handleError = (err: any) => {
+  //   console.log(err);
+  // }
+
   return (
     <>
       <div className="h-screen flex">
@@ -60,12 +64,12 @@ function LoginPage(): JSX.Element {
             {(
               <>
                 <GoogleLogin
-                  onSuccess={(res: { credential: any; }) => {
+                  onSuccess={(res: any) => {
                     let x: any = jwtDecode(res?.credential);
                     handleLogin(x);
                   }}
-                  onError={(err: any) => {
-                    console.log(err, "Login Failed");
+                  onError={() => {
+                    console.log("login failed");
                   }}
                 />
                 <p className="text-white mt-4">Sign in with Google</p>

@@ -10,12 +10,15 @@ import { currAtom } from "../atoms/currAtom.ts";
 import { getPlusPrice } from "../utils/getPlusPrice.ts";
 import { getRounds } from "../utils/getRounds.ts";
 import { getRandomPrice } from "../utils/getRandomPrice.ts";
+import axios from "axios";
+import userAtom from "../atoms/userAtom.ts";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
   const [team, setTeam] = useRecoilState(userTeamAtom);
   const [teams, setTeams] = useRecoilState(teamsAtom);
   const [curr, setCurr] = useRecoilState(currAtom);
+  const [, setUserData] = useRecoilState(userAtom);
   const [players, setPlayers] = useState<
     {
       Sno: number;
@@ -119,10 +122,35 @@ const AuctionPage: React.FC = () => {
   }>();
   const [userBidded, setUserBidded] = useState<boolean>(false);
 
+  const verify = async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const res = await axios.get("/verify", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserData(res.data.user);
+      } catch (err: any) {
+        console.log(err.message);
+        localStorage.removeItem("token");
+        setUserData(null);
+        toast.error("Session expired. Please login again.");
+        navigate("/login");
+      }
+    } else {
+      toast.error("Please login to continue");
+      navigate("/login");
+    }
+  };
+
   useEffect(() => {
-    const curr = localStorage.getItem("team");
-    if (curr) {
-      setTeam(JSON.parse(curr));
+    verify();
+  }, [setUserData, navigate, location.pathname]);
+
+  useEffect(() => {
+    const temp = localStorage.getItem("team");
+    if (temp) {
+      setTeam(JSON.parse(temp));
     } else {
       navigate("/");
       toast.error("Please select a team");
