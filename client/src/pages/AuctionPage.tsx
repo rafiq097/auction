@@ -193,7 +193,7 @@ const AuctionPage: React.FC = () => {
       ) {
         num = Math.floor(Math.random() * teams.length);
       }
-      console.log(teams[num].name, price);
+      console.log(teams[num].name, currentBid?.name, price);
 
       if (CR(price) >= randomPrice) {
         price = CR(price);
@@ -258,7 +258,6 @@ const AuctionPage: React.FC = () => {
         toast.error(`Team ${teams[num].name} bid at ${CR(price).toFixed(2)}CR`);
 
         setCurrentBid({ name: teams[num].name, bid: price });
-
         setBiddingBros((prevBros) =>
           prevBros.map((bro) =>
             bro.name === teams[num].name
@@ -267,6 +266,7 @@ const AuctionPage: React.FC = () => {
           )
         );
       }
+
     };
 
     const timer = setInterval(() => {
@@ -274,7 +274,7 @@ const AuctionPage: React.FC = () => {
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [curr]);
+  }, [curr, currentBid]);
 
   useEffect(() => {
     setTimeout(() => {
