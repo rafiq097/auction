@@ -1,9 +1,21 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+const broSchema: Schema = new Schema({
+  name: { type: String, required: true },
+  team: { type: String, required: true },
+});
+
+interface IBro {
+  name: string;
+  team: string;
+}
+
 export interface IRoom extends Document {
   name: string;
   owner: string;
-  participants: string[];
+  participants: IBro[];
+  curr: number;
+  teams: any[];
 }
 
 const roomSchema: Schema = new Schema(
@@ -18,7 +30,15 @@ const roomSchema: Schema = new Schema(
       required: true,
     },
     participants: {
-      type: [String],
+      type: [broSchema],
+      default: [],
+    },
+    curr: {
+      type: Number,
+      default: 0,
+    },
+    teams: {
+      type: [Schema.Types.Mixed],
       default: [],
     },
   },

@@ -25,5 +25,6 @@ dist-ssr
 
 client/src/utils/players.ts
 client/src/utils/list.ts
+client/src/utils/squads.json
 client/list.xlsx
 client/list.json

@@ -1,14 +1,13 @@
 import { Request, Response } from "express";
 import Room from "../models/room.model";
 
-export const getRoom = async (req: Request, res: Response) => {
-  const { id } = req.params;
+export const getRooms = async (req: Request, res: Response) => {
   try {
-    const room = await Room.findById(id);
-    if (!room) {
+    const rooms = await Room.find({});
+    if (!rooms) {
       return res.status(404).json({ message: "Room not found" });
     }
-    res.status(200).json({ room });
+    res.status(200).json({ rooms });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching room" });
@@ -28,7 +27,6 @@ export const createRoom = async (req: Request, res: Response) => {
     const newRoom = new Room({
       name,
       owner,
-      participants: [owner],
     });
 
     await newRoom.save();
