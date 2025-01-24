@@ -45,7 +45,6 @@ const StartPage: React.FC = () => {
     navigate("/auction");
   };
 
-
   const verify = async () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -122,6 +121,14 @@ const StartPage: React.FC = () => {
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition"
           >
             Enter
+          </button>
+
+          <button
+            type="submit"
+            onClick={() => navigate("/rooms")}
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-2 rounded-md shadow-md transition"
+          >
+            Compete with Friemds!
           </button>
         </form>
       </div>

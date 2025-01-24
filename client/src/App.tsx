@@ -1,5 +1,12 @@
 import { useEffect } from "react";
-import { NavigateFunction, useNavigate, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import {
+  NavigateFunction,
+  useNavigate,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import "./App.css";
 import StartPage from "./pages/StartPage";
 import AuctionPage from "./pages/AuctionPage";
@@ -9,6 +16,7 @@ import { userTeamAtom } from "./atoms/userTeamAtom.ts";
 import { useRecoilState } from "recoil";
 import userAtom from "./atoms/userAtom.ts";
 import LoginPage from "./pages/LoginPage.tsx";
+import RoomPage from "./pages/RoomPage.tsx";
 import axios from "axios";
 
 function App(): JSX.Element {
@@ -52,20 +60,24 @@ function App(): JSX.Element {
     <>
       <Toaster />
       {/* <Routes> */}
-      {location.pathname === "/" || location.pathname === "/auction" || location.pathname === "/teams" ? (
-            <Routes>
-              <Route path="/" element={<StartPage />} />
-              <Route path="/auction" element={<AuctionPage />} />
-              <Route path="/teams" element={<TeamsPage />} />
-            </Routes>
-        ) : (
-            <Routes>
-              <Route
-                path="/login"
-                element={!userData ? <LoginPage /> : <Navigate to="/" />}
-              />
-            </Routes>
-        )}
+      {location.pathname === "/" ||
+      location.pathname === "/auction" ||
+      location.pathname === "/teams" ||
+      location.pathname === "/rooms" ? (
+        <Routes>
+          <Route path="/" element={<StartPage />} />
+          <Route path="/auction" element={<AuctionPage />} />
+          <Route path="/teams" element={<TeamsPage />} />
+          <Route path="/roms" element={<RoomPage />} />
+        </Routes>
+      ) : (
+        <Routes>
+          <Route
+            path="/login"
+            element={!userData ? <LoginPage /> : <Navigate to="/" />}
+          />
+        </Routes>
+      )}
       {/* </Routes> */}
     </>
   );

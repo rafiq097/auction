@@ -182,6 +182,7 @@ const AuctionPage: React.FC = () => {
 
       if (validBros == 0) {
         setCurrentBid({ name: "", bid: 0 });
+        toast.dismiss();
         toast.error("No team is Eligible to Buy", {
           duration: 1000,
         });
@@ -262,6 +263,7 @@ const AuctionPage: React.FC = () => {
 
         setCurr(curr + 1);
       } else {
+        toast.dismiss();
         toast(`Team ${teams[num].name} bid at ${CR(price).toFixed(2)}CR`, {
           icon: "🔨",
           duration: 1000,
@@ -306,6 +308,7 @@ const AuctionPage: React.FC = () => {
 
     if (validBros == 0) {
       setCurrentBid({ name: "", bid: 0 });
+      toast.dismiss();
       toast.error("No team is Eligible to Buy", {
         duration: 1000,
       });
@@ -360,6 +363,7 @@ const AuctionPage: React.FC = () => {
       }
     }
 
+    toast.dismiss();
     toast(
       `${teams[num].name} bought ${player.First_Name} ${player.Surname} at ${randomPrice}CR`,
       {
@@ -515,6 +519,7 @@ const AuctionPage: React.FC = () => {
           updatedPlayers[curr].Base = otherPrice;
           return updatedPlayers;
         });
+        toast.dismiss();
         toast(`Team ${teams[num].name} bid at ${CR(otherPrice).toFixed(2)}CR`, {
           icon: "🔨",
           duration: 1000,
