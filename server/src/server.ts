@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 import db from "./db/db";
 import verifyToken from "./middlewares/auth";
 import userRoutes from "./routes/user.routes";
+import roomRoutes from "./routes/room.routes";
 
 dotenv.config();
 const app: Application = express();
@@ -63,6 +64,7 @@ db(process.env.MONGO_URI);
 
 //Routes
 app.use("/users", userRoutes);
+app.use("/rooms", roomRoutes);
 
 //Middlewares
 app.get("/verify", verifyToken, (req: any, res: Response) => {
@@ -85,6 +87,6 @@ app.get("*", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../..", "client", "dist", "index.html"));
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT}`);
 });

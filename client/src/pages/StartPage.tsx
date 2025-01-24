@@ -68,7 +68,7 @@ const StartPage: React.FC = () => {
 
   useEffect(() => {
     verify();
-  }, [setUserData, navigate, location.pathname]);
+  }, [setUserData]);
 
   useEffect(() => {
     const temp = localStorage.getItem("team");
@@ -79,7 +79,7 @@ const StartPage: React.FC = () => {
       toast.error("Please select a team");
       navigate("/");
     }
-  }, [setUserData, navigate, location.pathname]);
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-300">
@@ -118,19 +118,18 @@ const StartPage: React.FC = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition"
+            className="w-full mb-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition"
           >
             Enter
           </button>
-
-          <button
-            type="submit"
-            onClick={() => navigate("/rooms")}
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-2 rounded-md shadow-md transition"
-          >
-            Compete with Friemds!
-          </button>
         </form>
+        <button
+          type="submit"
+          onClick={() => navigate("/rooms")}
+          className="w-1/2 bg-orange-400 hover:bg-orange-500 text-white font-semibold py-1 px-2 rounded-md shadow-md transition"
+        >
+          Compete with Friemds!
+        </button>
       </div>
     </div>
   );

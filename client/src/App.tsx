@@ -54,7 +54,7 @@ function App(): JSX.Element {
           navigate("/login");
         });
     }
-  }, [setUserData, navigate]);
+  }, [setUserData]);
 
   return (
     <>
@@ -68,7 +68,7 @@ function App(): JSX.Element {
           <Route path="/" element={<StartPage />} />
           <Route path="/auction" element={<AuctionPage />} />
           <Route path="/teams" element={<TeamsPage />} />
-          <Route path="/roms" element={<RoomPage />} />
+          <Route path="/rooms" element={<RoomPage />} />
         </Routes>
       ) : (
         <Routes>
