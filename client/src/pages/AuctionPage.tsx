@@ -672,7 +672,9 @@ const AuctionPage: React.FC = () => {
             {soldBro ? (
               <div className="p-5 bg-gray-100 rounded-lg shadow-lg max-w-lg">
                 Last Sold Bro
-                <h1 className="text-2xl font-bold mb-2">Set: {soldBro.Set}</h1>
+                <h1 className="text-2xl font-bold mb-2">
+                  Sold to: {soldBro.team}
+                </h1>
                 <h2 className="text-xl font-semibold mb-2">
                   {soldBro.First_Name + " " + soldBro.Surname}
                 </h2>
@@ -691,7 +693,7 @@ const AuctionPage: React.FC = () => {
                 <p className="text-gray-600 mb-2">
                   Selling Price: {soldBro.price} CR
                 </p>
-                <p className="text-gray-600 mb-2">Sold to : {soldBro.team}</p>
+                <p className="text-gray-600 mb-2">Set: {soldBro.Set}</p>
               </div>
             ) : null}
           </div>
