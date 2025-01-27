@@ -16,7 +16,7 @@ import { userTeamAtom } from "./atoms/userTeamAtom.ts";
 import { useRecoilState } from "recoil";
 import userAtom from "./atoms/userAtom.ts";
 import LoginPage from "./pages/LoginPage.tsx";
-import RoomPage from "./pages/RoomPage.tsx";
+import RoomsPage from "./pages/RoomsPage.tsx";
 import axios from "axios";
 
 function App(): JSX.Element {
@@ -68,7 +68,7 @@ function App(): JSX.Element {
           <Route path="/" element={<StartPage />} />
           <Route path="/auction" element={<AuctionPage />} />
           <Route path="/teams" element={<TeamsPage />} />
-          <Route path="/rooms" element={<RoomPage />} />
+          <Route path="/rooms" element={<RoomsPage />} />
         </Routes>
       ) : (
         <Routes>

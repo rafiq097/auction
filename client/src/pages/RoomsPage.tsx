@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import axios from "axios";
 
-const RoomPage: React.FC = () => {
+const RoomsPage: React.FC = () => {
   const [rooms, setRooms] = useState<any[]>([]);
   const [roomName, setRoomName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -147,4 +147,4 @@ const RoomPage: React.FC = () => {
   );
 };
 
-export default RoomPage;
+export default RoomsPage;
