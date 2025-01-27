@@ -1,4 +1,4 @@
-import { createRoom, deleteRoom, getRooms } from "../controllers/room.controller";
+import { createRoom, deleteRoom, getRooms, updateRoom } from "../controllers/room.controller";
 import { Router } from "express";
 
 const router: Router = Router();
@@ -6,5 +6,6 @@ const router: Router = Router();
 router.get("/get", getRooms as any);
 router.post("/create", createRoom as any);
 router.delete("/delete/:id", deleteRoom as any);
+router.put("/update/:id", updateRoom as any);
 
 export default router;

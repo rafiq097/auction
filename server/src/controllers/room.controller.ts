@@ -55,3 +55,27 @@ export const deleteRoom = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error deleting room" });
   }
 };
+
+export const updateRoom = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { user } = req.body;
+
+  try {
+    const room = await Room.findById(id);
+    if (!room) return res.status(404).json({ message: "Room Not Found!" });
+
+    if (room.participants.some((participant: any) => participant.email === user.email)) {
+      return res.status(400).json({ message: "User already in the room!" });
+    }
+    
+
+    room.participants.push(user);
+    await room.save();
+
+    console.log(room);
+    res.status(200).json({ message: "Room updated successfully", room });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Error Updating room" });
+  }
+};

@@ -14,7 +14,7 @@ const RoomsPage: React.FC = () => {
   const [socket, setSocket] = useState<any>(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5000"); // Replace with your backend URL
+    const newSocket = io("http://localhost:5000");
     setSocket(newSocket);
 
     return () => {
@@ -54,18 +54,30 @@ const RoomsPage: React.FC = () => {
     }
   };
 
-  const handleJoinRoom = (roomId: string) => {
+  const handleJoinRoom = async (roomId: string) => {
     if (!socket) {
       toast.error("Socket not connected");
       return;
     }
+    console.log(user);
 
-    socket.emit("join-room", roomId);
-    toast.success(`Joined room successfully! Room ID: ${roomId}`);
+    try {
+      const response = await axios.put(`/rooms/update/${roomId}`, { user });
 
-    socket.on("room-message", (message: string) => {
-      toast.success(`Room Message: ${message}`);
-    });
+      if (response.status === 200) {
+        socket.emit("join-room", roomId);
+        toast.success(`Joined room successfully! Room ID: ${roomId}`);
+
+        socket.on("room-message", (message: string) => {
+          toast.success(`Room Message: ${message}`);
+        });
+      } else {
+        toast.error("Failed to join the room. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Error joining room:", error);
+      toast.error(error?.response?.data?.message);
+    }
   };
 
   const handleDeleteRoom = async (roomId: string) => {
