@@ -1,10 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   NavigateFunction,
   useNavigate,
   Routes,
   Route,
-  useLocation,
   Navigate,
 } from "react-router-dom";
 import "./App.css";
@@ -24,13 +23,15 @@ function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
   const [, setTeam] = useRecoilState(userTeamAtom);
   const [userData, setUserData] = useRecoilState(userAtom);
-  const location = useLocation();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const curr = localStorage.getItem("team");
-    if (curr) {
+    const token = localStorage.getItem("token");
+
+    if (curr && token) {
       setTeam(JSON.parse(curr));
-      navigate("/auction");
+      // navigate("/auction");
     } else {
       // navigate("/select");
       toast.error("Please select a team");
@@ -39,6 +40,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    setLoading(true);
     if (token) {
       axios
         .get("/verify", {
@@ -51,36 +53,45 @@ function App(): JSX.Element {
         .catch((err) => {
           console.log(err.message);
           localStorage.removeItem("token");
+          setLoading(false);
           setUserData(null);
           navigate("/login");
         });
+    } else {
+      setLoading(false);
+      navigate("/login");
     }
+    setLoading(false);
   }, [setUserData]);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <>
       <Toaster />
-      {/* <Routes> */}
-      {location.pathname === "/" ||
-      location.pathname === "/auction" ||
-      location.pathname === "/teams" ||
-      location.pathname === "/rooms" ? (
-        <Routes>
-          <Route path="/" element={<StartPage />} />
-          <Route path="/auction" element={<AuctionPage />} />
-          <Route path="/teams" element={<TeamsPage />} />
-          <Route path="/rooms" element={<RoomsPage />} />
-          <Route path="/room/:roomId" element={<RoomDetailsPage />} /> 
-        </Routes>
-      ) : (
-        <Routes>
-          <Route
-            path="/login"
-            element={!userData ? <LoginPage /> : <Navigate to="/" />}
-          />
-        </Routes>
-      )}
-      {/* </Routes> */}
+      <Routes>
+        <Route path="/" element={!userData ? <LoginPage /> : <StartPage />} />
+        <Route
+          path="/auction"
+          element={!userData ? <LoginPage /> : <AuctionPage />}
+        />
+        <Route
+          path="/teams"
+          element={!userData ? <LoginPage /> : <TeamsPage />}
+        />
+        <Route
+          path="/rooms"
+          element={!userData ? <LoginPage /> : <RoomsPage />}
+        />
+        <Route
+          path="/room/:roomId"
+          element={!userData ? <LoginPage /> : <RoomDetailsPage />}
+        />
+        <Route
+          path="/login"
+          element={!userData ? <LoginPage /> : <Navigate to="/" />}
+        />
+      </Routes>
     </>
   );
 }
