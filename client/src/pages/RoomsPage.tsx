@@ -4,8 +4,10 @@ import { toast } from "react-hot-toast";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const RoomsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [rooms, setRooms] = useState<any[]>([]);
   const [roomName, setRoomName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -71,12 +73,16 @@ const RoomsPage: React.FC = () => {
         socket.on("room-message", (message: string) => {
           toast.success(`Room Message: ${message}`);
         });
+
+        navigate(`/rooms/${roomId}`);
       } else {
         toast.error("Failed to join the room. Please try again.");
       }
     } catch (error: any) {
       console.error("Error joining room:", error);
       toast.error(error?.response?.data?.message);
+      if (error?.response?.data?.message == "User already in the room!")
+        navigate(`/rooms/${roomId}`);
     }
   };
 

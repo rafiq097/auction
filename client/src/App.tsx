@@ -18,6 +18,7 @@ import userAtom from "./atoms/userAtom.ts";
 import LoginPage from "./pages/LoginPage.tsx";
 import RoomsPage from "./pages/RoomsPage.tsx";
 import axios from "axios";
+import RoomDetailsPage from "./pages/RoomDetailsPage.tsx";
 
 function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
@@ -69,6 +70,7 @@ function App(): JSX.Element {
           <Route path="/auction" element={<AuctionPage />} />
           <Route path="/teams" element={<TeamsPage />} />
           <Route path="/rooms" element={<RoomsPage />} />
+          <Route path="/room/:roomId" element={<RoomDetailsPage />} /> 
         </Routes>
       ) : (
         <Routes>

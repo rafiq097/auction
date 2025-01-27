@@ -14,6 +14,21 @@ export const getRooms = async (req: Request, res: Response) => {
   }
 };
 
+export const getRoom = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const room = await Room.findById(id);
+    if (!room) return res.status(404).json({ message: "Room not found" });
+
+    res.status(200).json(room);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error fetching room details" });
+  }
+};
+
+
 export const createRoom = async (req: Request, res: Response) => {
   const { name, owner } = req.body;
 
