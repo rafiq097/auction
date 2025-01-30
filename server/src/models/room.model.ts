@@ -1,15 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-const broSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  team: { type: String },
-});
-
-interface IBro {
-  name: string;
-  team: string;
-}
-
 export interface IRoom extends Document {
   name: string;
   owner: string;

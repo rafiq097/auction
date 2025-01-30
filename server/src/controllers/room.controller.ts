@@ -5,7 +5,7 @@ export const getRooms = async (req: Request, res: Response) => {
   try {
     const rooms = await Room.find({});
     if (!rooms) {
-      return res.status(404).json({ message: "Room not found" });
+      return res.status(404).json({ message: "Rooms not found" });
     }
     res.status(200).json({ rooms });
   } catch (error) {
@@ -81,10 +81,9 @@ export const updateRoom = async (req: Request, res: Response) => {
 
     if (room.participants.some((participant: any) => participant.email === user.email)) {
       return res.status(400).json({ message: "User already in the room!" });
-    }
-    
+    }    
 
-    room.participants.push(user);
+    room.participants.push({ ...user, online: true});
     await room.save();
 
     console.log(room);
