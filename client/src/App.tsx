@@ -15,9 +15,9 @@ import { userTeamAtom } from "./atoms/userTeamAtom.ts";
 import { useRecoilState } from "recoil";
 import userAtom from "./atoms/userAtom.ts";
 import LoginPage from "./pages/LoginPage.tsx";
-import RoomsPage from "./pages/RoomsPage.tsx";
 import axios from "axios";
-import RoomDetailsPage from "./pages/RoomDetailsPage.tsx";
+// import RoomsPage from "./pages/RoomsPage.tsx";
+// import RoomDetailsPage from "./pages/RoomDetailsPage.tsx";
 
 function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
