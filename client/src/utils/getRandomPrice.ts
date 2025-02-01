@@ -22,16 +22,16 @@ export const getRandomPrice = (player: {
   }
 
   randomPrice *= Math.random() * (1.7 - 1.2) + 1.2;
-  if (player.Age >= 35) randomPrice *= 0.6;
-  else if (player.Age >= 30) randomPrice *= 0.8;
-  else if (player.Age >= 25) randomPrice *= 0.9;
+  if (player.Age >= 35) randomPrice *= 0.5;
+  else if (player.Age >= 30) randomPrice *= 0.75;
+  else if (player.Age >= 25) randomPrice *= 0.8;
   else randomPrice *= 0.7;
 
   if (randomPrice > 40) randomPrice *= 0.5;
   if (randomPrice > 30) randomPrice *= 0.7;
-  if (randomPrice > 20) randomPrice *= 0.8;
-  if (randomPrice > 20) randomPrice *= 0.9;
-  if (randomPrice > 20) randomPrice *= 0.95;
+  if (randomPrice >= 20) randomPrice *= 0.8;
+  if (randomPrice >= 20) randomPrice *= 0.9;
+  if (randomPrice >= 20) randomPrice *= 0.9;
   if (randomPrice <= 15) randomPrice *= 0.8;
   if (randomPrice <= 10) randomPrice *= 0.9;
 
