@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -147,7 +150,7 @@ const AuctionPage: React.FC = () => {
 
   useEffect(() => {
     verify();
-  }, [setUserData, navigate, location.pathname]);
+  }, [setUserData, navigate]);
 
   useEffect(() => {
     const temp = localStorage.getItem("team");
@@ -162,7 +165,7 @@ const AuctionPage: React.FC = () => {
   useEffect(() => {
     const simulate = (): void => {
       const player = tempPlayers[curr];
-      let randomPrice = getRandomPrice(player);
+      const randomPrice = getRandomPrice(player);
       console.log(randomPrice);
 
       let price = players[curr].Base;
