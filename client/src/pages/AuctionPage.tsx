@@ -428,21 +428,32 @@ const AuctionPage: React.FC = () => {
         validBros++;
     }
 
-    let num = Math.floor(Math.random() * teams.length);
-    while (
-      validBros &&
-      (teams[num].name === team.name || teams[num].remaining < CR(otherPrice))
-    ) {
+    let num: any = -1;
+    if (validBros != 0) {
       num = Math.floor(Math.random() * teams.length);
+      while (
+        validBros &&
+        (teams[num].name === team.name || teams[num].remaining < CR(otherPrice))
+      ) {
+        num = Math.floor(Math.random() * teams.length);
+      }
     }
-
+    else if(validBros == 0 && currentBid?.name != team.name){
+      setTimeout(() => {
+        toast.error("No team is eligible to buy");
+        setCurr(curr + 1);
+        return;
+      }, 3000);
+      toast.error("You can bid in 3 seconds if you want!");
+    }
+    
     const index = biddingBros.findIndex(
       (team) => team.name === teams[num].name
     );
 
     if (
       biddingBros[index].round == getRounds(players[curr]) ||
-      validBros == 0
+      (validBros == 0 && currentBid?.name == team.name)
     ) {
       toast("Congratulations You Won the Bid", {
         icon: "🥳",
