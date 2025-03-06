@@ -32,9 +32,6 @@ function App(): JSX.Element {
     if (curr && token) {
       setTeam(JSON.parse(curr));
       // navigate("/auction");
-    } else {
-      // navigate("/select");
-      toast.error("Please select a team");
     }
   }, []);
 

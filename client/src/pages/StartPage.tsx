@@ -74,7 +74,7 @@ const StartPage: React.FC = () => {
     const temp = localStorage.getItem("team");
     if (temp) {
       setTeam(JSON.parse(temp));
-      // navigate("/auction");
+      navigate("/auction");
     } else {
       toast.error("Please select a team");
       navigate("/");
