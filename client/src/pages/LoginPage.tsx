@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
@@ -26,11 +28,11 @@ function LoginPage(): JSX.Element {
           console.log(err.message);
           localStorage.removeItem("token");
           setUserData(null);
-        })
+        });
     }
   }, [setUserData, navigate]);
 
-  const handleLogin = async (x: { email: any; name: any; }) => {
+  const handleLogin = async (x: { email: any; name: any }) => {
     try {
       console.log("login called");
 
@@ -58,23 +60,27 @@ function LoginPage(): JSX.Element {
 
   return (
     <>
-      <div className="h-screen flex">
-        <div className="w-full bg-blue-400 flex items-center justify-center p-8">
+      <div className="min-h-screen flex flex-col md:flex-row bg-gray-200">
+        <div className="w-full h-1/2 md:w-1/2 md:h-screen">
+          <img
+            src="/ipl.png"
+            alt="IPL"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        <div className="w-full h-1/2 md:w-1/2 md:h-screen flex items-center justify-center p-6 md:p-8">
           <div className="text-center">
-            {(
-              <>
-                <GoogleLogin
-                  onSuccess={(res: any) => {
-                    let x: any = jwtDecode(res?.credential);
-                    handleLogin(x);
-                  }}
-                  onError={() => {
-                    console.log("login failed");
-                  }}
-                />
-                <p className="text-white mt-4">Sign in with Google</p>
-              </>
-            )}
+            <GoogleLogin
+              onSuccess={(res: any) => {
+                let x: any = jwtDecode(res?.credential);
+                handleLogin(x);
+              }}
+              onError={() => {
+                console.log("Login failed");
+              }}
+            />
+            <p className="text-xl font-extrabold text-blue-600 mt-4">Sign in with Google</p>
           </div>
         </div>
       </div>
