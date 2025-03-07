@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import {
   NavigateFunction,
@@ -10,7 +11,7 @@ import "./App.css";
 import StartPage from "./pages/StartPage";
 import AuctionPage from "./pages/AuctionPage";
 import TeamsPage from "./pages/TeamsPage";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { userTeamAtom } from "./atoms/userTeamAtom.ts";
 import { useRecoilState } from "recoil";
 import userAtom from "./atoms/userAtom.ts";
