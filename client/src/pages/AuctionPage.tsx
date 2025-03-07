@@ -184,19 +184,13 @@ const AuctionPage: React.FC = () => {
       }
 
       if (validBros == 0) {
-        if (currentBid?.name == team.name)
-        {
-          return;
-        }
-        else {
-          setCurrentBid({ name: "", bid: 0 });
-          toast.dismiss();
-          toast.error("No team is Eligible to Buy", {
-            duration: 1000,
-          });
-          setCurr(curr + 1);
-          return;
-        }
+        setCurrentBid({ name: "", bid: 0 });
+        toast.dismiss();
+        toast.error("No team is Eligible to Buy", {
+          duration: 1000,
+        });
+        setCurr(curr + 1);
+        return;
       }
 
       let num = Math.floor(Math.random() * teams.length);
@@ -211,7 +205,6 @@ const AuctionPage: React.FC = () => {
 
       if (CR(price) >= randomPrice) {
         price = CR(price);
-
         const updatedTeams = teams.map((team, index) => {
           if (index === num) {
             const newSpent = team.spent + price;
@@ -248,10 +241,8 @@ const AuctionPage: React.FC = () => {
             setTeam({ ...team, allr: team.allr + 1 });
           }
         }
-
-        console.log("simulate");
         toast.success(
-          `Team ${teams[num].name} bought ${player.First_Name} ${player.Surname} at ${price}CR in sim`,
+          `Team ${teams[num].name} bought ${player.First_Name} ${player.Surname} at ${price}CR`,
           {
             duration: 1000,
           }
@@ -276,13 +267,10 @@ const AuctionPage: React.FC = () => {
         setCurr(curr + 1);
       } else {
         toast.dismiss();
-        toast(
-          `Team ${teams[num].name} bid at ${CR(price).toFixed(2)}CR in sim`,
-          {
-            icon: "🔨",
-            duration: 1000,
-          }
-        );
+        toast(`Team ${teams[num].name} bid at ${CR(price).toFixed(2)}CR`, {
+          icon: "🔨",
+          duration: 1000,
+        });
 
         setCurrentBid({ name: teams[num].name, bid: price });
         setBiddingBros((prevBros) =>
@@ -386,7 +374,6 @@ const AuctionPage: React.FC = () => {
         duration: 1000,
       }
     );
-
     setSoldBro(soldPlayer);
     setTeams(updatedTeams);
     setCurrentBid({ name: "", bid: 0 });
@@ -441,32 +428,21 @@ const AuctionPage: React.FC = () => {
         validBros++;
     }
 
-    let num: any = -1;
-    if (validBros != 0) {
+    let num = Math.floor(Math.random() * teams.length);
+    while (
+      validBros &&
+      (teams[num].name === team.name || teams[num].remaining < CR(otherPrice))
+    ) {
       num = Math.floor(Math.random() * teams.length);
-      while (
-        validBros &&
-        (teams[num].name === team.name || teams[num].remaining < CR(otherPrice))
-      ) {
-        num = Math.floor(Math.random() * teams.length);
-      }
     }
-    // else if (validBros == 0 && currentBid?.name != team.name) {
-    //   setTimeout(() => {
-    //     toast.error("No team is eligible to buy");
-    //     setCurr(curr + 1);
-    //     return;
-    //   }, 3000);
-    //   toast.error("You can bid in 3 seconds if you want!");
-    // }
 
-    let index = -1;
-    if (validBros != 0)
-      index = biddingBros.findIndex((team) => team.name === teams[num].name);
+    const index = biddingBros.findIndex(
+      (team) => team.name === teams[num].name
+    );
 
     if (
-      (index != -1 && biddingBros[index].round == getRounds(players[curr])) ||
-      (validBros == 0 && currentBid?.name == team.name)
+      biddingBros[index].round == getRounds(players[curr]) ||
+      validBros == 0
     ) {
       toast("Congratulations You Won the Bid", {
         icon: "🥳",
@@ -531,11 +507,11 @@ const AuctionPage: React.FC = () => {
       setCurr(curr + 1);
     } else {
       setTimeout(() => {
-        setCurrentBid({ name: teams[num]?.name, bid: otherPrice });
+        setCurrentBid({ name: teams[num].name, bid: otherPrice });
 
         setBiddingBros((prevBros) =>
           prevBros.map((bro) =>
-            bro.name === teams[num]?.name
+            bro.name === teams[num].name
               ? { ...bro, bid: otherPrice, round: bro.round + 1 }
               : bro
           )
@@ -547,7 +523,7 @@ const AuctionPage: React.FC = () => {
           return updatedPlayers;
         });
         toast.dismiss();
-        toast(`Team ${teams[num]?.name} bid at ${CR(otherPrice).toFixed(2)}CR`, {
+        toast(`Team ${teams[num].name} bid at ${CR(otherPrice).toFixed(2)}CR`, {
           icon: "🔨",
           duration: 1000,
         });
@@ -571,8 +547,8 @@ const AuctionPage: React.FC = () => {
         Current Team: {team.toLocaleUpperCase()}
       </div> */}
       {/* {console.log(teams)} */}
-      <div className="grid h-screen bg-gray-100">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-rows-2 h-screen bg-gray-100">
+        <div className="grid grid-cols-3">
           {/* // Purse bros */}
           <div className="bg-gray-100 h-full overflow-y-auto p-1">
             <ul className="list-none space-y-1">
@@ -693,7 +669,7 @@ const AuctionPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-3">
           {/* // Last Bid */}
           <div className="bg-gray-200 h-full flex items-center justify-center">
             {soldBro ? (
