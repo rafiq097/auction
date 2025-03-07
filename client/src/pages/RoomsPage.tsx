@@ -89,7 +89,7 @@ const RoomsPage: React.FC = () => {
     console.log(userData);
 
     try {
-      const response = await axios.put(`/rooms/update/${roomId}`, { userData });
+      const response = await axios.put(`/rooms/update/${roomId}`, { user: userData });
 
       if (response.status === 200) {
         socket.emit("join-room", roomId);

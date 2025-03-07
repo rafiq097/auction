@@ -28,7 +28,6 @@ export const getRoom = async (req: Request, res: Response) => {
   }
 };
 
-
 export const createRoom = async (req: Request, res: Response) => {
   const { name, owner } = req.body;
 
