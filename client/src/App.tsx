@@ -16,8 +16,8 @@ import { useRecoilState } from "recoil";
 import userAtom from "./atoms/userAtom.ts";
 import LoginPage from "./pages/LoginPage.tsx";
 import axios from "axios";
-// import RoomsPage from "./pages/RoomsPage.tsx";
-// import RoomDetailsPage from "./pages/RoomDetailsPage.tsx";
+import RoomsPage from "./pages/RoomsPage.tsx";
+import RoomDetailsPage from "./pages/RoomDetailsPage.tsx";
 
 function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
@@ -76,14 +76,14 @@ function App(): JSX.Element {
           path="/teams"
           element={!userData ? <LoginPage /> : <TeamsPage />}
         />
-        {/* <Route
+        <Route
           path="/rooms"
           element={!userData ? <LoginPage /> : <RoomsPage />}
         />
         <Route
           path="/rooms/:roomId"
           element={!userData ? <LoginPage /> : <RoomDetailsPage />}
-        /> */}
+        />
         <Route
           path="/login"
           element={!userData ? <LoginPage /> : <Navigate to="/" />}

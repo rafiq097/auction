@@ -22,7 +22,7 @@ function LoginPage(): JSX.Element {
         })
         .then((res) => {
           setUserData(res.data.user);
-          navigate("/");
+          // navigate("/");
         })
         .catch((err) => {
           console.log(err.message);

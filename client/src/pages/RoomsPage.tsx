@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { toast } from "react-hot-toast";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -11,12 +12,36 @@ const RoomsPage: React.FC = () => {
   const [rooms, setRooms] = useState<any[]>([]);
   const [roomName, setRoomName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-
-  const user = useRecoilValue(userAtom);
+  const [userData, setUserData] = useRecoilState(userAtom);
   const [socket, setSocket] = useState<any>(null);
 
+  const verify = async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const res = await axios.get("/verify", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserData(res.data.user);
+      } catch (err: any) {
+        console.log(err.message);
+        localStorage.removeItem("token");
+        setUserData(null);
+        toast.error("Session expired. Please login again.");
+        navigate("/login");
+      }
+    } else {
+      toast.error("Please login to continue");
+      navigate("/login");
+    }
+  };
+
   useEffect(() => {
-    const newSocket = io("http://localhost:5000");
+    verify();
+  }, [setUserData, navigate]);
+
+  useEffect(() => {
+    const newSocket = io("https://iplauction.onrender.com");
     setSocket(newSocket);
 
     return () => {
@@ -45,7 +70,7 @@ const RoomsPage: React.FC = () => {
     try {
       const response = await axios.post("/rooms/create", {
         name: roomName,
-        owner: user.email,
+        owner: userData?.email,
       });
       toast.success("Room created successfully!");
       setRooms((prevRooms) => [...prevRooms, response.data.room]);
@@ -61,10 +86,10 @@ const RoomsPage: React.FC = () => {
       toast.error("Socket not connected");
       return;
     }
-    console.log(user);
+    console.log(userData);
 
     try {
-      const response = await axios.put(`/rooms/update/${roomId}`, { user });
+      const response = await axios.put(`/rooms/update/${roomId}`, { userData });
 
       if (response.status === 200) {
         socket.emit("join-room", roomId);
@@ -145,7 +170,7 @@ const RoomsPage: React.FC = () => {
                   >
                     Join Room
                   </button>
-                  {room.owner === user.email && (
+                  {room.owner === userData?.email && (
                     <button
                       onClick={() => handleDeleteRoom(room._id)}
                       className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
