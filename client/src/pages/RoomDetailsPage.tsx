@@ -7,8 +7,8 @@ import { io, Socket } from "socket.io-client";
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import toast from "react-hot-toast";
-import { players as bros } from "../utils/list.ts";
-import { CR } from "../utils/getCR.ts";
+// import { players as bros } from "../utils/list.ts";
+// import { CR } from "../utils/getCR.ts";
 
 const RoomDetailsPage = () => {
   const { roomId } = useParams();
@@ -16,8 +16,8 @@ const RoomDetailsPage = () => {
   const [room, setRoom] = useState<any>({});
   const [participants, setParticipants] = useState<any[]>([]);
   const [userData, setUserData] = useRecoilState(userAtom);
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [players, setPlayers] = useState<any>(bros);
+  const [, setSocket] = useState<Socket | null>(null);
+  // const [players, setPlayers] = useState<any>(bros);
   const [loading, setLoading] = useState(true);
 
   const verify = async () => {
