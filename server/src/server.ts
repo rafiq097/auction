@@ -63,11 +63,12 @@ io.on("connection", (socket) => {
       }
 
       room.participants = room.participants.filter(
-        (participant) => participant.email !== user.email
+        (participant) => participant.email != user.email
       );
       await room.save();
 
       socket.leave(roomId);
+      console.log(room);
       console.log(`User ${socket.id} left Room ${roomId}`);
 
       io.to(roomId).emit("room-message", `User ${socket.id} left Room: ${roomId}`);

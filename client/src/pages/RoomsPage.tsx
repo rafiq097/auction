@@ -112,7 +112,7 @@ const RoomsPage: React.FC = () => {
     }
   };
 
-  console.log(rooms)
+  console.log(rooms);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
