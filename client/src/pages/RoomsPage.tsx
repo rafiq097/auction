@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
-import { io } from "socket.io-client";
 import { toast } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
@@ -13,7 +12,6 @@ const RoomsPage: React.FC = () => {
   const [roomName, setRoomName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [userData, setUserData] = useRecoilState(userAtom);
-  const [socket, setSocket] = useState<any>(null);
   const [selectedTeam, setSelectedTeam] = useState<string | "">("");
 
   const verify = async () => {
@@ -40,15 +38,6 @@ const RoomsPage: React.FC = () => {
   useEffect(() => {
     verify();
   }, [setUserData, navigate]);
-
-  useEffect(() => {
-    const newSocket = io("https://iplauction.onrender.com");
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -87,16 +76,11 @@ const RoomsPage: React.FC = () => {
   };
 
   const handleJoinRoom = async (roomId: string) => {
-    if(selectedTeam == "")
-    {
+    if (selectedTeam == "") {
       toast.error("Please select a team to join");
       return;
     }
 
-    if (!socket) {
-      toast.error("Socket not connected");
-      return;
-    }
     console.log(userData);
 
     try {
@@ -105,13 +89,6 @@ const RoomsPage: React.FC = () => {
       });
 
       if (response.status === 200) {
-        socket.emit("join-room", roomId);
-        toast.success(`Joined room successfully! Room ID: ${roomId}`);
-
-        socket.on("room-message", (message: string) => {
-          toast.success(`Room Message: ${message}`);
-        });
-
         navigate(`/rooms/${roomId}`);
       } else {
         toast.error("Failed to join the room. Please try again.");
@@ -134,6 +111,8 @@ const RoomsPage: React.FC = () => {
       toast.error(error?.message || "Failed to delete room");
     }
   };
+
+  console.log(rooms)
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -169,8 +148,8 @@ const RoomsPage: React.FC = () => {
           {rooms.length > 0 ? (
             rooms.map((room: any) => (
               <div
-                key={room._id}
-                className="bg-white p-6 rounded-2xl shadow-md flex flex-col justify-between"
+              key={room._id}
+              className="bg-white p-6 rounded-2xl shadow-md flex flex-col justify-between"
               >
                 <div>
                   <h3 className="text-lg font-semibold">{room.name}</h3>
