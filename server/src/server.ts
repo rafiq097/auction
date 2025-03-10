@@ -9,6 +9,7 @@ import db from "./db/db";
 import verifyToken from "./middlewares/auth";
 import userRoutes from "./routes/user.routes";
 import roomRoutes from "./routes/room.routes";
+import Room from "./models/room.model";
 
 dotenv.config();
 const app: Application = express();
@@ -24,27 +25,64 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("A User connected: ", socket.id);
 
-  socket.on("sand-message", (data) => {
-    console.log("Message", data);
+  socket.on("send-message", (data) => {
+    console.log("Message:", data);
     socket.broadcast.emit("receive-message", data);
   });
 
-  socket.on("join-room", (room) => {
-    socket.join(room);
-    console.log(`User ${socket.id} joined Room ${room}`);
-    io.to(room).emit("room-message", `User ${socket.id} joined Room: ${room}`);
+  socket.on("join-room", async ({ roomId, user }) => {
+    try {
+      const room = await Room.findById(roomId);
+      if (!room) {
+        return socket.emit("room-error", "Room Not Found!");
+      }
+
+      if (room.participants.some((participant) => participant.email === user.email)) {
+        return socket.emit("room-error", "User already in the room!");
+      }
+
+      room.participants.push({ ...user, online: true });
+      await room.save();
+
+      socket.join(roomId);
+      console.log(`User ${socket.id} joined Room ${roomId}`);
+
+      io.to(roomId).emit("room-message", `User ${socket.id} joined Room: ${roomId}`);
+      io.to(roomId).emit("room-updated", room);
+    } catch (error) {
+      console.error("Error updating room:", error.message);
+      socket.emit("room-error", "Error updating room!");
+    }
   });
 
-  socket.on("leave-room", (room) => {
-    socket.leave(room);
-    console.log(`User ${socket.id} left Room: ${room}`);
-    io.to(room).emit("room-message", `User ${socket.id} left Room: ${room}`);
+  socket.on("leave-room", async ({ roomId, user }) => {
+    try {
+      const room = await Room.findById(roomId);
+      if (!room) {
+        return socket.emit("room-error", "Room Not Found!");
+      }
+
+      room.participants = room.participants.filter(
+        (participant) => participant.email !== user.email
+      );
+      await room.save();
+
+      socket.leave(roomId);
+      console.log(`User ${socket.id} left Room ${roomId}`);
+
+      io.to(roomId).emit("room-message", `User ${socket.id} left Room: ${roomId}`);
+      io.to(roomId).emit("room-updated", room);
+    } catch (error) {
+      console.error("Error updating room:", error.message);
+      socket.emit("room-error", "Error updating room!");
+    }
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected: ", socket.id);
+    console.log("User disconnected:", socket.id);
   });
 });
+
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../..", "client", "dist")));

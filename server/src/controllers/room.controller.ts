@@ -38,9 +38,123 @@ export const createRoom = async (req: Request, res: Response) => {
   }
 
   try {
+    const poorTeams = [
+      {
+        name: "RCB",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+      {
+        name: "MI",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+      {
+        name: "CSK",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+      {
+        name: "DC",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+      {
+        name: "KKR",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+      {
+        name: "SRH",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+      {
+        name: "RR",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+      {
+        name: "PBKS",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+      {
+        name: "LSG",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+      {
+        name: "GT",
+        spent: 0,
+        remaining: 120,
+        players: [] as any[],
+        batters: 0,
+        bowlers: 0,
+        wks: 0,
+        allr: 0,
+        overseas: 0,
+      },
+    ];
+
     const newRoom = new Room({
       name,
       owner,
+      teams: poorTeams,
     });
 
     await newRoom.save();
@@ -78,11 +192,23 @@ export const updateRoom = async (req: Request, res: Response) => {
     const room = await Room.findById(id);
     if (!room) return res.status(404).json({ message: "Room Not Found!" });
 
-    if (room.participants.some((participant: any) => participant.email === user.email)) {
-      return res.status(400).json({ message: "User already in the room!" });
-    }    
+    const taken = room.participants.some(
+      (participant) => participant.team === user.team
+    );
 
-    room.participants.push({ ...user, online: true});
+    if (taken) {
+      return res.status(400).json({ message: `Team ${user.team} is already taken! Please choose another team.` });
+    }
+
+    if (
+      room.participants.some(
+        (participant: any) => participant.email === user.email
+      )
+    ) {
+      return res.status(400).json({ message: "User already in the room!" });
+    }
+
+    room.participants.push({ ...user, online: true });
     await room.save();
 
     console.log(room);

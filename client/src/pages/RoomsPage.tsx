@@ -14,6 +14,8 @@ const RoomsPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [userData, setUserData] = useRecoilState(userAtom);
   const [socket, setSocket] = useState<any>(null);
+  const [selectedTeam, setSelectedTeam] = useState<string | "">("");
+  const [teams, setTeams] = useState<string[] | []>(["RCB", "CSK", "MI", "KKR", "SRH", "DC", "RR", "LSG", "GT", "PBKS"]);
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -81,7 +83,17 @@ const RoomsPage: React.FC = () => {
     }
   };
 
+  const handleTeamChange = (e: any) => {
+    setSelectedTeam(e.target.value);
+  };
+
   const handleJoinRoom = async (roomId: string) => {
+    if(selectedTeam == "")
+    {
+      toast.error("Please select a team to join");
+      return;
+    }
+
     if (!socket) {
       toast.error("Socket not connected");
       return;
@@ -89,7 +101,9 @@ const RoomsPage: React.FC = () => {
     console.log(userData);
 
     try {
-      const response = await axios.put(`/rooms/update/${roomId}`, { user: userData });
+      const response = await axios.put(`/rooms/update/${roomId}`, {
+        user: { ...userData, team: selectedTeam },
+      });
 
       if (response.status === 200) {
         socket.emit("join-room", roomId);
@@ -164,18 +178,38 @@ const RoomsPage: React.FC = () => {
                   <p className="text-gray-500">Owned by: {room.owner}</p>
                 </div>
                 <div className="mt-4 flex gap-2">
+                  <select
+                    name="team"
+                    value={selectedTeam}
+                    onChange={handleTeamChange}
+                    className="p-2 border rounded"
+                  >
+                    <option value="" disabled>
+                      Select
+                    </option>
+                    <option value="RCB">RCB</option>
+                    <option value="CSK">CSK</option>
+                    <option value="MI">MI</option>
+                    <option value="KKR">KKR</option>
+                    <option value="SRH">SRH</option>
+                    <option value="DC">DC</option>
+                    <option value="RR">RR</option>
+                    <option value="LSG">LSG</option>
+                    <option value="GT">GT</option>
+                    <option value="PBKS">PBKS</option>
+                  </select>
                   <button
                     onClick={() => handleJoinRoom(room._id)}
                     className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700"
                   >
-                    Join Room
+                    Join
                   </button>
                   {room.owner === userData?.email && (
                     <button
                       onClick={() => handleDeleteRoom(room._id)}
                       className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
                     >
-                      Delete Room
+                      Delete
                     </button>
                   )}
                 </div>

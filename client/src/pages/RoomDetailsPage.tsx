@@ -1,19 +1,23 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import toast from "react-hot-toast";
-
-const socket = io("https://iplauction.onrender.com");
+import { players as bros } from "../utils/list.ts";
+import { CR } from "../utils/getCR.ts";
 
 const RoomDetailsPage = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
+  const [room, setRoom] = useState<any>({});
   const [participants, setParticipants] = useState<any[]>([]);
   const [userData, setUserData] = useRecoilState(userAtom);
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [players, setPlayers] = useState<any>(bros);
   const [loading, setLoading] = useState(true);
 
   const verify = async () => {
@@ -45,28 +49,33 @@ const RoomDetailsPage = () => {
     const fetchRoomDetails = async () => {
       try {
         const response = await axios.get(`/rooms/get/single/${roomId}`);
+        setRoom(response.data);
         setParticipants(response.data.participants);
         setLoading(false);
       } catch (err: any) {
         console.error(err?.message);
+        toast.error("Please refresh page");
         setLoading(false);
       }
     };
-
+    
     fetchRoomDetails();
+    
+    // const newSocket = io("https://iplauction.onrender.com");
+    const newSocket = io("http://localhost:5000");
+    setSocket(newSocket);
 
-    socket.emit("user-connected", { roomId, email: userData?.email });
-
-    socket.on("online-users", (updatedParticipants) => {
-      setParticipants(updatedParticipants);
-    });
+    newSocket.emit("join-room", { roomId, user: userData });
 
     return () => {
-      socket.off("online-users");
+      newSocket.emit("leave-room", { roomId, user: userData });
+      newSocket.disconnect();
+      setSocket(null);
     };
-  }, [roomId, userData, navigate]);
+  }, [roomId]);
 
   if (loading) return <p>Loading...</p>;
+  console.log(room);
 
   return (
     <div className="p-4">
