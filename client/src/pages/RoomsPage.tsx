@@ -15,7 +15,6 @@ const RoomsPage: React.FC = () => {
   const [userData, setUserData] = useRecoilState(userAtom);
   const [socket, setSocket] = useState<any>(null);
   const [selectedTeam, setSelectedTeam] = useState<string | "">("");
-  const [teams, setTeams] = useState<string[] | []>(["RCB", "CSK", "MI", "KKR", "SRH", "DC", "RR", "LSG", "GT", "PBKS"]);
 
   const verify = async () => {
     const token = localStorage.getItem("token");
