@@ -79,8 +79,21 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async (email) => {
     console.log("User disconnected:", socket.id);
+    try {
+      const rooms = await Room.find({ "participants.email": email });
+  
+      for (const room of rooms) {
+        room.participants = room.participants.filter(
+          (participant) => participant.email !== email
+        );
+        await room.save();
+        console.log(`Removed ${email} from Room ${room._id}`);
+      }
+    } catch (error) {
+      console.log("Error removing user from all rooms:", error.message);
+    }
   });
 });
 

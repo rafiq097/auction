@@ -192,20 +192,24 @@ export const updateRoom = async (req: Request, res: Response) => {
     const room = await Room.findById(id);
     if (!room) return res.status(404).json({ message: "Room Not Found!" });
 
-    const taken = room.participants.some(
-      (participant) => participant.team === user.team
-    );
-
-    if (taken) {
-      return res.status(400).json({ message: `Team ${user.team} is already taken! Please choose another team.` });
-    }
-
     if (
       room.participants.some(
         (participant: any) => participant.email === user.email
       )
     ) {
       return res.status(400).json({ message: "User already in the room!" });
+    }
+
+    const taken = room.participants.some(
+      (participant) => participant.team === user.team
+    );
+
+    if (taken) {
+      return res
+        .status(400)
+        .json({
+          message: `Team ${user.team} is already taken! Please choose another team.`,
+        });
     }
 
     room.participants.push({ ...user, online: true });

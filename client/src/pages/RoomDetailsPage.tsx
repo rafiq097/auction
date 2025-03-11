@@ -61,8 +61,8 @@ const RoomDetailsPage = () => {
     
     fetchRoomDetails();
     
-    const newSocket = io("https://iplauction.onrender.com");
-    // const newSocket = io("http://localhost:5000");
+    // const newSocket = io("https://iplauction.onrender.com");
+    const newSocket = io("http://localhost:5000");
     setSocket(newSocket);
 
     newSocket.emit("join-room", { roomId, user: userData });
