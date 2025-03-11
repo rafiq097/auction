@@ -30,6 +30,10 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("receive-message", data);
   });
 
+  socket.on("bid", async({ roomId, user, player }) => {
+
+  });
+
   socket.on("join-room", async ({ roomId, user }) => {
     try {
       const room = await Room.findById(roomId);
