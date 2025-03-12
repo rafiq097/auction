@@ -212,7 +212,7 @@ export const updateRoom = async (req: Request, res: Response) => {
         });
     }
 
-    room.participants.push({ ...user, online: true });
+    room.participants.push({ ...user, online: true, team: user.team });
     await room.save();
 
     console.log(room);

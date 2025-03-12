@@ -31,7 +31,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("bid", async({ roomId, user, player }) => {
+    console.log(roomId, user, player);
+    io.to(roomId).emit("room-message", `${user.email} Bidded for: ${player.First_Name} ${player.Surname}`);
+  });
 
+  socket.on("skip", async({ roomId, user, player }) => {
+    console.log(roomId, user, player);
+    io.to(roomId).emit("room-message", `${user.email} Skipped: ${player.First_Name} ${player.Surname}`);
   });
 
   socket.on("join-room", async ({ roomId, user }) => {

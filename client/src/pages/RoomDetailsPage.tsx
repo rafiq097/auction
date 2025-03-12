@@ -18,7 +18,7 @@ const RoomDetailsPage = () => {
   // const [participants, setParticipants] = useState<any[]>([]);
   const [userData, setUserData] = useRecoilState(userAtom);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [players, setPlayers] = useState<any>(bros);
+  const [players, ] = useState<any>(bros);
   const [curr, setCurr] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -69,6 +69,13 @@ const RoomDetailsPage = () => {
     setSocket(newSocket);
 
     newSocket.emit("join-room", { roomId, user: userData });
+    newSocket.on("room-updated", (data: any) => {
+      setRoom(data);
+    });
+    socket?.on("room-message", (data: any) => {
+      console.log(data);
+      toast.success(data);
+    });
 
     return () => {
       newSocket.emit("leave-room", { roomId, user: userData });
@@ -77,12 +84,34 @@ const RoomDetailsPage = () => {
     };
   }, [roomId]);
 
+  useEffect(() => {
+    const handleRoomMessage = (data: any) => {
+      console.log(data);
+      toast.success(data);
+    };
+  
+    const handleRoomUpdated = (data: any) => {
+      setRoom(data);
+    };
+  
+    socket?.on("room-message", handleRoomMessage);
+    socket?.on("room-updated", handleRoomUpdated);
+  
+    return () => {
+      socket?.off("room-message", handleRoomMessage);
+      socket?.off("room-updated", handleRoomUpdated);
+    };
+  }, [socket]);
+  
+
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
   const handleBid = () => {
     socket?.emit("bid", { roomId, user: userData, player: players[curr] });
-    socket?.on("room-update", (data: any) => {});
+  };
+  const handleSkip = () => {
+    socket?.emit("skip", { roomId, user: userData, player: players[curr] });
   };
 
   if (loading) return <p>Loading...</p>;
@@ -182,6 +211,11 @@ const RoomDetailsPage = () => {
             onClick={handleBid}
             >
               Bid
+            </button>
+            <button className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+            onClick={handleSkip}
+            >
+              Skip
             </button>
           </div>
         </div>
