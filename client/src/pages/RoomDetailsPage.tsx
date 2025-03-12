@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
@@ -17,11 +17,13 @@ const RoomDetailsPage = () => {
   const [room, setRoom] = useState<any>({});
   // const [participants, setParticipants] = useState<any[]>([]);
   const [userData, setUserData] = useRecoilState(userAtom);
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [players] = useState<any>(bros);
   const [curr, setCurr] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [socketID, setSocketID] = useState<any>("");
+  const socket = useMemo(() => io("http://localhost:5000"), []);
+  // const socket = useMemo(() => io("https://iplauction.onrender.com"), []);
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -68,54 +70,34 @@ const RoomDetailsPage = () => {
     };
   
     fetchRoomDetails();
+  }, [roomId]);
   
-    if (!socket) {
-      const newSocket = io("http://localhost:5000");
-      setSocket(newSocket);
+  useEffect(() => {
+    socket.on("connection", () => {
+      console.log("Connected", socket.id);
+      setSocketID(socketID);
+    });
   
-      console.log(userData);
-      newSocket.emit("join-room", { roomId, user: userData });
-  
-      newSocket.on("room-message", (data: any) => {
-        console.log("Received message:", data);
-        toast.success(data);
-      });
-  
-      return () => {
-        newSocket.emit("leave-room", { roomId, user: userData });
-        newSocket.disconnect();
-      };
-    }
-  }, [roomId, userData, socket]);
-  
+    socket.emit("join-room", { roomId, user: userData });
 
-  // useEffect(() => {
-  //   const handleRoomMessage = (data: any) => {
-  //     console.log(data);
-  //     toast.success(data);
-  //   };
+    socket.on("room-message", (data: any) => {
+      console.log("Received message:", data);
+      toast.success(data);
+    });
 
-  //   const handleRoomUpdated = (data: any) => {
-  //     setRoom(data);
-  //   };
-
-  //   socket?.on("room-message", handleRoomMessage);
-  //   socket?.on("room-updated", handleRoomUpdated);
-
-  //   return () => {
-  //     socket?.off("room-message", handleRoomMessage);
-  //     socket?.off("room-updated", handleRoomUpdated);
-  //   };
-  // }, [socket]);
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
   const handleBid = () => {
-    socket?.emit("bid", { roomId, user: userData, player: players[curr] });
+    socket.emit("bid", { roomId, user: userData, player: players[curr] });
   };
   const handleSkip = () => {
-    socket?.emit("skip", { roomId, user: userData, player: players[curr] });
+    socket.emit("skip", { roomId, user: userData, player: players[curr] });
   };
 
   if (loading) return <p>Loading...</p>;
