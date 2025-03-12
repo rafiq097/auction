@@ -30,16 +30,6 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("receive-message", data);
   });
 
-  socket.on("bid", async({ roomId, user, player }) => {
-    console.log(roomId, user, player);
-    io.to(roomId).emit("room-message", `${user.email} Bidded for: ${player.First_Name} ${player.Surname}`);
-  });
-
-  socket.on("skip", async({ roomId, user, player }) => {
-    console.log(roomId, user, player);
-    io.to(roomId).emit("room-message", `${user.email} Skipped: ${player.First_Name} ${player.Surname}`);
-  });
-
   socket.on("join-room", async ({ roomId, user }) => {
     try {
       const room = await Room.findById(roomId);
@@ -65,30 +55,16 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("leave-room", async ({ roomId, user }) => {
-    try {
-      const room = await Room.findById(roomId);
-      if (!room) {
-        return socket.emit("room-error", "Room Not Found!");
-      }
-
-      room.participants = room.participants.filter(
-        (participant) => participant.email != user.email
-      );
-      await room.save();
-
-      socket.leave(roomId);
-      console.log(room);
-      console.log(`User ${socket.id} left Room ${roomId}`);
-
-      io.to(roomId).emit("room-message", `User ${socket.id} left Room: ${roomId}`);
-      io.to(roomId).emit("room-updated", room);
-    } catch (error) {
-      console.error("Error updating room:", error.message);
-      socket.emit("room-error", "Error updating room!");
-    }
+  socket.on("bid", async({ roomId, user, player }) => {
+    console.log(roomId, user, player);
+    io.in(roomId).emit("room-message", `${user.email} Bidded for: ${player.First_Name} ${player.Surname}`);
   });
 
+  socket.on("skip", async({ roomId, user, player }) => {
+    console.log(roomId, user, player);
+    io.in(roomId).emit("room-message", `${user.email} Skipped: ${player.First_Name} ${player.Surname}`);
+  });
+  
   socket.on("disconnect", async (email) => {
     console.log("User disconnected:", socket.id);
     try {

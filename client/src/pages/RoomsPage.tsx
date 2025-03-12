@@ -84,8 +84,12 @@ const RoomsPage: React.FC = () => {
     console.log(userData);
 
     try {
+      const updatedUserData = { ...userData, team: selectedTeam };
+      setUserData(updatedUserData);
+      localStorage.setItem("aucTeam", selectedTeam);
+      
       const response = await axios.put(`/rooms/update/${roomId}`, {
-        user: { ...userData, team: selectedTeam },
+        user: { ...userData },
       });
 
       if (response.status === 200) {

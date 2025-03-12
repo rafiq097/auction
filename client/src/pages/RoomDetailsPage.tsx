@@ -18,22 +18,27 @@ const RoomDetailsPage = () => {
   // const [participants, setParticipants] = useState<any[]>([]);
   const [userData, setUserData] = useRecoilState(userAtom);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [players, ] = useState<any>(bros);
+  const [players] = useState<any>(bros);
   const [curr, setCurr] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const verify = async () => {
     const token = localStorage.getItem("token");
+    const aucTeam = localStorage.getItem("aucTeam");
     if (token) {
       try {
         const res = await axios.get("/verify", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserData(res.data.user);
+
+        const updatedUserData = { ...userData, team: aucTeam };
+        setUserData(updatedUserData);
       } catch (err: any) {
         console.log(err.message);
         localStorage.removeItem("token");
+        localStorage.removeItem("aucTeam");
         setUserData(null);
         toast.error("Session expired. Please login again.");
         navigate("/login");
@@ -57,52 +62,51 @@ const RoomDetailsPage = () => {
         setLoading(false);
       } catch (err: any) {
         console.error(err?.message);
-        toast.error("Please refresh page");
+        toast.error("Please refresh the page");
         setLoading(false);
       }
     };
-
+  
     fetchRoomDetails();
-
-    // const newSocket = io("https://iplauction.onrender.com");
-    const newSocket = io("http://localhost:5000");
-    setSocket(newSocket);
-
-    newSocket.emit("join-room", { roomId, user: userData });
-    newSocket.on("room-updated", (data: any) => {
-      setRoom(data);
-    });
-    socket?.on("room-message", (data: any) => {
-      console.log(data);
-      toast.success(data);
-    });
-
-    return () => {
-      newSocket.emit("leave-room", { roomId, user: userData });
-      newSocket.disconnect();
-      setSocket(null);
-    };
-  }, [roomId]);
-
-  useEffect(() => {
-    const handleRoomMessage = (data: any) => {
-      console.log(data);
-      toast.success(data);
-    };
   
-    const handleRoomUpdated = (data: any) => {
-      setRoom(data);
-    };
+    if (!socket) {
+      const newSocket = io("http://localhost:5000");
+      setSocket(newSocket);
   
-    socket?.on("room-message", handleRoomMessage);
-    socket?.on("room-updated", handleRoomUpdated);
+      console.log(userData);
+      newSocket.emit("join-room", { roomId, user: userData });
   
-    return () => {
-      socket?.off("room-message", handleRoomMessage);
-      socket?.off("room-updated", handleRoomUpdated);
-    };
-  }, [socket]);
+      newSocket.on("room-message", (data: any) => {
+        console.log("Received message:", data);
+        toast.success(data);
+      });
   
+      return () => {
+        newSocket.emit("leave-room", { roomId, user: userData });
+        newSocket.disconnect();
+      };
+    }
+  }, [roomId, userData, socket]);
+  
+
+  // useEffect(() => {
+  //   const handleRoomMessage = (data: any) => {
+  //     console.log(data);
+  //     toast.success(data);
+  //   };
+
+  //   const handleRoomUpdated = (data: any) => {
+  //     setRoom(data);
+  //   };
+
+  //   socket?.on("room-message", handleRoomMessage);
+  //   socket?.on("room-updated", handleRoomUpdated);
+
+  //   return () => {
+  //     socket?.off("room-message", handleRoomMessage);
+  //     socket?.off("room-updated", handleRoomUpdated);
+  //   };
+  // }, [socket]);
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
@@ -207,13 +211,15 @@ const RoomDetailsPage = () => {
         <div className="p-4 bg-white rounded-lg shadow-md flex flex-col items-center justify-center space-y-2">
           <h2 className="text-xl font-semibold mb-3 text-gray-800">Bidding</h2>
           <div className="space-x-4">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-            onClick={handleBid}
+            <button
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              onClick={handleBid}
             >
               Bid
             </button>
-            <button className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-            onClick={handleSkip}
+            <button
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              onClick={handleSkip}
             >
               Skip
             </button>
