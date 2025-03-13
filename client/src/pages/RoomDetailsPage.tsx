@@ -18,7 +18,7 @@ const RoomDetailsPage = () => {
   const [room, setRoom] = useState<any>({});
   // const [participants, setParticipants] = useState<any[]>([]);
   const [userData, setUserData] = useRecoilState(userAtom);
-  const [players] = useState<any>(bros);
+  const [players, setPlayers] = useState<any>(bros);
   const [curr, setCurr] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -69,55 +69,63 @@ const RoomDetailsPage = () => {
         setLoading(false);
       }
     };
-  
+
     fetchRoomDetails();
   }, [roomId]);
-  
+
   useEffect(() => {
     const socketInstance = io("http://localhost:5000");
     // const socketInstance = io("https://iplauction.onrender.com");
     setSocket(socketInstance);
-    
+
     socketInstance.on("connect", () => {
       console.log("Socket connected:", socketInstance.id);
-      
-      socketInstance.emit("join-room", { 
-        roomId, 
+
+      socketInstance.emit("join-room", {
+        roomId,
         user: userData,
-        team: userData.team
+        team: userData.team,
       });
     });
-    
+
     socketInstance.on("room-state", (state) => {
       console.log("Received room state:", state);
       setRoom(state);
       setLoading(false);
     });
-    
+
     socketInstance.on("user-joined", ({ message, participants }) => {
       console.log("User joined:", message);
       toast.success(message);
-      
+
       if (room) {
-        setRoom((prev: any) => prev ? {
-          ...prev,
-          participants
-        } : null);
+        setRoom((prev: any) =>
+          prev
+            ? {
+                ...prev,
+                participants,
+              }
+            : null
+        );
       }
     });
-    
+
     socketInstance.on("user-left", ({ message, participants }) => {
       console.log("User left:", message);
       toast.error(message);
-      
+
       if (room) {
-        setRoom((prev: any) => prev ? {
-          ...prev,
-          participants
-        } : null);
+        setRoom((prev: any) =>
+          prev
+            ? {
+                ...prev,
+                participants,
+              }
+            : null
+        );
       }
     });
-    
+
     socketInstance.on("room-error", (err: string) => {
       console.error("Room error:", err);
       toast.error(err);
@@ -131,22 +139,44 @@ const RoomDetailsPage = () => {
 
     socketInstance.on("player-bid", ({ message, user, player }) => {
       console.log("Bid notification:", message, user, player);
+
+      setPlayers((prevPlayers: any) => {
+        const updatedPlayers = [...prevPlayers];
+        updatedPlayers[curr] = player;
+        return updatedPlayers;
+      });
+
       toast.dismiss();
       toast.success(message, {
-        icon: '🔨',
-        duration: 3000
+        icon: "🔨",
+        duration: 3000,
       });
     });
-    
-    socketInstance.on("player-skip", ({ message, user, player }) => {
-      console.log("Skip notification:", message, user, player);
+
+    socketInstance.on("player-skip", ({ message, user, player, participants }) => {
+      console.log("Skip notification:", message, user, player, participants);
       toast.dismiss();
+
+      
       toast(message, {
-        icon: '⏭️',
-        duration: 3000
+        icon: "⏭️",
+        duration: 3000,
       });
+
+      if (participants) {
+        setRoom((prevState: any) => {
+          if (!prevState) return null;
+          return {
+            ...prevState,
+            participants
+          };
+        });
+
+        const ind = participants.findIndex((p: any) => p.email === userData.email);
+        setUserData(participants[ind]);
+      }
     });
-    
+
     return () => {
       console.log("Disconnecting socket");
       socketInstance.disconnect();
@@ -155,7 +185,7 @@ const RoomDetailsPage = () => {
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
-  
+
   const handleBid = () => {
     socket?.emit("bid", { roomId, user: userData, player: players[curr] });
   };
@@ -185,16 +215,26 @@ const RoomDetailsPage = () => {
             </thead>
             <tbody>
               {room?.teams?.map((team: any) => {
+                const bro = room?.participants?.find(
+                  (user: any) => user.team === team.name
+                );
                 const owner =
                   room?.participants?.find(
                     (user: any) => user.team === team.name
                   )?.name || "N/A";
+                const skipped = room?.participants?.find(
+                  (user: any) => user.team === team.name
+                )?.skip;
                 return (
                   <tr key={team.name} className="hover:bg-gray-50">
                     <td className="border px-3 py-2 font-medium">
                       {team.name}
                     </td>
-                    <td className="border px-3 py-2">{owner}</td>
+                    <td className="border px-3 py-2">
+                      {owner}
+                      {skipped}
+                      {console.log(bro)}
+                    </td>
                     <td className="border px-3 py-2">{team.spent} cr</td>
                     <td className="border px-3 py-2">{team.remaining} cr</td>
                   </tr>
@@ -256,12 +296,12 @@ const RoomDetailsPage = () => {
         <div className="p-4 bg-white rounded-lg shadow-md flex flex-col items-center justify-center space-y-2">
           <h2 className="text-xl font-semibold mb-3 text-gray-800">Bidding</h2>
           <div className="space-x-4">
-            <button
+            {!userData.skip && <button
               className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
               onClick={handleBid}
             >
               Bid
-            </button>
+            </button>}
             <button
               className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
               onClick={handleSkip}

@@ -1,3 +1,4 @@
+import { getPlusPrice } from "./utils/getPlusPrice";
 import express, { Application, Request, Response } from "express";
 import path from "path";
 import cors from "cors";
@@ -10,6 +11,7 @@ import verifyToken from "./middlewares/auth";
 import userRoutes from "./routes/user.routes";
 import roomRoutes from "./routes/room.routes";
 import Room from "./models/room.model";
+import { useReducer } from "react";
 
 dotenv.config();
 const app: Application = express();
@@ -41,7 +43,8 @@ io.on("connection", (socket) => {
       );
 
       const taken = room.participants.some(
-        (participant) => participant.team === user.team
+        (participant) =>
+          participant.team === user.team && participant.email !== user.email
       );
 
       if (taken) {
@@ -106,7 +109,9 @@ io.on("connection", (socket) => {
 
         const room = await Room.findById(roomId);
         if (room) {
-          room.participants = room.participants.filter(p => p.email !== email);
+          room.participants = room.participants.filter(
+            (p) => p.email !== email
+          );
           await room.save();
 
           io.to(roomId).emit("user-left", {
@@ -136,10 +141,12 @@ io.on("connection", (socket) => {
         return;
       }
 
+      player.Base += getPlusPrice(player.Base);
+
       io.to(roomId).emit("player-bid", {
         message: `${user.name || user.email} bid for ${player.First_Name} ${
           player.Surname
-        }`,
+        } at ${player.Base}`,
         user: user,
         player: player,
         timestamp: new Date(),
@@ -155,7 +162,9 @@ io.on("connection", (socket) => {
   socket.on("skip", async ({ roomId, user, player }) => {
     try {
       console.log(
-        `User ${user.email} skipped player ${player.First_Name} ${player.Surname}`
+        `User ${user.name || user.email} skipped player ${player.First_Name} ${
+          player.Surname
+        }`
       );
 
       const room = await Room.findById(roomId);
@@ -164,13 +173,27 @@ io.on("connection", (socket) => {
         return;
       }
 
+      const ind = room.participants.findIndex((p) => p.email === user.email);
+
+      if (ind === -1) {
+        socket.emit("room-error", "User not found in room participants");
+        return;
+      }
+
+      room.participants[ind].skip = true;
+
+      await room.save();
+
+      const updatedUser = room.participants[ind];
+
       io.to(roomId).emit("player-skip", {
         message: `${user.name || user.email} skipped ${player.First_Name} ${
           player.Surname
         }`,
-        user: user,
+        user: updatedUser,
         player: player,
         timestamp: new Date(),
+        participants: room.participants,
       });
 
       console.log(`Skip notification sent to room ${roomId}`);
