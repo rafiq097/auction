@@ -130,7 +130,7 @@ const RoomDetailsPage = () => {
     });
 
     socketInstance.on("player-bid", ({ message, user, player }) => {
-      console.log("Bid notification:", message);
+      console.log("Bid notification:", message, user, player);
       toast.success(message, {
         icon: '🔨',
         duration: 3000
@@ -138,7 +138,7 @@ const RoomDetailsPage = () => {
     });
     
     socketInstance.on("player-skip", ({ message, user, player }) => {
-      console.log("Skip notification:", message);
+      console.log("Skip notification:", message, user, player);
       toast(message, {
         icon: '⏭️',
         duration: 3000
