@@ -1,4 +1,3 @@
-import { getPlusPrice } from "./utils/getPlusPrice";
 import express, { Application, Request, Response } from "express";
 import path from "path";
 import cors from "cors";
@@ -11,7 +10,7 @@ import verifyToken from "./middlewares/auth";
 import userRoutes from "./routes/user.routes";
 import roomRoutes from "./routes/room.routes";
 import Room from "./models/room.model";
-import { useReducer } from "react";
+import { getPlusPrice } from "./utils/getPlusPrice";
 
 dotenv.config();
 const app: Application = express();
