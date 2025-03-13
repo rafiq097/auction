@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
@@ -22,8 +22,9 @@ const RoomDetailsPage = () => {
   const [curr, setCurr] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [socketID, setSocketID] = useState<any>("");
-  const [socket, setSocket] = useState<Socket>(io("http://localhost:5000"));
+  // const [socketID, setSocketID] = useState<any>("");
+  // const [socket, setSocket] = useState<Socket>(io("http://localhost:5000"));
+  const [socket, setSocket] = useState<Socket>(io("https://iplauction.onrender.com"));
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -73,7 +74,8 @@ const RoomDetailsPage = () => {
   }, [roomId]);
   
   useEffect(() => {
-    const socketInstance = io("http://localhost:5000");
+    // const socketInstance = io("http://localhost:5000");
+    const socketInstance = io("https://iplauction.onrender.com");
     setSocket(socketInstance);
     
     socketInstance.on("connect", () => {
@@ -97,7 +99,7 @@ const RoomDetailsPage = () => {
       toast.success(message);
       
       if (room) {
-        setRoom(prev => prev ? {
+        setRoom((prev: any) => prev ? {
           ...prev,
           participants
         } : null);
@@ -109,19 +111,40 @@ const RoomDetailsPage = () => {
       toast.error(message);
       
       if (room) {
-        setRoom(prev => prev ? {
+        setRoom((prev: any) => prev ? {
           ...prev,
           participants
         } : null);
       }
     });
     
-    socketInstance.on("room-error", (errorMsg: string) => {
-      console.error("Room error:", errorMsg);
-      toast.error(errorMsg);
+    socketInstance.on("room-error", (err: string) => {
+      console.error("Room error:", err);
+      toast.error(err);
       setLoading(false);
     });
 
+    socketInstance.on("room-msg", (msg: string) => {
+      console.error("Room Message:", msg);
+      toast.error(msg);
+    });
+
+    socketInstance.on("player-bid", ({ message, user, player }) => {
+      console.log("Bid notification:", message);
+      toast.success(message, {
+        icon: '🔨',
+        duration: 3000
+      });
+    });
+    
+    socketInstance.on("player-skip", ({ message, user, player }) => {
+      console.log("Skip notification:", message);
+      toast(message, {
+        icon: '⏭️',
+        duration: 3000
+      });
+    });
+    
     return () => {
       console.log("Disconnecting socket");
       socketInstance.disconnect();
@@ -130,7 +153,7 @@ const RoomDetailsPage = () => {
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
-
+  
   const handleBid = () => {
     socket?.emit("bid", { roomId, user: userData, player: players[curr] });
   };
