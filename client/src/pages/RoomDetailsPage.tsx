@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { players as bros } from "../utils/list.ts";
 import Card from "../components/Card.tsx";
 import { CR } from "../utils/getCR.ts";
+// import { socketState } from "../atoms/socketAtom.ts";
 
 const RoomDetailsPage = () => {
   const { roomId } = useParams();
@@ -22,8 +23,7 @@ const RoomDetailsPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [socketID, setSocketID] = useState<any>("");
-  const socket = useMemo(() => io("http://localhost:5000"), []);
-  // const socket = useMemo(() => io("https://iplauction.onrender.com"), []);
+  const [socket, setSocket] = useState<Socket>(io("http://localhost:5000"));
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -73,31 +73,69 @@ const RoomDetailsPage = () => {
   }, [roomId]);
   
   useEffect(() => {
-    socket.on("connection", () => {
-      console.log("Connected", socket.id);
-      setSocketID(socketID);
+    const socketInstance = io("http://localhost:5000");
+    setSocket(socketInstance);
+    
+    socketInstance.on("connect", () => {
+      console.log("Socket connected:", socketInstance.id);
+      
+      socketInstance.emit("join-room", { 
+        roomId, 
+        user: userData,
+        team: userData.team
+      });
     });
-  
-    socket.emit("join-room", { roomId, user: userData });
-
-    socket.on("room-message", (data: any) => {
-      console.log("Received message:", data);
-      toast.success(data);
+    
+    socketInstance.on("room-state", (state) => {
+      console.log("Received room state:", state);
+      setRoom(state);
+      setLoading(false);
+    });
+    
+    socketInstance.on("user-joined", ({ message, participants }) => {
+      console.log("User joined:", message);
+      toast.success(message);
+      
+      if (room) {
+        setRoom(prev => prev ? {
+          ...prev,
+          participants
+        } : null);
+      }
+    });
+    
+    socketInstance.on("user-left", ({ message, participants }) => {
+      console.log("User left:", message);
+      toast.error(message);
+      
+      if (room) {
+        setRoom(prev => prev ? {
+          ...prev,
+          participants
+        } : null);
+      }
+    });
+    
+    socketInstance.on("room-error", (errorMsg: string) => {
+      console.error("Room error:", errorMsg);
+      toast.error(errorMsg);
+      setLoading(false);
     });
 
     return () => {
-      socket.disconnect();
+      console.log("Disconnecting socket");
+      socketInstance.disconnect();
     };
-  }, []);
+  }, [roomId, userData]);
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
   const handleBid = () => {
-    socket.emit("bid", { roomId, user: userData, player: players[curr] });
+    socket?.emit("bid", { roomId, user: userData, player: players[curr] });
   };
   const handleSkip = () => {
-    socket.emit("skip", { roomId, user: userData, player: players[curr] });
+    socket?.emit("skip", { roomId, user: userData, player: players[curr] });
   };
 
   if (loading) return <p>Loading...</p>;

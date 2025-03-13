@@ -22,82 +22,101 @@ const io = new Server(server, {
   },
 });
 
+const map = new Map();
+
 io.on("connection", (socket) => {
-  console.log("A User connected: ", socket.id);
+  console.log("New connection established:", socket.id);
 
-  const bro = () => {
-    const rooms = io.sockets.adapter.rooms;
-    console.log("Connected Rooms and Clients:");
-    rooms.forEach((sockets, roomId) => {
-      if (!io.sockets.sockets.has(roomId)) {
-        const clients = Array.from(sockets);
-        console.log(`Room ID: ${roomId} | Clients: ${clients.join(", ")}`);
-      }
-    });
-  };
-
-  bro();
-
-  socket.on("join-room", async ({ roomId, user }) => {
+  socket.on("join-room", async ({ roomId, user, team }) => {
     try {
+      console.log(`User ${user.email} attempting to join room ${roomId}`);
+      
       const room = await Room.findById(roomId);
       if (!room) {
-        return socket.emit("room-error", "Room Not Found!");
+        socket.emit("room-error", "Room not found");
+        return;
       }
 
-      if (
-        room.participants.some(
-          (participant) => participant.email === user.email
-        )
-      ) {
-        return socket.emit("room-error", "User already in the room!");
-      }
+      const existingParticipant = room.participants.find(p => p.email === user.email);
+      
+      if (existingParticipant) {
+        room.participants = room.participants.map(p => 
+          p.email === user.email ? { ...p, online: true, socketId: socket.id, team } : p
+        );
+      } else {
+        const taken = room.participants.some(
+          (participant) => participant.team === user.team
+        );
+    
+        if (taken) {
+          socket.emit("room-error", `Team ${user.team} is already taken! Please choose another team.`);
+        }
 
-      room.participants.push({ ...user, online: true });
+        room.participants.push({
+          ...user,
+          online: true,
+          socketId: socket.id,
+          team
+        });
+      }
+      
       await room.save();
-
+      
       socket.join(roomId);
-      console.log(`User ${socket.id} joined Room ${roomId}`);
-
-      io.to(roomId).emit(
-        "room-message",
-        `User ${socket.id} joined Room: ${roomId}`
-      );
-      bro();
+      
+      map.set(socket.id, {
+        email: user.email,
+        roomId: roomId
+      });
+      
+      io.to(roomId).emit("user-joined", {
+        message: `${user.name || user.email} has joined the room`,
+        participants: room.participants
+      });
+      
+      socket.emit("room-state", {
+        name: room.name,
+        owner: room.owner,
+        participants: room.participants,
+        curr: room.curr,
+        teams: room.teams
+      });
+      
+      console.log(`User ${user.email} joined Room ${roomId} successfully`);
     } catch (error) {
-      console.error("Error updating room:", error.message);
-      socket.emit("room-error", "Error updating room!");
+      console.error("Error joining room:", error);
+      socket.emit("room-error", "Failed to join room");
     }
   });
 
-  socket.on("bid", async ({ roomId, user, player }) => {
-    console.log(roomId, user, player);
-    io.to(roomId).emit("room-message", `${user.email} Bidded for: ${player.First_Name} ${player.Surname}`);
-    // socket.broadcast.emit("room-message", "bid");
-  });
-
-  socket.on("skip", async ({ roomId, user, player }) => {
-    console.log(roomId, user, player);
-    io.to(roomId).emit("room-message", `${user.email} Skipped: ${player.First_Name} ${player.Surname}`);
-    // socket.broadcast.emit("room-message", "skip");
-  });
-
-  socket.on("disconnect", async (email) => {
-    console.log("User disconnected:", socket.id);
+  socket.on("disconnect", async () => {
     try {
-      const rooms = await Room.find({ "participants.email": email });
-
-      for (const room of rooms) {
-        room.participants = room.participants.filter(
-          (participant) => participant.email !== email
-        );
-        await room.save();
-        console.log(`Removed ${email} from Room ${room._id}`);
+      const userData = map.get(socket.id);
+      
+      if (userData) {
+        const { email, roomId } = userData;
+        console.log(`User ${email} disconnected from socket ${socket.id}`);
+        
+        const room = await Room.findById(roomId);
+        if (room) {
+          room.participants = room.participants.map(p => 
+            p.email === email ? { ...p, online: false } : p
+          );
+          
+          await room.save();
+          
+          io.to(roomId).emit("user-left", {
+            message: `${email} has left the room`,
+            participants: room.participants
+          });
+          
+          console.log(`User ${email} marked offline in Room ${roomId}`);
+        }
+        
+        map.delete(socket.id);
       }
-
-      bro();
     } catch (error) {
-      console.log("Error removing user from all rooms:", error.message);
+      console.error("Error handling disconnect:", error);
     }
   });
 });
