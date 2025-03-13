@@ -40,6 +40,18 @@ io.on("connection", (socket) => {
         (p) => p.email === user.email
       );
 
+      const taken = room.participants.some(
+        (participant) => participant.team === user.team
+      );
+
+      if (taken) {
+        socket.emit(
+          "room-error",
+          `Team ${user.team} is already taken! Please choose another team.`
+        );
+        return;
+      }
+
       if (existingParticipant) {
         room.participants = room.participants.map((p) =>
           p.email === user.email
@@ -47,17 +59,6 @@ io.on("connection", (socket) => {
             : p
         );
       } else {
-        const taken = room.participants.some(
-          (participant) => participant.team === user.team
-        );
-
-        if (taken) {
-          socket.emit(
-            "room-error",
-            `Team ${user.team} is already taken! Please choose another team.`
-          );
-        }
-
         room.participants.push({
           ...user,
           online: true,
@@ -105,10 +106,7 @@ io.on("connection", (socket) => {
 
         const room = await Room.findById(roomId);
         if (room) {
-          room.participants = room.participants.map((p) =>
-            p.email === email ? { ...p, online: false } : p
-          );
-
+          room.participants = room.participants.filter(p => p.email !== email);
           await room.save();
 
           io.to(roomId).emit("user-left", {
