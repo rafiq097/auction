@@ -23,8 +23,8 @@ const RoomDetailsPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   // const [socketID, setSocketID] = useState<any>("");
-  const [socket, setSocket] = useState<Socket>(io("http://localhost:5000"));
-  // const [socket, setSocket] = useState<Socket>(io("https://iplauction.onrender.com"));
+  // const [socket, setSocket] = useState<Socket>(io("http://localhost:5000"));
+  const [socket, setSocket] = useState<Socket>(io("https://iplauction.onrender.com"));
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -74,8 +74,8 @@ const RoomDetailsPage = () => {
   }, [roomId]);
 
   useEffect(() => {
-    const socketInstance = io("http://localhost:5000");
-    // const socketInstance = io("https://iplauction.onrender.com");
+    // const socketInstance = io("http://localhost:5000");
+    const socketInstance = io("https://iplauction.onrender.com");
     setSocket(socketInstance);
 
     socketInstance.on("connect", () => {
