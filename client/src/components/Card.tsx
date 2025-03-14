@@ -55,7 +55,7 @@ const Card: React.FC<{ player: Player; onClose: any }> = ({
   return (
     <div
       ref={cardRef}
-      className="bg-white border border-gray-300 rounded-lg p-4 shadow-lg w-full max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-4xl mx-auto max-h-[90vh] overflow-y-auto"
+      className="bg-gray-800 border border-gray-300 rounded-lg p-4 shadow-lg w-full max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-4xl mx-auto max-h-[90vh] overflow-y-auto"
     >
       <h2 className="text-2xl font-bold text-center mb-2">
         {player.First_Name} {player.Surname}

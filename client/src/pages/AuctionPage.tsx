@@ -547,208 +547,228 @@ const AuctionPage: React.FC = () => {
         Current Team: {team.toLocaleUpperCase()}
       </div> */}
       {/* {console.log(teams)} */}
-      <div className="grid h-screen bg-gray-100">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {/* // Purse bros */}
-          <div className="bg-gray-100 h-full overflow-y-auto p-1">
-            <ul className="list-none space-y-1">
-              <li className="bg-gray-200 flex justify-between items-center border-b border-gray-300">
-                <span>Team</span>
-                <span>Spent</span>
-                <span>Remaining</span>
-              </li>
-              {teams.map((team) => (
-                <li
-                  key={team.name}
-                  className="flex justify-between items-center border-b border-gray-300"
-                >
-                  <span>{team.name}</span>
-                  <span>{team.spent.toFixed(2)}</span>
-                  <span>{team.remaining.toFixed(2)}</span>
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('aucbg.jpg')",
+          zIndex: -1,
+        }}
+      ></div>
+      <div className="flex items-center justify-center w-full min-h-screen">
+        <div className="grid h-screen bg-gray-100 bg-opacity-0 w-full">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {/* // Purse bros */}
+            <div className="bg-gray-800 bg-opacity-0 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
+              <ul className="list-none space-y-1">
+                <li className="bg-gray-900 flex justify-between items-center border-b border-gray-300">
+                  <span>Team</span>
+                  <span>Spent</span>
+                  <span>Remaining</span>
                 </li>
-              ))}
-            </ul>
-          </div>
+                {teams.map((team) => (
+                  <li
+                    key={team.name}
+                    className="flex justify-between items-center border-b border-gray-300"
+                  >
+                    <span>{team.name}</span>
+                    <span>{team.spent.toFixed(2)}</span>
+                    <span>{team.remaining.toFixed(2)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* // Player bros Bid */}
-          <div className="bg-gray-200 h-full flex items-center justify-center">
-            {curr < players.length ? (
-              <div className="p-6 bg-gray-50 rounded-lg shadow-lg max-w-lg">
-                <div className="flex justify-center">
-                  <button
-                    className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mb-2"
-                    onClick={handleReset}
-                  >
-                    Reset Auction
-                  </button>
-                </div>
-                <h1 className="text-2xl font-bold mb-2">
-                  Set: {players[curr].Set}
-                </h1>
-                <h2 className="text-xl font-semibold mb-2">
-                  {players[curr].First_Name + " " + players[curr].Surname + " "}
-                  <button
-                    className="text-blue-500 text-sm underline hover:text-blue-700"
-                    onClick={handleShowModal}
-                  >
-                    Full Info
-                  </button>
-                </h2>
-                <p className="text-gray-600 mb-2">
-                  Role:{" "}
-                  {players[curr].Role === "BATTER"
-                    ? `${players[curr].Role} - ${players[curr].Bat_type}`
-                    : players[curr].Role === "BOWLER"
-                    ? `${players[curr].Role} - ${players[curr].Bowl_type}`
-                    : players[curr].Role}
-                </p>
-                <p className="text-gray-600 mb-2">
-                  Base Price: {CR(tempPlayers[curr].Base)} CR
-                </p>
-                <p className="text-gray-600 mb-4">
-                  Country: {players[curr].Country}
-                </p>
-
-                <div className="flex justify-between">
-                  <button
-                    className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mr-4"
-                    onClick={handleContinue}
-                  >
-                    Skip
-                  </button>
-                  <button
-                    className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
-                    onClick={handleBid}
-                  >
-                    Bid
-                  </button>
-                </div>
-
-                {showModal && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <Card player={players[curr]} onClose={handleCloseModal} />
+            {/* // Player bros Bid */}
+            <div className="bg-gray-800 bg-opacity-0 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
+              {curr < players.length ? (
+                <div className="p-6 bg-gray-800 rounded-lg shadow-lg max-w-lg">
+                  <div className="flex justify-center">
+                    <button
+                      className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mb-2"
+                      onClick={handleReset}
+                    >
+                      Reset Auction
+                    </button>
                   </div>
-                )}
-              </div>
-            ) : (
-              <div>
-                <h2 className="text-xl text-red-500 font-semibold mb-2">
-                  Auction Completed
-                </h2>
-                <div className="flex justify-center">
-                  <button
-                    className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mb-2"
-                    onClick={handleReset}
-                  >
-                    Reset Auction
-                  </button>
+                  <h1 className="flex justify-center text-2xl font-bold mb-2">
+                    Set: {players[curr].Set}
+                  </h1>
+                  <h2 className="flex justify-center text-xl font-semibold mb-2">
+                    {players[curr].First_Name +
+                      " " +
+                      players[curr].Surname +
+                      " "}
+                    <button
+                      className="ml-2 text-blue-500 text-sm underline hover:text-blue-700"
+                      onClick={handleShowModal}
+                    >
+                      Full Info
+                    </button>
+                  </h2>
+                  <p className="flex justify-center text-gray-100 mb-2">
+                    Role:{" "}
+                    {players[curr].Role === "BATTER"
+                      ? `${players[curr].Role} - ${players[curr].Bat_type}`
+                      : players[curr].Role === "BOWLER"
+                      ? `${players[curr].Role} - ${players[curr].Bowl_type}`
+                      : players[curr].Role}
+                  </p>
+                  <p className="flex justify-center text-gray-100 mb-2">
+                    Base Price: {CR(tempPlayers[curr].Base)} CR
+                  </p>
+                  <p className="flex justify-center text-gray-100 mb-4">
+                    Country: {players[curr].Country}
+                  </p>
+
+                  <div className="flex justify-evenly">
+                    <button
+                      className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mr-4"
+                      onClick={handleContinue}
+                    >
+                      Skip
+                    </button>
+                    <button
+                      className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
+                      onClick={handleBid}
+                    >
+                      Bid
+                    </button>
+                  </div>
+
+                  {showModal && (
+                    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+                      <Card player={players[curr]} onClose={handleCloseModal} />
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* // Teams bros Bid Status */}
-          <div className="bg-gray-100 h-full">
-            <ul className="list-none space-y-1 ml-2 mr-4">
-              <li className="bg-gray-200 flex justify-between items-center border-b border-gray-300">
-                <span>Team</span>
-                <span>Last Bid Price</span>
-                <span>Times</span>
-              </li>
-              {biddingBros.map((team) => (
-                <li
-                  key={team.name}
-                  className="flex justify-between items-center border-b border-gray-300"
-                >
-                  <span>{team.name}</span>
-                  <span>{CR(team.bid).toFixed(2)}</span>
-                  <span>{team.round}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {/* // Last Bid */}
-          <div className="bg-gray-200 h-full flex items-center justify-center">
-            {soldBro ? (
-              <div className="p-5 bg-gray-100 rounded-lg shadow-lg max-w-lg">
-                Last Sold Bro
-                <h1 className="text-2xl font-bold mb-2">
-                  Sold to: {soldBro.team}
-                </h1>
-                <h2 className="text-xl font-semibold mb-2">
-                  {soldBro.First_Name + " " + soldBro.Surname}
-                </h2>
-                <p className="text-gray-600 mb-2">
-                  Role:{" "}
-                  {soldBro.Role === "BATTER"
-                    ? `${soldBro.Role} - ${soldBro.Bat_type}`
-                    : soldBro.Role === "BOWLER"
-                    ? `${soldBro.Role} - ${soldBro.Bowl_type}`
-                    : soldBro.Role}
-                </p>
-                <p className="text-gray-600 mb-2">
-                  Base Price: {CR(soldBro.base)} CR
-                </p>
-                <p className="text-gray-600 mb-2">Country: {soldBro.Country}</p>
-                <p className="text-gray-600 mb-2">
-                  Selling Price: {soldBro.price} CR
-                </p>
-                <p className="text-gray-600 mb-2">Set: {soldBro.Set}</p>
-              </div>
-            ) : null}
-          </div>
-
-          {/* // Bid war */}
-          <div className="bg-gray-100 h-full flex flex-col items-center justify-center p-4 rounded-lg shadow-md max-w-sm mx-auto">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Current Bid
-            </h2>
-            <div className="text-center">
-              {currentBid ? (
-                <>
-                  <p className="text-4xl text-green-600 font-extrabold">
-                    ₹{CR(currentBid.bid).toFixed(2)} CR
-                  </p>
-                  <p className="text-lg text-red-700 font-medium mt-2">
-                    Bidder: <span className="font-bold">{currentBid.name}</span>
-                  </p>
-                </>
               ) : (
-                <p className="text-xl text-gray-600 italic">Start Bidding!</p>
+                <div>
+                  <h2 className="text-xl text-red-500 font-semibold mb-2">
+                    Auction Completed
+                  </h2>
+                  <div className="flex justify-center">
+                    <button
+                      className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mb-2"
+                      onClick={handleReset}
+                    >
+                      Reset Auction
+                    </button>
+                  </div>
+                </div>
               )}
+            </div>
+
+            {/* // Teams bros Bid Status */}
+            <div className="bg-gray-800 bg-opacity-0 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
+              <ul className="list-none space-y-1 ml-2 mr-4">
+                <li className="bg-gray-900 flex justify-between items-center border-b border-gray-300">
+                  <span>Team</span>
+                  <span>Last Bid Price</span>
+                  <span>Times</span>
+                </li>
+                {biddingBros.map((team) => (
+                  <li
+                    key={team.name}
+                    className="flex justify-between items-center border-b border-gray-300"
+                  >
+                    <span>{team.name}</span>
+                    <span>{CR(team.bid).toFixed(2)}</span>
+                    <span>{team.round}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
-          {/* // User Team Information */}
-          <div className="bg-gray-200 shadow-lg rounded-lg p-4">
-            <h1 className="flex justify-center text-xl font-bold text-gray-800 mb-4">
-              Your Team: {team.name}
-            </h1>
-            <ul className="text-gray-600 space-y-2">
-              <li className="flex justify-center ">Batters: {team.batters}</li>
-              <li className="flex justify-center ">Bowlers: {team.bowlers}</li>
-              <li className="flex justify-center ">
-                All-Rounders: {team.allr}
-              </li>
-              <li className="flex justify-center ">
-                Wicketkeepers: {team.wks}
-              </li>
-              <li className="flex justify-center ">
-                Overseas Players: {team.overseas}
-              </li>
-              <li className="flex justify-center font-bold text-lg">
-                Total: {team.batters + team.bowlers + team.allr + team.wks} / 25
-              </li>
-            </ul>
-            <button
-              className="mt-4 w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"
-              onClick={() => navigate("/teams")}
-            >
-              View Other Teams
-            </button>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {/* // Last Bid */}
+            <div className="bg-gray-800 bg-opacity-0 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
+              {soldBro ? (
+                <div className="p-5 bg-gray-800 rounded-lg shadow-lg max-w-lg">
+                  Last Sold Bro
+                  <h1 className="text-2xl font-bold mb-2">
+                    Sold to: {soldBro.team}
+                  </h1>
+                  <h2 className="text-xl font-semibold mb-2">
+                    {soldBro.First_Name + " " + soldBro.Surname}
+                  </h2>
+                  <p className="text-gray-100 mb-2">
+                    Role:{" "}
+                    {soldBro.Role === "BATTER"
+                      ? `${soldBro.Role} - ${soldBro.Bat_type}`
+                      : soldBro.Role === "BOWLER"
+                      ? `${soldBro.Role} - ${soldBro.Bowl_type}`
+                      : soldBro.Role}
+                  </p>
+                  <p className="text-gray-100 mb-2">
+                    Base Price: {CR(soldBro.base)} CR
+                  </p>
+                  <p className="text-gray-100 mb-2">
+                    Country: {soldBro.Country}
+                  </p>
+                  <p className="text-gray-100 mb-2">
+                    Selling Price: {soldBro.price} CR
+                  </p>
+                  <p className="text-gray-100 mb-2">Set: {soldBro.Set}</p>
+                </div>
+              ) : null}
+            </div>
+
+            {/* // Bid war */}
+            <div className="bg-gray-800 bg-opacity-0 text-white h-full flex flex-col items-center justify-center p-4 rounded-lg shadow-lg w-full">
+              <h2 className="text-2xl font-bold text-gray-100 mb-4">
+                Current Bid
+              </h2>
+              <div className="text-center">
+                {currentBid ? (
+                  <>
+                    <p className="text-4xl text-green-800 font-extrabold">
+                      ₹{CR(currentBid.bid).toFixed(2)} CR
+                    </p>
+                    <p className="text-lg text-red-800 font-medium mt-2">
+                      Bidder:{" "}
+                      <span className="font-bold">{currentBid.name}</span>
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-xl text-gray-100 italic">Start Bidding!</p>
+                )}
+              </div>
+            </div>
+
+            {/* // User Team Information */}
+              <div className="bg-gray-800 bg-opacity-0 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
+                <h1 className="flex justify-center text-xl font-bold text-black mb-4">
+                  Your Team: {team.name}
+                </h1>
+                <ul className="text-black space-y-2">
+                  <li className="flex justify-center ">
+                    Batters: {team.batters}
+                  </li>
+                  <li className="flex justify-center ">
+                    Bowlers: {team.bowlers}
+                  </li>
+                  <li className="flex justify-center ">
+                    All-Rounders: {team.allr}
+                  </li>
+                  <li className="flex justify-center ">
+                    Wicketkeepers: {team.wks}
+                  </li>
+                  <li className="flex justify-center ">
+                    Overseas Players: {team.overseas}
+                  </li>
+                  <li className="flex justify-center font-bold text-lg">
+                    Total: {team.batters + team.bowlers + team.allr + team.wks} /
+                    25
+                  </li>
+                </ul>
+                <button
+                  className="mt-4 w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"
+                  onClick={() => navigate("/teams")}
+                >
+                  View Other Teams
+                </button>
+              </div>
           </div>
         </div>
       </div>
