@@ -682,9 +682,9 @@ const AuctionPage: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {/* // Last Bid */}
-            <div className="bg-gray-800 bg-opacity-0 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
+            <div className="bg-gray-800 bg-opacity-10 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
               {soldBro ? (
-                <div className="p-5 bg-gray-800 rounded-lg shadow-lg max-w-lg">
+                <div className="p-5 bg-gray-800 bg-opacity-0 rounded-lg shadow-lg max-w-lg">
                   Last Sold Bro
                   <h1 className="text-2xl font-bold mb-2">
                     Sold to: {soldBro.team}
@@ -706,7 +706,7 @@ const AuctionPage: React.FC = () => {
                   <p className="text-gray-100 mb-2">
                     Country: {soldBro.Country}
                   </p>
-                  <p className="text-gray-100 mb-2">
+                  <p className="text-red-500 mb-2">
                     Selling Price: {soldBro.price} CR
                   </p>
                   <p className="text-gray-100 mb-2">Set: {soldBro.Set}</p>
