@@ -24,7 +24,10 @@ const RoomDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   // const [socketID, setSocketID] = useState<any>("");
   // const [socket, setSocket] = useState<Socket>(io("http://localhost:5000"));
-  const [socket, setSocket] = useState<Socket>(io("https://iplauction.onrender.com"));
+  const [socket, setSocket] = useState<Socket>(
+    io("https://iplauction.onrender.com")
+  );
+  const [currentBid, setCurrentBid] = useState<any>();
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -146,6 +149,7 @@ const RoomDetailsPage = () => {
         return updatedPlayers;
       });
 
+      setCurrentBid({ bid: player.Base, team: user.team });
       toast.dismiss();
       toast.success(message, {
         icon: "🔨",
@@ -153,29 +157,33 @@ const RoomDetailsPage = () => {
       });
     });
 
-    socketInstance.on("player-skip", ({ message, user, player, participants }) => {
-      console.log("Skip notification:", message, user, player, participants);
-      toast.dismiss();
+    socketInstance.on(
+      "player-skip",
+      ({ message, user, player, participants }) => {
+        console.log("Skip notification:", message, user, player, participants);
+        toast.dismiss();
 
-      
-      toast(message, {
-        icon: "⏭️",
-        duration: 3000,
-      });
-
-      if (participants) {
-        setRoom((prevState: any) => {
-          if (!prevState) return null;
-          return {
-            ...prevState,
-            participants
-          };
+        toast(message, {
+          icon: "⏭️",
+          duration: 3000,
         });
 
-        const ind = participants.findIndex((p: any) => p.email === userData.email);
-        setUserData(participants[ind]);
+        if (participants) {
+          setRoom((prevState: any) => {
+            if (!prevState) return null;
+            return {
+              ...prevState,
+              participants,
+            };
+          });
+
+          const ind = participants.findIndex(
+            (p: any) => p.email === userData.email
+          );
+          setUserData(participants[ind]);
+        }
       }
-    });
+    );
 
     return () => {
       console.log("Disconnecting socket");
@@ -294,14 +302,24 @@ const RoomDetailsPage = () => {
 
         {/* Bid */}
         <div className="p-4 bg-white rounded-lg shadow-md flex flex-col items-center justify-center space-y-2">
+          {currentBid && (
+            <div className="text-gray-600">
+              <p>
+                <span className="font-medium">Current Bid: </span>
+                {CR(currentBid.bid)} CR by {currentBid.team}
+              </p>
+            </div>
+          )}
           <h2 className="text-xl font-semibold mb-3 text-gray-800">Bidding</h2>
           <div className="space-x-4">
-            {!userData.skip && <button
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-              onClick={handleBid}
-            >
-              Bid
-            </button>}
+            {!userData.skip && (
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                onClick={handleBid}
+              >
+                Bid
+              </button>
+            )}
             <button
               className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
               onClick={handleSkip}
