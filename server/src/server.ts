@@ -180,7 +180,7 @@ io.on("connection", (socket) => {
       }
 
       room.participants[ind].skip = true;
-
+      room.curr += 1;
       await room.save();
 
       const updatedUser = room.participants[ind];
@@ -193,6 +193,7 @@ io.on("connection", (socket) => {
         player: player,
         timestamp: new Date(),
         participants: room.participants,
+        curr: room.curr,
       });
 
       console.log(`Skip notification sent to room ${roomId}`);

@@ -159,10 +159,12 @@ const RoomDetailsPage = () => {
 
     socketInstance.on(
       "player-skip",
-      ({ message, user, player, participants }) => {
-        console.log("Skip notification:", message, user, player, participants);
-        toast.dismiss();
+      ({ message, user, player, participants, curr }) => {
+        console.log("Skip notification:", message, user, player, participants, curr);
+        setCurr(curr);
+        setCurrentBid(null);
 
+        toast.dismiss();
         toast(message, {
           icon: "⏭️",
           duration: 3000,
