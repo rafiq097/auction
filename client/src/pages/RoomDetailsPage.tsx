@@ -33,6 +33,7 @@ const RoomDetailsPage = () => {
   const [timerActive, setTimerActive] = useState<boolean>(false);
 
   const socketRef = useRef<Socket | null>(null);
+  const currentBidRef = useRef<any>(null);
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -169,6 +170,8 @@ const RoomDetailsPage = () => {
       });
 
       setCurrentBid({ bid: player.Base, team: user.team });
+      currentBidRef.current = { bid: player.Base, team: user.team };
+
       toast.dismiss();
       toast.success(message, {
         icon: "🔨",
@@ -227,32 +230,32 @@ const RoomDetailsPage = () => {
 
     socket.on("player-sold", ({ message, player, team, amount, newIndex }) => {
       toast.success(message);
-      
+
       setRoom((prev: any) => {
         if (!prev) return null;
-        
+
         const updatedTeams = prev.teams.map((t: any) => {
           if (t.name === team) {
             return {
               ...t,
               spent: t.spent + amount,
-              remaining: t.remaining - amount
+              remaining: t.remaining - amount,
             };
           }
           return t;
         });
-        
+
         return {
           ...prev,
           teams: updatedTeams,
-          curr: newIndex
+          curr: newIndex,
         };
       });
-      
+
       setCurr(newIndex);
       setCurrentBid(null);
     });
-    
+
     socket.on("player-unsold", ({ message, newIndex }) => {
       toast.error(message);
       setCurr(newIndex);
@@ -305,6 +308,7 @@ const RoomDetailsPage = () => {
   const startAuctionTimer = () => {
     if (auctionTimer) {
       clearInterval(auctionTimer);
+      setAuctionTimer(null);
     }
 
     setCountdown(15);
@@ -326,21 +330,38 @@ const RoomDetailsPage = () => {
 
   const handlePlayerEnd = () => {
     setTimerActive(false);
-    const socket = socketRef.current;
 
-    console.log(currentBid);
-    if (currentBid?.bid) {
+    if (!socketRef.current) return;
+
+    const socket = socketRef.current;
+    const bid = currentBidRef.current?.bid;
+    const team = currentBidRef.current?.team;
+
+    if (!players[curr] || (bid === null && team === null)) return;
+
+    currentBidRef.current = null;
+
+    console.log("Handling player end:", bid, team);
+
+    if (auctionTimer) {
+      clearInterval(auctionTimer);
+      setAuctionTimer(null);
+    }
+    console.log(bid, team);
+
+    if (bid) {
       const soldMessage = `${players[curr].First_Name} ${
         players[curr].Surname
-      } SOLD to ${currentBid.team} for ${CR(currentBid.bid)} CR!`;
+      } SOLD to ${team} for ${CR(bid)} CR!`;
+
       toast.dismiss();
       toast.success(soldMessage, { duration: 5000 });
 
       socket?.emit("player-sold", {
         roomId,
         player: players[curr],
-        team: currentBid.team,
-        amount: currentBid.bid,
+        team: team,
+        amount: bid,
       });
     } else {
       const unsoldMessage = `${players[curr].First_Name} ${players[curr].Surname} UNSOLD!`;
@@ -355,15 +376,17 @@ const RoomDetailsPage = () => {
   };
 
   useEffect(() => {
-    if (currentBid?.bid && timerActive) {
+    setCurrentBid(currentBidRef.current);
+    if (currentBidRef.current && timerActive) {
       setCountdown(15);
     }
-  }, [currentBid?.bid]);
+  }, [currentBidRef.current]);
 
   useEffect(() => {
     startAuctionTimer();
     setCurrentBid({});
-    
+    currentBidRef.current = null;
+
     return () => {
       if (auctionTimer) {
         clearInterval(auctionTimer);
@@ -372,7 +395,7 @@ const RoomDetailsPage = () => {
   }, [curr]);
 
   if (loading) return <p>Loading...</p>;
-  console.log(room);
+  // console.log(room);
 
   return (
     <div className="p-4 h-screen bg-gray-50">
