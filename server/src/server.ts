@@ -202,6 +202,81 @@ io.on("connection", (socket) => {
       socket.emit("room-error", "Failed to process skip");
     }
   });
+
+
+  socket.on("player-sold", async ({ roomId, player, team, amount }) => {
+    try {
+      const room = await Room.findById(roomId);
+      if (!room) {
+        socket.emit("room-error", "Room not found");
+        return;
+      }
+
+      const teamIndex = room.teams.findIndex((t) => t.name === team);
+      if (teamIndex !== -1) {
+        room.teams[teamIndex].spent += amount;
+        room.teams[teamIndex].remaining -= amount;
+
+        if (!room.teams[teamIndex].players) {
+          room.teams[teamIndex].players = [];
+        }
+        room.teams[teamIndex].players.push({
+          ...player,
+          price: amount,
+        });
+      }
+
+      const newIndex = room.curr + 1;
+      room.curr = newIndex;
+
+      await room.save();
+
+      room.participants.forEach((p) => {
+        p.skip = false;
+      });
+      await room.save();
+
+      io.to(roomId).emit("player-sold", {
+        message: `${player.First_Name} ${player.Surname} SOLD to ${team} for ${amount} CR!`,
+        player,
+        team,
+        amount,
+        newIndex,
+      });
+    } catch (error) {
+      console.error("Error handling player sold:", error);
+      socket.emit("room-error", "Failed to process player sold");
+    }
+  });
+
+  socket.on("player-unsold", async ({ roomId, player }) => {
+    try {
+      const room = await Room.findById(roomId);
+      if (!room) {
+        socket.emit("room-error", "Room not found");
+        return;
+      }
+
+      const newIndex = room.curr + 1;
+      room.curr = newIndex;
+
+      await room.save();
+
+      room.participants.forEach((p) => {
+        p.skip = false;
+      });
+      await room.save();
+
+      io.to(roomId).emit("player-unsold", {
+        message: `${player.First_Name} ${player.Surname} UNSOLD!`,
+        player,
+        newIndex,
+      });
+    } catch (error) {
+      console.error("Error handling player unsold:", error);
+      socket.emit("room-error", "Failed to process player unsold");
+    }
+  });
 });
 
 app.use(express.json());
