@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
@@ -24,10 +24,12 @@ const RoomDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   // const [socketID, setSocketID] = useState<any>("");
   // const [socket, setSocket] = useState<Socket>(io("http://localhost:5000"));
-  const [socket, setSocket] = useState<Socket>(
-    io("https://iplauction.onrender.com")
-  );
+  // const [socket, setSocket] = useState<Socket>(
+  //   io("https://iplauction.onrender.com")
+  // );
   const [currentBid, setCurrentBid] = useState<any>();
+
+  const socketRef = useRef<Socket | null>(null);
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -77,70 +79,84 @@ const RoomDetailsPage = () => {
   }, [roomId]);
 
   useEffect(() => {
-    // const socketInstance = io("http://localhost:5000");
-    const socketInstance = io("https://iplauction.onrender.com");
-    setSocket(socketInstance);
+    if (!socketRef.current) {
+      console.log("Creating new socket connection");
+      // socketRef.current = io("https://iplauction.onrender.com");
+      socketRef.current = io("http://localhost:5000");
+    }
 
-    socketInstance.on("connect", () => {
-      console.log("Socket connected:", socketInstance.id);
+    return () => {
+      if (socketRef.current) {
+        console.log("Disconnecting socket on unmount");
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+    };
+  }, []);
 
-      socketInstance.emit("join-room", {
-        roomId,
-        user: userData,
-        team: userData.team,
-      });
-    });
+  useEffect(() => {
+    if (!socketRef.current || !userData || !userData.email) return;
 
-    socketInstance.on("room-state", (state) => {
+    const socket = socketRef.current;
+
+    function onConnect() {
+      console.log("Socket connected:", socket.id);
+
+      if (userData && userData.team) {
+        socket.emit("join-room", {
+          roomId,
+          user: userData,
+          team: userData.team,
+        });
+      }
+    }
+
+    function onRoomState(state: any) {
       console.log("Received room state:", state);
       setRoom(state);
       setLoading(false);
-    });
+    }
 
-    socketInstance.on("user-joined", ({ message, participants }) => {
+    function onUserJoined({ message, participants }: any) {
       console.log("User joined:", message);
       toast.success(message);
 
-      if (room) {
-        setRoom((prev: any) =>
-          prev
-            ? {
-                ...prev,
-                participants,
-              }
-            : null
-        );
-      }
-    });
+      setRoom((prev: any) =>
+        prev
+          ? {
+              ...prev,
+              participants,
+            }
+          : null
+      );
+    }
 
-    socketInstance.on("user-left", ({ message, participants }) => {
+    function onUserLeft({ message, participants }: any) {
       console.log("User left:", message);
       toast.error(message);
 
-      if (room) {
-        setRoom((prev: any) =>
-          prev
-            ? {
-                ...prev,
-                participants,
-              }
-            : null
-        );
-      }
-    });
+      setRoom((prev: any) =>
+        prev
+          ? {
+              ...prev,
+              participants,
+            }
+          : null
+      );
+    }
 
-    socketInstance.on("room-error", (err: string) => {
+    function onRoomError(err: string) {
       console.error("Room error:", err);
       toast.error(err);
       setLoading(false);
-    });
+    }
 
-    socketInstance.on("room-msg", (msg: string) => {
+    function onRoomMsg(msg: string) {
       console.error("Room Message:", msg);
       toast.error(msg);
-    });
+    }
 
-    socketInstance.on("player-bid", ({ message, user, player }) => {
+    function onPlayerBid({ message, user, player }: any) {
       console.log("Bid notification:", message, user, player);
 
       setPlayers((prevPlayers: any) => {
@@ -155,52 +171,98 @@ const RoomDetailsPage = () => {
         icon: "🔨",
         duration: 3000,
       });
-    });
+    }
 
-    socketInstance.on(
-      "player-skip",
-      ({ message, user, player, participants, curr }) => {
-        console.log("Skip notification:", message, user, player, participants, curr);
-        setCurr(curr);
-        setCurrentBid(null);
+    function onPlayerSkip({
+      message,
+      user,
+      player,
+      participants,
+      curr: newCurr,
+    }: any) {
+      console.log(
+        "Skip notification:",
+        message,
+        user,
+        player,
+        participants,
+        newCurr
+      );
+      setCurr(newCurr);
+      setCurrentBid(null);
 
-        toast.dismiss();
-        toast(message, {
-          icon: "⏭️",
-          duration: 3000,
+      toast.dismiss();
+      toast(message, {
+        icon: "⏭️",
+        duration: 3000,
+      });
+
+      if (participants) {
+        setRoom((prevState: any) => {
+          if (!prevState) return null;
+          return {
+            ...prevState,
+            participants,
+          };
         });
 
-        if (participants) {
-          setRoom((prevState: any) => {
-            if (!prevState) return null;
-            return {
-              ...prevState,
-              participants,
-            };
-          });
-
-          const ind = participants.findIndex(
-            (p: any) => p.email === userData.email
-          );
+        const ind = participants.findIndex(
+          (p: any) => p.email === userData.email
+        );
+        if (ind !== -1) {
           setUserData(participants[ind]);
         }
       }
-    );
+    }
+
+    // socket.on("connect", onConnect);
+    if (socket.connected) {
+      onConnect();
+    } else {
+      socket.on("connect", onConnect);
+    }
+
+    socket.on("room-state", onRoomState);
+    socket.on("user-joined", onUserJoined);
+    socket.on("user-left", onUserLeft);
+    socket.on("room-error", onRoomError);
+    socket.on("room-msg", onRoomMsg);
+    socket.on("player-bid", onPlayerBid);
+    socket.on("player-skip", onPlayerSkip);
 
     return () => {
-      console.log("Disconnecting socket");
-      socketInstance.disconnect();
+      socket.off("connect", onConnect);
+      socket.off("room-state", onRoomState);
+      socket.off("user-joined", onUserJoined);
+      socket.off("user-left", onUserLeft);
+      socket.off("room-error", onRoomError);
+      socket.off("room-msg", onRoomMsg);
+      socket.off("player-bid", onPlayerBid);
+      socket.off("player-skip", onPlayerSkip);
     };
-  }, [roomId, userData]);
+  }, [roomId, userData, curr]);
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
   const handleBid = () => {
-    socket?.emit("bid", { roomId, user: userData, player: players[curr] });
+    if (socketRef.current) {
+      socketRef.current.emit("bid", {
+        roomId,
+        user: userData,
+        player: players[curr],
+      });
+    }
   };
+
   const handleSkip = () => {
-    socket?.emit("skip", { roomId, user: userData, player: players[curr] });
+    if (socketRef.current) {
+      socketRef.current.emit("skip", {
+        roomId,
+        user: userData,
+        player: players[curr],
+      });
+    }
   };
 
   if (loading) return <p>Loading...</p>;
@@ -225,9 +287,9 @@ const RoomDetailsPage = () => {
             </thead>
             <tbody>
               {room?.teams?.map((team: any) => {
-                const bro = room?.participants?.find(
-                  (user: any) => user.team === team.name
-                );
+                // const bro = room?.participants?.find(
+                //   (user: any) => user.team === team.name
+                // );
                 const owner =
                   room?.participants?.find(
                     (user: any) => user.team === team.name
@@ -243,7 +305,6 @@ const RoomDetailsPage = () => {
                     <td className="border px-3 py-2">
                       {owner}
                       {skipped}
-                      {console.log(bro)}
                     </td>
                     <td className="border px-3 py-2">{team.spent} cr</td>
                     <td className="border px-3 py-2">{team.remaining} cr</td>
@@ -296,7 +357,7 @@ const RoomDetailsPage = () => {
           </div>
 
           {showModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-black text-gray-100 bg-opacity-50 flex items-center justify-center z-50">
               <Card player={players[curr]} onClose={handleCloseModal} />
             </div>
           )}
@@ -314,14 +375,12 @@ const RoomDetailsPage = () => {
           )}
           <h2 className="text-xl font-semibold mb-3 text-gray-800">Bidding</h2>
           <div className="space-x-4">
-            {!userData.skip && (
-              <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                onClick={handleBid}
-              >
-                Bid
-              </button>
-            )}
+            <button
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              onClick={handleBid}
+            >
+              Bid
+            </button>
             <button
               className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
               onClick={handleSkip}
