@@ -192,7 +192,7 @@ const RoomDetailsPage = () => {
         newCurr
       );
       setCurr(newCurr);
-      setCurrentBid(null);
+      setCurrentBid({});
 
       toast.dismiss();
       toast(message, {
@@ -362,6 +362,7 @@ const RoomDetailsPage = () => {
 
   useEffect(() => {
     startAuctionTimer();
+    setCurrentBid({});
     
     return () => {
       if (auctionTimer) {
