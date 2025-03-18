@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { players as bros } from "../utils/list.ts";
 import Card from "../components/Card.tsx";
 import { CR } from "../utils/getCR.ts";
+import { getPlusPrice } from "../utils/getPlusPrice.ts";
 // import { socketState } from "../atoms/socketAtom.ts";
 
 const RoomDetailsPage = () => {
@@ -162,16 +163,20 @@ const RoomDetailsPage = () => {
 
     function onPlayerBid({ message, user, player }: any) {
       console.log("Bid notification:", message, user, player);
-
+  
       setPlayers((prevPlayers: any) => {
         const updatedPlayers = [...prevPlayers];
         updatedPlayers[curr] = player;
         return updatedPlayers;
       });
-
+  
       setCurrentBid({ bid: player.Base, team: user.team });
       currentBidRef.current = { bid: player.Base, team: user.team };
-
+      
+      if (timerActive) {
+        setCountdown(15);
+      }
+  
       toast.dismiss();
       toast.success(message, {
         icon: "🔨",
@@ -228,40 +233,68 @@ const RoomDetailsPage = () => {
       socket.on("connect", onConnect);
     }
 
-    socket.on("player-sold", ({ message, player, team, amount, newIndex }) => {
-      toast.success(message);
-
+    function onPlayerSold({ message, player, team, amount, newIndex, teams }: any) {
+      console.log("Player sold:", message, player, team, amount, newIndex);
+      
+      toast.dismiss();
+      toast.success(message, { duration: 5000 });
+    
       setRoom((prev: any) => {
         if (!prev) return null;
-
-        const updatedTeams = prev.teams.map((t: any) => {
-          if (t.name === team) {
-            return {
-              ...t,
-              spent: t.spent + amount,
-              remaining: t.remaining - amount,
-            };
-          }
-          return t;
-        });
-
+    
         return {
           ...prev,
-          teams: updatedTeams,
+          teams: teams || prev.teams,
           curr: newIndex,
         };
       });
-
+    
       setCurr(newIndex);
-      setCurrentBid(null);
-    });
-
-    socket.on("player-unsold", ({ message, newIndex }) => {
-      toast.error(message);
+      setCurrentBid({});
+      currentBidRef.current = null;
+      
+      if (room?.participants) {
+        setRoom((prevState: any) => {
+          if (!prevState) return null;
+          const updatedParticipants = prevState.participants.map((p: any) => ({
+            ...p,
+            skip: false
+          }));
+          
+          return {
+            ...prevState,
+            participants: updatedParticipants
+          };
+        });
+      }
+    }
+  
+    function onPlayerUnsold({ message, newIndex }: any) {
+      console.log("Player unsold:", message, newIndex);
+      
+      toast.dismiss();
+      toast.error(message, { duration: 3000 });
+      
       setCurr(newIndex);
-      setCurrentBid(null);
-    });
-
+      setCurrentBid({});
+      currentBidRef.current = null;
+      
+      if (room?.participants) {
+        setRoom((prevState: any) => {
+          if (!prevState) return null;
+          const updatedParticipants = prevState.participants.map((p: any) => ({
+            ...p,
+            skip: false
+          }));
+          
+          return {
+            ...prevState,
+            participants: updatedParticipants
+          };
+        });
+      }
+    }
+    
     socket.on("room-state", onRoomState);
     socket.on("user-joined", onUserJoined);
     socket.on("user-left", onUserLeft);
@@ -269,6 +302,8 @@ const RoomDetailsPage = () => {
     socket.on("room-msg", onRoomMsg);
     socket.on("player-bid", onPlayerBid);
     socket.on("player-skip", onPlayerSkip);
+    socket.on("player-sold", onPlayerSold);
+    socket.on("player-unsold", onPlayerUnsold);
 
     return () => {
       socket.off("connect", onConnect);
@@ -279,6 +314,8 @@ const RoomDetailsPage = () => {
       socket.off("room-msg", onRoomMsg);
       socket.off("player-bid", onPlayerBid);
       socket.off("player-skip", onPlayerSkip);
+      socket.off("player-sold", onPlayerSold);
+      socket.off("player-unsold", onPlayerUnsold);
     };
   }, [roomId, userData, curr]);
 
@@ -287,11 +324,27 @@ const RoomDetailsPage = () => {
 
   const handleBid = () => {
     if (socketRef.current) {
+      const newBid = players[curr].Base + getPlusPrice(players[curr].Base);
+      
+      currentBidRef.current = { 
+        bid: newBid, 
+        team: userData.team 
+      };
+      
+      setCurrentBid({
+        bid: newBid,
+        team: userData.team
+      });
+      
       socketRef.current.emit("bid", {
         roomId,
         user: userData,
-        player: players[curr],
+        player: { ...players[curr], Base: newBid },
       });
+      
+      if (timerActive) {
+        setCountdown(15);
+      }
     }
   };
 
@@ -330,49 +383,57 @@ const RoomDetailsPage = () => {
 
   const handlePlayerEnd = () => {
     setTimerActive(false);
-
+  
     if (!socketRef.current) return;
-
-    const socket = socketRef.current;
-    const bid = currentBidRef.current?.bid;
-    const team = currentBidRef.current?.team;
-
-    if (!players[curr] || (bid === null && team === null)) return;
-
-    currentBidRef.current = null;
-
-    console.log("Handling player end:", bid, team);
-
     if (auctionTimer) {
       clearInterval(auctionTimer);
       setAuctionTimer(null);
     }
-    console.log(bid, team);
-
-    if (bid) {
-      const soldMessage = `${players[curr].First_Name} ${
-        players[curr].Surname
-      } SOLD to ${team} for ${CR(bid)} CR!`;
-
-      toast.dismiss();
-      toast.success(soldMessage, { duration: 5000 });
-
-      socket?.emit("player-sold", {
-        roomId,
-        player: players[curr],
-        team: team,
-        amount: bid,
-      });
-    } else {
-      const unsoldMessage = `${players[curr].First_Name} ${players[curr].Surname} UNSOLD!`;
-      toast.dismiss();
-      toast.error(unsoldMessage, { duration: 3000 });
-
-      socket?.emit("player-unsold", {
-        roomId,
-        player: players[curr],
-      });
+  
+    const socket = socketRef.current;
+    const currentBidInfo = currentBidRef.current;
+    const bid = currentBidInfo?.bid;
+    const team = currentBidInfo?.team;
+    
+    console.log("Handling player end with bid info:", bid, team);
+  
+    currentBidRef.current = null;
+    setCurrentBid({});
+    
+    if (socket._hasEndedPlayer === players[curr].First_Name + players[curr].Surname) {
+      console.log("Already handled end for this player, skipping");
+      return;
     }
+    
+    socket._hasEndedPlayer = players[curr].First_Name + players[curr].Surname;
+    
+    setTimeout(() => {
+      if (bid && team) {
+        const soldMessage = `${players[curr].First_Name} ${players[curr].Surname} SOLD to ${team} for ${CR(bid)} CR!`;
+        toast.dismiss();
+        toast.success(soldMessage, { duration: 5000 });
+  
+        socket.emit("player-sold", {
+          roomId,
+          player: players[curr],
+          team: team,
+          amount: bid,
+        });
+      } else {
+        const unsoldMessage = `${players[curr].First_Name} ${players[curr].Surname} UNSOLD!`;
+        toast.dismiss();
+        toast.error(unsoldMessage, { duration: 3000 });
+  
+        socket.emit("player-unsold", {
+          roomId,
+          player: players[curr],
+        });
+      }
+      
+      setTimeout(() => {
+        delete socket._hasEndedPlayer;
+      }, 1000);
+    }, 0);
   };
 
   useEffect(() => {
@@ -435,8 +496,8 @@ const RoomDetailsPage = () => {
                       {owner}
                       {skipped}
                     </td>
-                    <td className="border px-3 py-2">{team.spent} cr</td>
-                    <td className="border px-3 py-2">{team.remaining} cr</td>
+                    <td className="border px-3 py-2">{CR(team.spent)} CR</td>
+                    <td className="border px-3 py-2">{CR(team.remaining)} CR</td>
                   </tr>
                 );
               })}

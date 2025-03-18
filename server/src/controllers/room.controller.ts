@@ -42,7 +42,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "RCB",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
@@ -53,7 +53,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "MI",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
@@ -64,7 +64,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "CSK",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
@@ -75,7 +75,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "DC",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
@@ -86,7 +86,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "KKR",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
@@ -97,7 +97,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "SRH",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
@@ -108,7 +108,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "RR",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
@@ -119,7 +119,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "PBKS",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
@@ -130,7 +130,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "LSG",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
@@ -141,7 +141,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "GT",
         spent: 0,
-        remaining: 120,
+        remaining: 12000,
         players: [] as any[],
         batters: 0,
         bowlers: 0,

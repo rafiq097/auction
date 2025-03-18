@@ -206,72 +206,80 @@ io.on("connection", (socket) => {
 
   socket.on("player-sold", async ({ roomId, player, team, amount }) => {
     try {
+      console.log("---Player-Sold---");
+      console.log(`Player ${player.First_Name} ${player.Surname} sold to ${team} for ${amount}`);
+      
       const room = await Room.findById(roomId);
       if (!room) {
         socket.emit("room-error", "Room not found");
         return;
       }
-
+  
       const teamIndex = room.teams.findIndex((t) => t.name === team);
       if (teamIndex !== -1) {
         room.teams[teamIndex].spent += amount;
         room.teams[teamIndex].remaining -= amount;
-
-        if (!room.teams[teamIndex].players) {
-          room.teams[teamIndex].players = [];
-        }
+          
         room.teams[teamIndex].players.push({
           ...player,
           price: amount,
         });
       }
-
+  
       const newIndex = room.curr + 1;
       room.curr = newIndex;
-
-      await room.save();
-
+  
       room.participants.forEach((p) => {
         p.skip = false;
       });
+      
       await room.save();
-
+      console.log(room);
+  
       io.to(roomId).emit("player-sold", {
         message: `${player.First_Name} ${player.Surname} SOLD to ${team} for ${amount} CR!`,
         player,
         team,
         amount,
         newIndex,
+        teams: room.teams,
+        participants: room.participants,
       });
+      
+      console.log(`Player sold notification sent to room ${roomId}`);
     } catch (error) {
       console.error("Error handling player sold:", error);
       socket.emit("room-error", "Failed to process player sold");
     }
   });
-
+  
   socket.on("player-unsold", async ({ roomId, player }) => {
     try {
+      console.log(`Player ${player.First_Name} ${player.Surname} unsold`);
+      
       const room = await Room.findById(roomId);
       if (!room) {
         socket.emit("room-error", "Room not found");
         return;
       }
-
+  
       const newIndex = room.curr + 1;
       room.curr = newIndex;
-
-      await room.save();
-
+  
       room.participants.forEach((p) => {
         p.skip = false;
       });
+      
       await room.save();
-
+  
       io.to(roomId).emit("player-unsold", {
         message: `${player.First_Name} ${player.Surname} UNSOLD!`,
         player,
         newIndex,
+        participants: room.participants,
       });
+      
+      console.log(`Player unsold notification sent to room ${roomId}`);
     } catch (error) {
       console.error("Error handling player unsold:", error);
       socket.emit("room-error", "Failed to process player unsold");

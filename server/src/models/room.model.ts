@@ -27,10 +27,17 @@ const roomSchema: Schema = new Schema(
       type: Number,
       default: 0,
     },
-    teams: {
-      type: [Schema.Types.Mixed],
-      default: [],
-    },
+    teams: [{
+      name: String,
+      spent: Number,
+      remaining: Number,
+      players: [{ type: mongoose.Schema.Types.Mixed }],
+      allr: Number,
+      batters: Number,
+      bowlers: Number,
+      wks: Number,
+      overseas: Number,
+    }],
   },
   {
     timestamps: true,
