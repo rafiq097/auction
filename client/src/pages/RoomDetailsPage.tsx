@@ -86,8 +86,8 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     if (!socketRef.current) {
       console.log("Creating new socket connection");
-      // socketRef.current = io("https://iplauction.onrender.com");
-      socketRef.current = io("http://localhost:5000");
+      socketRef.current = io("https://iplauction.onrender.com");
+      // socketRef.current = io("http://localhost:5000");
     }
 
     return () => {
@@ -400,12 +400,12 @@ const RoomDetailsPage = () => {
     currentBidRef.current = null;
     setCurrentBid({});
     
-    if (socket._hasEndedPlayer === players[curr].First_Name + players[curr].Surname) {
-      console.log("Already handled end for this player, skipping");
-      return;
-    }
+    // if (socket._hasEndedPlayer === players[curr].First_Name + players[curr].Surname) {
+    //   console.log("Already handled end for this player, skipping");
+    //   return;
+    // }
     
-    socket._hasEndedPlayer = players[curr].First_Name + players[curr].Surname;
+    // socket._hasEndedPlayer = players[curr].First_Name + players[curr].Surname;
     
     setTimeout(() => {
       if (bid && team) {
@@ -430,9 +430,9 @@ const RoomDetailsPage = () => {
         });
       }
       
-      setTimeout(() => {
-        delete socket._hasEndedPlayer;
-      }, 1000);
+      // setTimeout(() => {
+      //   delete socket._hasEndedPlayer;
+      // }, 1000);
     }, 0);
   };
 
