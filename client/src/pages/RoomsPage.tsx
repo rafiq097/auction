@@ -94,6 +94,9 @@ const RoomsPage: React.FC = () => {
 
       if (response.status === 200) {
         navigate(`/rooms/${roomId}`);
+      }
+      else if(response.status === 402) {
+        toast.error(response.data.message);
       } else {
         toast.error("Failed to join the room. Please try again.");
       }

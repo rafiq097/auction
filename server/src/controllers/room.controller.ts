@@ -206,7 +206,7 @@ export const updateRoom = async (req: Request, res: Response) => {
 
     if (taken) {
       return res
-        .status(400)
+        .status(402)
         .json({
           message: `Team ${user.team} is already taken! Please choose another team.`,
         });
