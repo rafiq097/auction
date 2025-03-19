@@ -11,7 +11,7 @@ import userRoutes from "./routes/user.routes";
 import roomRoutes from "./routes/room.routes";
 import Room from "./models/room.model";
 import { getPlusPrice } from "./utils/getPlusPrice";
-import { CR } from "utils/getCR";
+import { CR } from "./utils/getCR";
 
 dotenv.config();
 const app: Application = express();
