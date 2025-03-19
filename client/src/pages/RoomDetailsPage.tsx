@@ -10,8 +10,11 @@ import toast from "react-hot-toast";
 import { players as bros } from "../utils/list.ts";
 import Card from "../components/Card.tsx";
 import { CR } from "../utils/getCR.ts";
-import { getPlusPrice } from "../utils/getPlusPrice.ts";
 // import { socketState } from "../atoms/socketAtom.ts";
+
+interface ExtendedSocket extends Socket {
+  _hasEndedPlayer?: string;
+}
 
 const RoomDetailsPage = () => {
   const { roomId } = useParams();
@@ -29,11 +32,12 @@ const RoomDetailsPage = () => {
   //   io("https://iplauction.onrender.com")
   // );
   const [currentBid, setCurrentBid] = useState<any>({});
-  const [auctionTimer, setAuctionTimer] = useState<NodeJS.Timeout | null>(null);
+  const [auctionTimer, setAuctionTimer] = useState<any>(null);
   const [countdown, setCountdown] = useState<number>(15);
   const [timerActive, setTimerActive] = useState<boolean>(false);
-
-  const socketRef = useRef<Socket | null>(null);
+  
+  const socketRef = useRef<ExtendedSocket | null>(null);
+  // const socketRef = useRef<Socket | null>(null);
   const currentBidRef = useRef<any>(null);
 
   const verify = async () => {
@@ -323,23 +327,26 @@ const RoomDetailsPage = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const handleBid = () => {
-    if (socketRef.current) {
-      const newBid = players[curr].Base + getPlusPrice(players[curr].Base);
-      
+    if(currentBid.team == userData.team) {
+      toast.error("You are already the highest bidder for this player!");
+      return;
+    }
+
+    if (socketRef.current) {      
       currentBidRef.current = { 
-        bid: newBid, 
+        bid: players[curr].Base, 
         team: userData.team 
       };
       
       setCurrentBid({
-        bid: newBid,
+        bid: players[curr].Base,
         team: userData.team
       });
       
       socketRef.current.emit("bid", {
         roomId,
         user: userData,
-        player: { ...players[curr], Base: newBid },
+        player: { ...players[curr], Base: players[curr].Base },
       });
       
       if (timerActive) {
@@ -400,12 +407,12 @@ const RoomDetailsPage = () => {
     currentBidRef.current = null;
     setCurrentBid({});
     
-    // if (socket._hasEndedPlayer === players[curr].First_Name + players[curr].Surname) {
-    //   console.log("Already handled end for this player, skipping");
-    //   return;
-    // }
+    if (socket._hasEndedPlayer === players[curr].First_Name + players[curr].Surname) {
+      console.log("Already handled end for this player, skipping");
+      return;
+    }
     
-    // socket._hasEndedPlayer = players[curr].First_Name + players[curr].Surname;
+    socket._hasEndedPlayer = players[curr].First_Name + players[curr].Surname;
     
     setTimeout(() => {
       if (bid && team) {
@@ -430,9 +437,9 @@ const RoomDetailsPage = () => {
         });
       }
       
-      // setTimeout(() => {
-      //   delete socket._hasEndedPlayer;
-      // }, 1000);
+      setTimeout(() => {
+        delete socket._hasEndedPlayer;
+      }, 1000);
     }, 0);
   };
 

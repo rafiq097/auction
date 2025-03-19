@@ -11,6 +11,7 @@ import userRoutes from "./routes/user.routes";
 import roomRoutes from "./routes/room.routes";
 import Room from "./models/room.model";
 import { getPlusPrice } from "./utils/getPlusPrice";
+import { CR } from "utils/getCR";
 
 dotenv.config();
 const app: Application = express();
@@ -237,7 +238,7 @@ io.on("connection", (socket) => {
       console.log(room);
   
       io.to(roomId).emit("player-sold", {
-        message: `${player.First_Name} ${player.Surname} SOLD to ${team} for ${amount} CR!`,
+        message: `${player.First_Name} ${player.Surname} SOLD to ${team} for ${CR(amount)} CR!`,
         player,
         team,
         amount,
