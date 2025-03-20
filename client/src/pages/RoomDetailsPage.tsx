@@ -387,16 +387,6 @@ const RoomDetailsPage = () => {
     }
   };
 
-  const handleSkip = () => {
-    if (socketRef.current) {
-      socketRef.current.emit("skip", {
-        roomId,
-        user: userData,
-        player: players[curr],
-      });
-    }
-  };
-
   const startAuctionTimer = () => {
     if (auctionTimer) {
       clearInterval(auctionTimer);
