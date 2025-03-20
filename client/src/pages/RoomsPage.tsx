@@ -76,7 +76,7 @@ const RoomsPage: React.FC = () => {
   };
 
   const handleJoinRoom = async (roomId: string) => {
-    if (selectedTeam == "") {
+    if (selectedTeam === "") {
       toast.error("Please select a team to join");
       return;
     }
@@ -85,26 +85,29 @@ const RoomsPage: React.FC = () => {
 
     try {
       const updatedUserData = { ...userData, team: selectedTeam };
-      setUserData(updatedUserData);
       localStorage.setItem("aucTeam", selectedTeam);
-      
+      setUserData(updatedUserData);
+
       const response = await axios.put(`/rooms/update/${roomId}`, {
-        user: { ...userData },
+        user: updatedUserData,
       });
 
       if (response.status === 200) {
         navigate(`/rooms/${roomId}`);
-      }
-      else if(response.status === 402) {
+      } else if (response.status === 402) {
         toast.error(response.data.message);
       } else {
         toast.error("Failed to join the room. Please try again.");
       }
     } catch (error: any) {
       console.error("Error joining room:", error);
-      toast.error(error?.response?.data?.message);
-      if (error?.response?.data?.message == "User already in the room!")
-        navigate(`/rooms/${roomId}`);
+
+      if (error.response?.status === 402) {
+        toast.error(error.response.data.message);
+        return;
+      }
+
+      toast.error(error?.response?.data?.message || "Error joining room!");
     }
   };
 
@@ -155,8 +158,8 @@ const RoomsPage: React.FC = () => {
           {rooms.length > 0 ? (
             rooms.map((room: any) => (
               <div
-              key={room._id}
-              className="bg-white p-6 rounded-2xl shadow-md flex flex-col justify-between"
+                key={room._id}
+                className="bg-white p-6 rounded-2xl shadow-md flex flex-col justify-between"
               >
                 <div>
                   <h3 className="text-lg font-semibold">{room.name}</h3>
