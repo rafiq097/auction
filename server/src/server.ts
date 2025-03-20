@@ -132,7 +132,7 @@ io.on("connection", (socket) => {
   socket.on("bid", async ({ roomId, user, player }) => {
     try {
       console.log(
-        `User ${user.email} bidding for player ${player.First_Name} ${player.Surname}`
+   good     `User ${user.email} bidding for player ${player.First_Name} ${player.Surname}`
       );
 
       const room = await Room.findById(roomId);
@@ -144,7 +144,7 @@ io.on("connection", (socket) => {
       player.Base += getPlusPrice(player.Base);
 
       io.to(roomId).emit("player-bid", {
-        message: `${user.name || user.email} bid for ${player.First_Name} ${
+        message: `${user.team || user.name} bid for ${player.First_Name} ${
           player.Surname
         } at ${player.Base}`,
         user: user,

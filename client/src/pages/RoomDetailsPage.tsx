@@ -24,6 +24,7 @@ const RoomDetailsPage = () => {
   // const [participants, setParticipants] = useState<any[]>([]);
   const [userData, setUserData] = useRecoilState(userAtom);
   const [players, setPlayers] = useState<any>(bros);
+  const [tempPlayers] = useState<any>(JSON.parse(JSON.stringify(bros)));
   const [curr, setCurr] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -34,7 +35,7 @@ const RoomDetailsPage = () => {
   // );
   const [currentBid, setCurrentBid] = useState<any>({});
   const [auctionTimer, setAuctionTimer] = useState<any>(null);
-  const [countdown, setCountdown] = useState<number>(15);
+  const [countdown, setCountdown] = useState<number>(30);
   const [timerActive, setTimerActive] = useState<boolean>(false);
 
   const socketRef = useRef<ExtendedSocket | null>(null);
@@ -129,7 +130,7 @@ const RoomDetailsPage = () => {
 
     function onUserJoined({ message, participants }: any) {
       console.log("User joined:", message);
-      toast.success(message);
+      // toast.success(message);
 
       setRoom((prev: any) =>
         prev
@@ -179,7 +180,7 @@ const RoomDetailsPage = () => {
       currentBidRef.current = { bid: player.Base, team: user.team };
 
       if (timerActive) {
-        setCountdown(15);
+        setCountdown(30);
       }
 
       toast.dismiss();
@@ -336,8 +337,9 @@ const RoomDetailsPage = () => {
 
   const handleBid = () => {
     const newBid = currentBid.bid + getPlusPrice(players[curr]);
-    const remainingPurse = room.teams[room.teams.indexOf(userData.team)].remaining;
-  
+    const remainingPurse =
+      room.teams[room.teams.indexOf(userData.team)]?.remaining;
+
     if (newBid > remainingPurse) {
       toast.error("Not enough purse to bid, bro!");
       return;
@@ -365,7 +367,7 @@ const RoomDetailsPage = () => {
       });
 
       if (timerActive) {
-        setCountdown(15);
+        setCountdown(30);
       }
     }
   };
@@ -386,7 +388,7 @@ const RoomDetailsPage = () => {
       setAuctionTimer(null);
     }
 
-    setCountdown(15);
+    setCountdown(30);
     setTimerActive(true);
 
     const timer = setInterval(() => {
@@ -466,7 +468,7 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     setCurrentBid(currentBidRef.current);
     if (currentBidRef.current && timerActive) {
-      setCountdown(15);
+      setCountdown(30);
     }
   }, [currentBidRef.current]);
 
@@ -489,99 +491,148 @@ const RoomDetailsPage = () => {
     <div className="p-4 h-screen bg-gray-50">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
         {/* Teams Purse */}
-        <div className="p-4 bg-white rounded-lg shadow-md overflow-auto">
-          <h2 className="text-xl font-semibold mb-3 text-gray-800">
+        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
+          <h2 className="text-2xl font-bold text-blue-800 text-center mb-4 pb-2 border-b border-blue-200">
             Teams Purse
           </h2>
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border px-3 py-2">Team</th>
-                <th className="border px-3 py-2">Owner</th>
-                <th className="border px-3 py-2">Spent</th>
-                <th className="border px-3 py-2">Remaining</th>
-              </tr>
-            </thead>
-            <tbody>
-              {room?.teams?.map((team: any) => {
-                // const bro = room?.participants?.find(
-                //   (user: any) => user.team === team.name
-                // );
-                const owner =
-                  room?.participants?.find(
-                    (user: any) => user.team === team.name
-                  )?.name || "N/A";
-                const skipped = room?.participants?.find(
-                  (user: any) => user.team === team.name
-                )?.skip;
-                return (
-                  <tr key={team.name} className="hover:bg-gray-50">
-                    <td className="border px-3 py-2 font-medium">
-                      {team.name}
-                    </td>
-                    <td className="border px-3 py-2">
-                      {owner}
-                      {skipped}
-                    </td>
-                    <td className="border px-3 py-2">{CR(team.spent)} CR</td>
-                    <td className="border px-3 py-2">
-                      {CR(team.remaining)} CR
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr>
+                  <th className="bg-blue-600 text-white px-4 py-3 text-left rounded-tl-lg">
+                    Team
+                  </th>
+                  <th className="bg-blue-600 text-white px-4 py-3 text-left">
+                    Owner
+                  </th>
+                  <th className="bg-blue-600 text-white px-4 py-3 text-right">
+                    Spent
+                  </th>
+                  <th className="bg-blue-600 text-white px-4 py-3 text-right rounded-tr-lg">
+                    Remaining
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {room?.teams?.map((team: any, index: any) => {
+                  const owner =
+                    room?.participants?.find(
+                      (user: any) => user.team === team.name
+                    )?.name || "N/A";
+
+                  const isLast = index === room?.teams?.length - 1;
+
+                  return (
+                    <tr
+                      key={team.name}
+                      className="border-b border-blue-100 hover:bg-white transition-colors"
+                    >
+                      <td
+                        className={`px-4 py-3 font-medium text-blue-800 ${
+                          isLast ? "rounded-bl-lg" : ""
+                        }`}
+                      >
+                        {team.name}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">{owner}</td>
+                      <td className="px-4 py-3 text-right text-red-600 font-medium">
+                        {CR(team.spent)} CR
+                      </td>
+                      <td
+                        className={`px-4 py-3 text-right text-green-600 font-medium ${
+                          isLast ? "rounded-br-lg" : ""
+                        }`}
+                      >
+                        {CR(team.remaining)} CR
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Bro */}
-        <div className="p-4 bg-white rounded-lg shadow-md flex flex-col items-center justify-center space-y-2">
-          <div className="text-gray-600">
-            <p>
-              <span className="font-medium">Set: </span>
-              {players[curr].Set}
-            </p>
+        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
+          <div className="text-center mb-4 pb-3 border-b border-blue-200">
+            <div className="mt-1 inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+              Set: {players[curr].Set}
+            </div>
+            <h2 className="text-2xl font-bold text-blue-800">
+              {players[curr].First_Name + " " + players[curr].Surname}
+              <button
+                className="ml-2 text-sm bg-blue-600 text-white px-3 py-1 rounded-full hover:bg-blue-700 transition-colors shadow-sm"
+                onClick={handleShowModal}
+              >
+                Full Info
+              </button>
+            </h2>
           </div>
 
-          <h2 className="text-xl font-semibold text-gray-800">
-            {players[curr].First_Name + " " + players[curr].Surname + " "}
-            <button
-              className="text-blue-500 text-sm underline hover:text-blue-700 ml-2"
-              onClick={handleShowModal}
-            >
-              Full Info
-            </button>
-          </h2>
+          <div className="grid grid-cols-1 gap-3">
+            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+              <div className="w-32 font-semibold text-gray-700">
+                Base Price:
+              </div>
+              <div className="text-green-600 font-bold">
+                {CR(tempPlayers[curr].Base)} CR
+              </div>
+            </div>
 
-          <div className="text-gray-600">
-            <p>
-              <span className="font-medium">Role: </span>
-              {players[curr].Role === "BATTER"
-                ? `${players[curr].Role} - ${players[curr].Bat_type}`
-                : players[curr].Role === "BOWLER"
-                ? `${players[curr].Role} - ${players[curr].Bowl_type}`
-                : players[curr].Role}
-            </p>
+            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+              <div className="w-32 font-semibold text-gray-700">Age:</div>
+              <div className="text-gray-800">{players[curr].Age}</div>
+            </div>
+
+            <div className="flex flex-col bg-white p-3 rounded-lg shadow-sm">
+              <div className="font-semibold text-gray-700 mb-1">Caps:</div>
+              <div className="flex flex-wrap gap-2">
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
+                  {players[curr].Test_caps || 0} Tests
+                </span>
+                <span className="px-2 py-1 bg-green-100 text-green-800 rounded-md text-sm">
+                  {players[curr].ODI_caps || 0} ODIs
+                </span>
+                <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-md text-sm">
+                  {players[curr].T20_caps || 0} T20s
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+              <div className="w-32 font-semibold text-gray-700">
+                IPL Matches:
+              </div>
+              <div className="text-gray-800">{players[curr].IPL_caps}</div>
+            </div>
+
+            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+              <div className="w-32 font-semibold text-gray-700">Role:</div>
+              <div className="text-gray-800">
+                {players[curr].Role === "BATTER"
+                  ? `${players[curr].Role} - ${players[curr].Bat_type}`
+                  : players[curr].Role === "BOWLER"
+                  ? `${players[curr].Role} - ${players[curr].Bowl_type}`
+                  : players[curr].Role}
+              </div>
+            </div>
+
+            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+              <div className="w-32 font-semibold text-gray-700">Country:</div>
+              <div className="text-gray-800">{players[curr].Country}</div>
+            </div>
+
+            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+              <div className="w-32 font-semibold text-gray-700">
+                Last IPL Team:
+              </div>
+              <div className="text-gray-800">
+                {players[curr].Last_Team || "None"}
+              </div>
+            </div>
           </div>
-
-          <div className="text-gray-600">
-            <p>
-              <span className="font-medium">Base Price: </span>
-              {CR(players[curr].Base)} CR
-            </p>
-          </div>
-
-          <div className="text-gray-600">
-            <p>
-              <span className="font-medium">Country: </span>
-              {players[curr].Country}
-            </p>
-          </div>
-
-          <div className="text-gray-600">
-            <p>{players[curr].Runs}</p>
-          </div>
-
           {showModal && (
             <div className="fixed inset-0 bg-black text-gray-100 bg-opacity-50 flex items-center justify-center z-50">
               <Card player={players[curr]} onClose={handleCloseModal} />
@@ -590,32 +641,46 @@ const RoomDetailsPage = () => {
         </div>
 
         {/* Bid */}
-        <div className="p-4 bg-white rounded-lg shadow-md flex flex-col items-center justify-center space-y-2">
-          {currentBid && (
-            <div className="text-gray-600">
-              <p>
-                <span className="font-medium">Current Bid: </span>
-                {CR(currentBid.bid)} CR by {currentBid.team}
-              </p>
+        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col items-center justify-center bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex justify-center mb-4">
+                <div
+                  className={`text-xl font-bold px-6 py-3 rounded-full ${
+                    countdown <= 5
+                      ? "bg-red-100 text-red-600 animate-pulse"
+                      : "bg-blue-100 text-blue-800"
+                  }`}
+                >
+                  {countdown}s
+                </div>
+              </div>
+
+              {currentBid && (
+                <div className="bg-white p-4 rounded-lg shadow-sm mb-2 text-center">
+                  <div className="text-gray-600 mb-1 text-sm">Current Bid</div>
+                  <div className="text-4xl font-bold text-green-600">
+                    {CR(currentBid.bid || 0)} CR
+                  </div>
+                  <div className="text-red-800 text-3xl font-bold">
+                    by {currentBid.team || "None"}
+                  </div>
+                </div>
+              )}
+
+              <div className="text-center mt-2">
+                <button
+                  className="px-6 py-3 bg-blue-500 text-white text-lg font-medium rounded-lg hover:bg-blue-600 transition shadow-sm"
+                  onClick={handleBid}
+                >
+                  Bid
+                </button>
+              </div>
             </div>
-          )}
 
-          <div
-            className={`text-xl font-bold ${
-              countdown <= 5 ? "text-red-500" : "text-gray-800"
-            }`}
-          >
-            {countdown}s
-          </div>
-
-          <h2 className="text-xl font-semibold mb-3 text-gray-800">Bidding</h2>
-          <div className="space-x-4">
-            <button
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-              onClick={handleBid}
-            >
-              Bid
-            </button>
+            <div className="bg-white p-4 rounded-lg shadow-sm text-center text-lg font-bold text-gray-500">
+              Your Team: 
+            </div>
           </div>
         </div>
       </div>
