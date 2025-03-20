@@ -19,6 +19,7 @@ import LoginPage from "./pages/LoginPage.tsx";
 import axios from "axios";
 import RoomsPage from "./pages/RoomsPage.tsx";
 import RoomDetailsPage from "./pages/RoomDetailsPage.tsx";
+import RoomTeamsPage from "./pages/RoomTeamsPage.tsx";
 
 function App(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();
@@ -84,6 +85,10 @@ function App(): JSX.Element {
         <Route
           path="/rooms/:roomId"
           element={!userData ? <LoginPage /> : <RoomDetailsPage />}
+        />
+        <Route
+          path="/teams-details/:roomId"
+          element={!userData ? <LoginPage /> : <RoomTeamsPage />}
         />
         <Route
           path="/login"

@@ -97,6 +97,14 @@ const RoomDetailsPage = () => {
   }, [roomId]);
 
   useEffect(() => {
+    const userTeam = room?.teams?.find(
+      (team: any) => team.name === userData.team
+    );
+    console.log(userTeam);
+    setUserTeam(userTeam);
+  }, [room?.teams, userData.team]);
+
+  useEffect(() => {
     if (!socketRef.current) {
       console.log("Creating new socket connection");
       socketRef.current = io("https://iplauction.onrender.com");
@@ -563,8 +571,8 @@ const RoomDetailsPage = () => {
 
         {/* Bro */}
         <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
-          <div className="text-center mb-4 pb-3 border-b border-blue-200">
-            <div className="mt-1 inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+          <div className="text-center mb-1 pb-3 border-b border-blue-200">
+            <div className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mb-2">
               Set: {players[curr].Set}
             </div>
             <h2 className="text-2xl font-bold text-blue-800">
@@ -586,6 +594,22 @@ const RoomDetailsPage = () => {
               <div className="text-green-600 font-bold">
                 {CR(tempPlayers[curr].Base)} CR
               </div>
+            </div>
+
+            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+              <div className="w-32 font-semibold text-gray-700">Role:</div>
+              <div className="text-gray-800">
+                {players[curr].Role === "BATTER"
+                  ? `${players[curr].Role} - ${players[curr].Bat_type}`
+                  : players[curr].Role === "BOWLER"
+                  ? `${players[curr].Role} - ${players[curr].Bowl_type}`
+                  : players[curr].Role}
+              </div>
+            </div>
+
+            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+              <div className="w-32 font-semibold text-gray-700">Country:</div>
+              <div className="text-gray-800">{players[curr].Country}</div>
             </div>
 
             <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
@@ -613,22 +637,6 @@ const RoomDetailsPage = () => {
                 IPL Matches:
               </div>
               <div className="text-gray-800">{players[curr].IPL_caps}</div>
-            </div>
-
-            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
-              <div className="w-32 font-semibold text-gray-700">Role:</div>
-              <div className="text-gray-800">
-                {players[curr].Role === "BATTER"
-                  ? `${players[curr].Role} - ${players[curr].Bat_type}`
-                  : players[curr].Role === "BOWLER"
-                  ? `${players[curr].Role} - ${players[curr].Bowl_type}`
-                  : players[curr].Role}
-              </div>
-            </div>
-
-            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
-              <div className="w-32 font-semibold text-gray-700">Country:</div>
-              <div className="text-gray-800">{players[curr].Country}</div>
             </div>
 
             <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
