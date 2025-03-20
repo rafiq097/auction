@@ -21,8 +21,8 @@ const RoomDetailsPage = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
   const [room, setRoom] = useState<any>({});
-  // const [participants, setParticipants] = useState<any[]>([]);
   const [userData, setUserData] = useRecoilState(userAtom);
+  const [userTeam, setUserTeam] = useState<any>({});
   const [players, setPlayers] = useState<any>(bros);
   const [tempPlayers] = useState<any>(JSON.parse(JSON.stringify(bros)));
   const [curr, setCurr] = useState<number>(0);
@@ -77,6 +77,13 @@ const RoomDetailsPage = () => {
       try {
         const response = await axios.get(`/rooms/get/single/${roomId}`);
         setRoom(response.data);
+
+        const userTeam = response.data.teams.find(
+          (team: any) => team.name === userData.team
+        );
+        console.log(userTeam);
+        setUserTeam(userTeam);
+
         setCurr(response.data.curr);
         setLoading(false);
       } catch (err: any) {
@@ -644,10 +651,10 @@ const RoomDetailsPage = () => {
         <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col items-center justify-center bg-white p-4 rounded-lg shadow-sm">
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-center mb-2">
                 <div
                   className={`text-xl font-bold px-6 py-3 rounded-full ${
-                    countdown <= 5
+                    countdown <= 10
                       ? "bg-red-100 text-red-600 animate-pulse"
                       : "bg-blue-100 text-blue-800"
                   }`}
@@ -679,7 +686,39 @@ const RoomDetailsPage = () => {
             </div>
 
             <div className="bg-white p-4 rounded-lg shadow-sm text-center text-lg font-bold text-gray-500">
-              Your Team: 
+              <h2 className="text-xl font-bold mb-2">
+                Your Team: {userTeam?.name}
+              </h2>
+              <div className="grid grid-cols-2 gap-4 mb-2">
+                <div className="p-2 bg-orange-100 rounded">
+                  Batters: {userTeam?.batters || 0}
+                </div>
+                <div className="p-2 bg-green-100 rounded">
+                  Bowlers: {userTeam?.bowlers || 0}
+                </div>
+                <div className="p-2 bg-yellow-100 rounded">
+                  All-Rounders: {userTeam?.allr || 0}
+                </div>
+                <div className="p-2 bg-red-100 rounded">
+                  WKs: {userTeam?.wks || 0}
+                </div>
+                <div className="p-2 bg-purple-100 rounded">
+                  Overseas: {userTeam?.overseas || 0}
+                </div>
+                <div className="p-2 bg-blue-100 rounded">
+                  Total:{" "}
+                  {userTeam?.batters +
+                    userTeam?.bowlers +
+                    userTeam?.allr +
+                    userTeam?.wks || 0}
+                </div>
+              </div>
+              <button
+                className="px-4 py-2 bg-blue-500 text-white text-lg font-medium rounded-lg hover:bg-blue-600 transition shadow-sm"
+                onClick={() => navigate(`/teams-details/${roomId}/`)}
+              >
+                View Other Teams
+              </button>
             </div>
           </div>
         </div>

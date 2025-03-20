@@ -132,7 +132,7 @@ io.on("connection", (socket) => {
   socket.on("bid", async ({ roomId, user, player }) => {
     try {
       console.log(
-   good     `User ${user.email} bidding for player ${player.First_Name} ${player.Surname}`
+        `User ${user.email} bidding for player ${player.First_Name} ${player.Surname}`
       );
 
       const room = await Room.findById(roomId);
@@ -221,6 +221,27 @@ io.on("connection", (socket) => {
         room.teams[teamIndex].spent += amount;
         room.teams[teamIndex].remaining -= amount;
           
+        switch (player.Role) {
+          case "BATTER":
+            room.teams[teamIndex].batters = (room.teams[teamIndex].batters || 0) + 1;
+            break;
+          case "BOWLER":
+            room.teams[teamIndex].bowlers = (room.teams[teamIndex].bowlers || 0) + 1;
+            break;
+          case "ALL-ROUNDER":
+            room.teams[teamIndex].allr = (room.teams[teamIndex].allr || 0) + 1;
+            break;
+          case "WICKETKEEPER":
+            room.teams[teamIndex].wks = (room.teams[teamIndex].wks || 0) + 1;
+            break;
+          default:
+            break;
+        }
+  
+        if (player.nationality !== "Indian") {
+          room.teams[teamIndex].overseas = (room.teams[teamIndex].overseas || 0) + 1;
+        }
+
         room.teams[teamIndex].players.push({
           ...player,
           price: amount,
