@@ -238,7 +238,7 @@ io.on("connection", (socket) => {
             break;
         }
   
-        if (player.nationality !== "Indian") {
+        if (player.Country !== "India") {
           room.teams[teamIndex].overseas = (room.teams[teamIndex].overseas || 0) + 1;
         }
 
