@@ -274,6 +274,10 @@ io.on("connection", (socket) => {
       socket.emit("room-error", "Failed to process player sold");
     }
   });
+
+  socket.on("player-sold-noti", (data) => {
+    io.emit('player-sold-noti', data);
+  });
   
   socket.on("player-unsold", async ({ roomId, player }) => {
     try {

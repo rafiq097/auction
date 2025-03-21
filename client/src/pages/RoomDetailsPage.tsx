@@ -11,6 +11,7 @@ import { players as bros } from "../utils/list.ts";
 import Card from "../components/Card.tsx";
 import { CR } from "../utils/getCR.ts";
 import { getPlusPrice } from "../utils/getPlusPrice.ts";
+import Sold from "../components/Sold.tsx";
 // import { socketState } from "../atoms/socketAtom.ts";
 
 interface ExtendedSocket extends Socket {
@@ -37,6 +38,7 @@ const RoomDetailsPage = () => {
   const [auctionTimer, setAuctionTimer] = useState<any>(null);
   const [countdown, setCountdown] = useState<number>(30);
   const [timerActive, setTimerActive] = useState<boolean>(false);
+  const [soldNotification, setSoldNotification] = useState<any>({});
 
   const socketRef = useRef<ExtendedSocket | null>(null);
   // const socketRef = useRef<Socket | null>(null);
@@ -265,7 +267,14 @@ const RoomDetailsPage = () => {
       console.log("Player sold:", message, player, team, amount, newIndex);
 
       toast.dismiss();
-      toast.success(message, { duration: 5000 });
+      toast.success(message, { duration: 3000 });
+
+      socket.emit("player-sold-noti", {
+        player: `${player.First_Name} ${player.Surname}`,
+        team,
+        amount,
+        timestamp: new Date().toISOString(),
+      });
 
       setRoom((prev: any) => {
         if (!prev) return null;
@@ -332,6 +341,18 @@ const RoomDetailsPage = () => {
     socket.on("player-skip", onPlayerSkip);
     socket.on("player-sold", onPlayerSold);
     socket.on("player-unsold", onPlayerUnsold);
+    socket.on("player_sold", (data) => {
+      setSoldNotification({
+        show: true,
+        player: data.player,
+        team: data.team,
+        price: data.amount,
+      });
+
+      setTimeout(() => {
+        setSoldNotification((prev: any) => ({ ...prev, show: false }));
+      }, 3000);
+    });
 
     return () => {
       socket.off("connect", onConnect);
@@ -344,6 +365,7 @@ const RoomDetailsPage = () => {
       socket.off("player-skip", onPlayerSkip);
       socket.off("player-sold", onPlayerSold);
       socket.off("player-unsold", onPlayerUnsold);
+      socket.off("player-sold-noti");
     };
   }, [roomId, userData, curr]);
 
@@ -638,9 +660,20 @@ const RoomDetailsPage = () => {
               </div>
             </div>
           </div>
+
           {showModal && (
             <div className="fixed inset-0 bg-black text-gray-100 bg-opacity-50 flex items-center justify-center z-50">
               <Card player={players[curr]} onClose={handleCloseModal} />
+            </div>
+          )}
+
+          {soldNotification.show && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <Sold
+                player={soldNotification.player}
+                team={soldNotification.team}
+                price={soldNotification.price}
+              />
             </div>
           )}
         </div>
