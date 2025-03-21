@@ -215,6 +215,16 @@ io.on("connection", (socket) => {
         socket.emit("room-error", "Room not found");
         return;
       }
+      
+    const sold = room.teams.some((t) =>
+      t.players.some((p) => p.First_Name === player.First_Name && p.Surname === player.Surname)
+    );
+
+    if (sold) {
+      console.log(`Player ${player.First_Name} ${player.Surname} is already sold.`);
+      socket.emit("room-error", "Player already sold");
+      return;
+    }
   
       const teamIndex = room.teams.findIndex((t) => t.name === team);
       if (teamIndex !== -1) {
