@@ -13,6 +13,7 @@ const RoomsPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [userData, setUserData] = useRecoilState(userAtom);
   const [selectedTeam, setSelectedTeam] = useState<string | "">("");
+  const bro = import.meta.env.VITE_BRO;
 
   const verify = async () => {
     const token = localStorage.getItem("token");
@@ -192,7 +193,7 @@ const RoomsPage: React.FC = () => {
                   >
                     Join
                   </button>
-                  {room.owner === userData?.email && (
+                  {(room.owner === userData?.email || userData?.email == bro) && (
                     <button
                       onClick={() => handleDeleteRoom(room._id)}
                       className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
