@@ -1,9 +1,10 @@
 import React from "react";
+import { CR } from "../utils/getCR";
 
 interface SoldProps {
   player: string;
   team: string;
-  price: number | string;
+  price: number;
 }
 
 const teamColors: Record<string, { primary: string; secondary: string }> = {
@@ -20,12 +21,8 @@ const teamColors: Record<string, { primary: string; secondary: string }> = {
   default: { primary: "bg-gray-700", secondary: "text-gray-100" },
 };
 
-const formatPrice = (price: number | string): string => {
-  const numPrice = typeof price === "string" ? parseFloat(price) : price;
-  return `₹${numPrice.toFixed(2)} CR`;
-};
-
 const Sold: React.FC<SoldProps> = ({ player, team, price }) => {
+    console.log(player, team, price);
   const teamColor = teamColors[team] || teamColors["default"];
 
   return (
@@ -34,7 +31,7 @@ const Sold: React.FC<SoldProps> = ({ player, team, price }) => {
         className={`${teamColor.primary} ${teamColor.secondary} rounded-full w-40 h-40 flex flex-col items-center justify-center shadow-lg transform transition-transform hover:scale-105`}
       >
         <span className="text-xl font-bold uppercase mb-1">Sold</span>
-        <span className="text-2xl font-bold">{formatPrice(price)}</span>
+        <span className="text-2xl font-bold">{CR(price)} CR</span>
       </div>
 
       <div className="mt-4 text-center">

@@ -311,6 +311,10 @@ io.on("connection", (socket) => {
       socket.emit("room-error", "Failed to process player unsold");
     }
   });
+
+  socket.on("player-unsold-noti", (data) => {
+    io.emit('player-unsold-noti', data);
+  });
 });
 
 app.use(express.json());

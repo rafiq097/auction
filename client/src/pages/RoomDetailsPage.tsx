@@ -12,6 +12,7 @@ import Card from "../components/Card.tsx";
 import { CR } from "../utils/getCR.ts";
 import { getPlusPrice } from "../utils/getPlusPrice.ts";
 import Sold from "../components/Sold.tsx";
+import Unsold from "../components/UnSold.tsx";
 // import { socketState } from "../atoms/socketAtom.ts";
 
 interface ExtendedSocket extends Socket {
@@ -36,9 +37,10 @@ const RoomDetailsPage = () => {
   // );
   const [currentBid, setCurrentBid] = useState<any>({});
   const [auctionTimer, setAuctionTimer] = useState<any>(null);
-  const [countdown, setCountdown] = useState<number>(30);
+  const [countdown, setCountdown] = useState<number>(35);
   const [timerActive, setTimerActive] = useState<boolean>(false);
   const [soldNotification, setSoldNotification] = useState<any>({});
+  const [unSoldNotification, setUnSoldNotification] = useState<any>({});
 
   const socketRef = useRef<ExtendedSocket | null>(null);
   // const socketRef = useRef<Socket | null>(null);
@@ -197,7 +199,7 @@ const RoomDetailsPage = () => {
       currentBidRef.current = { bid: player.Base, team: user.team };
 
       if (timerActive) {
-        setCountdown(30);
+        setCountdown(35);
       }
 
       toast.dismiss();
@@ -306,11 +308,16 @@ const RoomDetailsPage = () => {
       }
     }
 
-    function onPlayerUnsold({ message, newIndex }: any) {
-      console.log("Player unsold:", message, newIndex);
+    function onPlayerUnsold({ message, player, newIndex, participants }: any) {
+      console.log("Player unsold:", message, player.First_Name, newIndex, participants);
 
       toast.dismiss();
       toast.error(message, { duration: 3000 });
+
+      socket.emit("player-unsold-noti", {
+        player: `${player.First_Name} ${player.Surname}`,
+        timestamp: new Date().toISOString(),
+      });
 
       setCurr(newIndex);
       setCurrentBid({});
@@ -341,7 +348,7 @@ const RoomDetailsPage = () => {
     socket.on("player-skip", onPlayerSkip);
     socket.on("player-sold", onPlayerSold);
     socket.on("player-unsold", onPlayerUnsold);
-    socket.on("player_sold", (data) => {
+    socket.on("player-sold-noti", (data: any) => {
       setSoldNotification({
         show: true,
         player: data.player,
@@ -351,6 +358,17 @@ const RoomDetailsPage = () => {
 
       setTimeout(() => {
         setSoldNotification((prev: any) => ({ ...prev, show: false }));
+      }, 5000);
+    });
+
+    socket.on("player-unsold-noti", (data: any) => {
+      setUnSoldNotification({
+        show: true,
+        player: data.player
+      });
+
+      setTimeout(() => {
+        setUnSoldNotification((prev: any) => ({ ...prev, show: false }));
       }, 3000);
     });
 
@@ -366,6 +384,7 @@ const RoomDetailsPage = () => {
       socket.off("player-sold", onPlayerSold);
       socket.off("player-unsold", onPlayerUnsold);
       socket.off("player-sold-noti");
+      socket.off("player-unsold-noti");
     };
   }, [roomId, userData, curr]);
 
@@ -404,7 +423,7 @@ const RoomDetailsPage = () => {
       });
 
       if (timerActive) {
-        setCountdown(30);
+        setCountdown(35);
       }
     }
   };
@@ -415,7 +434,7 @@ const RoomDetailsPage = () => {
       setAuctionTimer(null);
     }
 
-    setCountdown(30);
+    setCountdown(35);
     setTimerActive(true);
 
     const timer = setInterval(() => {
@@ -495,7 +514,7 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     setCurrentBid(currentBidRef.current);
     if (currentBidRef.current && timerActive) {
-      setCountdown(30);
+      setCountdown(35);
     }
   }, [currentBidRef.current]);
 
@@ -673,6 +692,14 @@ const RoomDetailsPage = () => {
                 player={soldNotification.player}
                 team={soldNotification.team}
                 price={soldNotification.price}
+              />
+            </div>
+          )}
+          
+          {unSoldNotification.show && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <Unsold
+                player={unSoldNotification.player}
               />
             </div>
           )}
