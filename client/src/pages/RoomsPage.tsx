@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import BottomBar from "../components/BottomBar";
 
 const RoomsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -209,6 +210,8 @@ const RoomsPage: React.FC = () => {
           )}
         </div>
       )}
+
+      <BottomBar />
     </div>
   );
 };

@@ -13,6 +13,7 @@ import { CR } from "../utils/getCR.ts";
 import { getPlusPrice } from "../utils/getPlusPrice.ts";
 import Sold from "../components/Sold.tsx";
 import Unsold from "../components/UnSold.tsx";
+import BottomBar from "../components/BottomBar.tsx";
 // import { socketState } from "../atoms/socketAtom.ts";
 
 interface ExtendedSocket extends Socket {
@@ -781,6 +782,8 @@ const RoomDetailsPage = () => {
           </div>
         </div>
       </div>
+
+      <BottomBar />
     </div>
   );
 };

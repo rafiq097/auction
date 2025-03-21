@@ -16,6 +16,7 @@ import { getRandomPrice } from "../utils/getRandomPrice.ts";
 import axios from "axios";
 import userAtom from "../atoms/userAtom.ts";
 import Card from "../components/Card.tsx";
+import BottomBar from "../components/BottomBar.tsx";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -763,7 +764,7 @@ const AuctionPage: React.FC = () => {
                   </li>
                 </ul>
                 <button
-                  className="mt-4 w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"
+                  className="mt-2 w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"
                   onClick={() => navigate("/teams")}
                 >
                   View Other Teams
@@ -771,6 +772,8 @@ const AuctionPage: React.FC = () => {
               </div>
           </div>
         </div>
+
+        <BottomBar />
       </div>
     </>
   );

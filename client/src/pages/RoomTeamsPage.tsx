@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import { FaPlane } from "react-icons/fa";
 import { CR } from "../utils/getCR";
+import BottomBar from "../components/BottomBar";
 
 const RoomTeamsPage = () => {
   const { roomId } = useParams();
@@ -99,6 +100,8 @@ const RoomTeamsPage = () => {
           </div>
         ))}
       </div>
+
+      <BottomBar />
     </div>
   );
 };

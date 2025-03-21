@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { userTeamAtom } from "../atoms/userTeamAtom.ts";
@@ -5,6 +6,7 @@ import { useRecoilState } from "recoil";
 import axios from "axios";
 import userAtom from "../atoms/userAtom.ts";
 import { toast } from "react-hot-toast";
+import BottomBar from "../components/BottomBar.tsx";
 
 const StartPage: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -74,7 +76,6 @@ const StartPage: React.FC = () => {
     const temp = localStorage.getItem("team");
     if (temp) {
       setTeam(JSON.parse(temp));
-      // navigate("/auction");
     } else {
       toast.error("Please select a team");
       navigate("/");
@@ -82,55 +83,57 @@ const StartPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-cover bg-center" style={{ backgroundImage: "url('bg.jpeg')", filter: "brightness(1.1) contrast(1.2)", }}>
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center text-gray-700 mb-6">
+    <div
+      className="flex items-center justify-center min-h-screen bg-cover bg-center bg-gradient-to-br from-blue-800 via-purple-900 to-gray-900 text-white"
+      style={{
+        backgroundImage: "url('bg.jpeg')",
+        filter: "brightness(1.1) contrast(1.2)",
+      }}
+    >
+      <div className="bg-white/10 backdrop-blur-md shadow-xl rounded-2xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center mb-6 text-black">
           Select Your Team
         </h1>
-        <h4 className="font-bold text-center text-gray-800 mb-6">
+        <h4 className="text-lg font-semibold text-center mb-4 text-black">
           Current Team: {team.name?.toLocaleUpperCase()}
         </h4>
         <form onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="team"
-              className="block text-sm font-medium text-gray-600"
-            >
-              Choose a Team
-            </label>
-            <select
-              id="team"
-              name="team"
-              title="name"
-              className="mt-1 block w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 mb-6"
-            >
-              <option value="RCB">RCB</option>
-              <option value="CSK">CSK</option>
-              <option value="MI">MI</option>
-              <option value="SRH">SRH</option>
-              <option value="KKR">KKR</option>
-              <option value="RR">RR</option>
-              <option value="DC">DC</option>
-              <option value="LSG">LSG</option>
-              <option value="GT">GT</option>
-              <option value="PBKS">PBKS</option>
-            </select>
-          </div>
+          <label htmlFor="team" className="block text-sm font-medium mb-2">
+            Choose a Team
+          </label>
+          <select
+            id="team"
+            name="team"
+            title="name"
+            className="block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 mb-6 text-black"
+          >
+            <option value="RCB">RCB</option>
+            <option value="CSK">CSK</option>
+            <option value="MI">MI</option>
+            <option value="SRH">SRH</option>
+            <option value="KKR">KKR</option>
+            <option value="RR">RR</option>
+            <option value="DC">DC</option>
+            <option value="LSG">LSG</option>
+            <option value="GT">GT</option>
+            <option value="PBKS">PBKS</option>
+          </select>
           <button
             type="submit"
-            className="w-full mb-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out"
           >
             Enter
           </button>
         </form>
         <button
-          type="submit"
           onClick={() => navigate("/rooms")}
-          className="w-1/2 bg-orange-400 hover:bg-orange-500 text-white font-semibold py-1 px-2 rounded-md shadow-md transition"
+          className="mt-4 w-full bg-gradient-to-br from-red-400 to-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out"
         >
-          Compete with Friemds!
+          Compete with Friends!
         </button>
       </div>
+
+      <BottomBar />
     </div>
   );
 };

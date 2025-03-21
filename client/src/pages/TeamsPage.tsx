@@ -8,6 +8,7 @@ import { userTeamAtom } from "../atoms/userTeamAtom.ts";
 import { FaPlane } from "react-icons/fa";
 import axios from "axios";
 import userAtom from "../atoms/userAtom.ts";
+import BottomBar from "../components/BottomBar.tsx";
 
 const TeamsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -111,6 +112,8 @@ const TeamsPage: React.FC = () => {
           </div>
         </div>
       ))}
+
+      <BottomBar />
     </div>
   );
 };

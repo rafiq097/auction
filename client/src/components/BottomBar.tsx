@@ -1,0 +1,63 @@
+import { FaHome, FaUsers, FaTrophy, FaSignOutAlt, FaTeamspeak, FaPlay, FaPeopleArrows } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
+const BottomBar = () => {
+  const navigate = useNavigate();
+
+  return (
+    <nav className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-xl backdrop-blur-md shadow-md p-2 flex justify-evenly rounded-t-lg ">
+      <button
+        className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        <FaHome size={24} />
+        <span className="mt-1 text-sm">Home</span>
+      </button>
+      <button
+        className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
+        onClick={() => {
+          navigate("/auction");
+        }}
+      >
+        <FaTrophy size={24} />
+        <span className="mt-1 text-sm">Auction</span>
+      </button>
+      <button
+        className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
+        onClick={() => {
+          navigate("/rooms");
+        }}
+      >
+        <FaPeopleArrows size={24} />
+        <span className="mt-1 text-sm">Rooms</span>
+      </button>
+      <button
+        className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
+        onClick={() => {
+          navigate("/teams");
+        }}
+      >
+        <FaUsers size={24} />
+        <span className="mt-1 text-sm">Teams</span>
+      </button>
+      <button
+        className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
+        onClick={() => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("team");
+          localStorage.removeItem("teams");
+          localStorage.removeItem("curr");
+          localStorage.removeItem("aucTeam");
+          navigate("/login");
+        }}
+      >
+        <FaSignOutAlt size={24} />
+        <span className="mt-1 text-sm">LogOut</span>
+      </button>
+    </nav>
+  );
+};
+
+export default BottomBar;
