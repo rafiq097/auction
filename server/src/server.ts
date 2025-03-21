@@ -217,7 +217,7 @@ io.on("connection", (socket) => {
       }
       
     const sold = room.teams.some((t) =>
-      t.players.some((p) => p.First_Name === player.First_Name && p.Surname === player.Surname)
+      t.players.some((p: any) => p.First_Name === player.First_Name && p.Surname === player.Surname)
     );
 
     if (sold) {
