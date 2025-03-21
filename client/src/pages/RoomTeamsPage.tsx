@@ -49,7 +49,7 @@ const RoomTeamsPage = () => {
         {room?.teams?.map((team: any, idx: any) => (
           <div
             key={team.id || idx}
-            className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200"
+            className={`bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 ${idx === 9 ? "mb-8" : "mb-1"}`}
           >
             <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 font-semibold">
               {team.name}

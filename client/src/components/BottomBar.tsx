@@ -1,11 +1,17 @@
-import { FaHome, FaUsers, FaTrophy, FaSignOutAlt, FaTeamspeak, FaPlay, FaPeopleArrows } from "react-icons/fa";
+import {
+  FaHome,
+  FaUsers,
+  FaTrophy,
+  FaSignOutAlt,
+  FaPeopleArrows,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const BottomBar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-xl backdrop-blur-md shadow-md p-2 flex justify-evenly rounded-t-lg ">
+    <nav className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-xl bg-transparent backdrop-blur-xl shadow-md p-2 flex justify-evenly rounded-t-lg">
       <button
         className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
