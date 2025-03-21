@@ -146,7 +146,7 @@ io.on("connection", (socket) => {
       io.to(roomId).emit("player-bid", {
         message: `${user.team || user.name} bid for ${player.First_Name} ${
           player.Surname
-        } at ${player.Base}`,
+        } at ${CR(player.Base)}`,
         user: user,
         player: player,
         timestamp: new Date(),

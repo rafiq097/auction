@@ -360,7 +360,7 @@ const RoomDetailsPage = () => {
       return;
     }
     if (currentBid.team == userData.team) {
-      toast.error("You are already the highest bidder for this player!");
+      toast.error("You are the current bidder for this player!");
       return;
     }
 
