@@ -32,7 +32,7 @@ const teamBros: Record<
     bg: "SRH.jpg",
   },
   GT: { primary: "bg-blue-700", secondary: "text-blue-100", bg: "GT.jpg" },
-  LSG: { primary: "bg-green-500", secondary: "text-green-100", bg: "LSG.jpg" },
+  LSG: { primary: "bg-teal-500", secondary: "text-teal-100", bg: "LSG.jpg" },
   default: {
     primary: "bg-gray-700",
     secondary: "text-gray-100",
