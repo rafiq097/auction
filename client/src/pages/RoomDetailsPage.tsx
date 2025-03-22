@@ -38,7 +38,7 @@ const RoomDetailsPage = () => {
   // );
   const [currentBid, setCurrentBid] = useState<any>({});
   const [auctionTimer, setAuctionTimer] = useState<any>(null);
-  const [countdown, setCountdown] = useState<number>(35);
+  const [countdown, setCountdown] = useState<number>(20);
   const [timerActive, setTimerActive] = useState<boolean>(false);
   const [soldNotification, setSoldNotification] = useState<any>({});
   const [unSoldNotification, setUnSoldNotification] = useState<any>({});
@@ -200,7 +200,7 @@ const RoomDetailsPage = () => {
       currentBidRef.current = { bid: player.Base, team: user.team };
 
       if (timerActive) {
-        setCountdown(35);
+        setCountdown(20);
       }
 
       toast.dismiss();
@@ -424,7 +424,7 @@ const RoomDetailsPage = () => {
       });
 
       if (timerActive) {
-        setCountdown(35);
+        setCountdown(20);
       }
     }
   };
@@ -435,7 +435,7 @@ const RoomDetailsPage = () => {
       setAuctionTimer(null);
     }
 
-    setCountdown(35);
+    setCountdown(20);
     setTimerActive(true);
 
     const timer = setInterval(() => {
@@ -515,7 +515,7 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     setCurrentBid(currentBidRef.current);
     if (currentBidRef.current && timerActive) {
-      setCountdown(35);
+      setCountdown(20);
     }
   }, [currentBidRef.current]);
 
