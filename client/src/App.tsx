@@ -88,7 +88,7 @@ function App(): JSX.Element {
         />
         <Route
           path="/teams-details/:roomId"
-          element={!userData ? <LoginPage /> : <RoomTeamsPage />}
+          element={<RoomTeamsPage />}
         />
         <Route
           path="/login"

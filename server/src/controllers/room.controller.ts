@@ -49,6 +49,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
       {
         name: "MI",
@@ -60,6 +61,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
       {
         name: "CSK",
@@ -71,6 +73,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
       {
         name: "DC",
@@ -82,6 +85,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
       {
         name: "KKR",
@@ -93,6 +97,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
       {
         name: "SRH",
@@ -104,6 +109,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
       {
         name: "RR",
@@ -115,6 +121,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
       {
         name: "PBKS",
@@ -126,6 +133,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
       {
         name: "LSG",
@@ -137,6 +145,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
       {
         name: "GT",
@@ -148,6 +157,7 @@ export const createRoom = async (req: Request, res: Response) => {
         wks: 0,
         allr: 0,
         overseas: 0,
+        owner: "",
       },
     ];
 
