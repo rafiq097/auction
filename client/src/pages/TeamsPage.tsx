@@ -71,26 +71,26 @@ const TeamsPage: React.FC = () => {
       <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">Teams Overview</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {teams.map((team, idx) => (
+        {teams?.map((team, idx) => (
           <div
-            key={team.name}
+            key={team?.name}
             className={`bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 ${idx === 9 ? "mb-8" : "mb-1"}
             `}
           >
             <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 font-semibold">
-              {team.name} - {team.players.length} Players
+              {team?.name} - {team?.players?.length} Players
             </div>
 
             <div className="p-4">
               {["BATTER", "WICKETKEEPER", "ALL-ROUNDER", "BOWLER"].map((role) => {
-                const rolePlayers = getPlayersByRole(team.players, role);
+                const rolePlayers = getPlayersByRole(team?.players, role);
                 if (rolePlayers.length === 0) return null;
 
                 return (
                   <div key={role} className="mb-4 last:mb-0">
                     <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">{role}</h3>
                     <div className="space-y-2">
-                      {rolePlayers.map((player: any) => (
+                      {rolePlayers?.map((player: any) => (
                         <div
                           key={player.First_Name}
                           className="flex justify-between items-center bg-gray-50 rounded-md p-3 hover:bg-gray-100 transition"

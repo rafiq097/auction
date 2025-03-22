@@ -56,7 +56,7 @@ const BottomBar = () => {
           localStorage.removeItem("teams");
           localStorage.removeItem("curr");
           localStorage.removeItem("aucTeam");
-          navigate("/login");
+          window.location.href = "/login";
         }}
       >
         <FaSignOutAlt size={24} />
