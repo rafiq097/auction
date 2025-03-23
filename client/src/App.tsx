@@ -59,7 +59,7 @@ function App(): JSX.Element {
         });
     } else {
       setLoading(false);
-      // navigate("/login");
+      navigate("/login");
     }
     setLoading(false);
   }, [setUserData]);

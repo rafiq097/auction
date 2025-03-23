@@ -64,7 +64,7 @@ const TeamsPage: React.FC = () => {
   }, []);
 
   const getPlayersByRole = (players: any, role: any) =>
-    players.filter((player: any) => player.Role === role);
+    players?.filter((player: any) => player.Role === role);
 
   return (
     <div className="container mx-auto px-4 py-6">
