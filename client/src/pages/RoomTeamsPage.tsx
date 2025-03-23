@@ -57,7 +57,7 @@ const RoomTeamsPage = () => {
               <div>
                 {team.name}
                 <span className="ml-2 text-sm bg-white text-blue-600 px-2 py-1 rounded-full">
-                  {team.players.length} players
+                  {team.players.length} PLAYERS
                 </span>
               </div>
               <div className="text-sm bg-white text-blue-600 px-2 py-1 rounded-full">
@@ -83,7 +83,7 @@ const RoomTeamsPage = () => {
                             : role === "ALL-ROUNDER"
                             ? team.allr
                             : team.bowlers}{" "}
-                          players
+                          PLAYERS
                         </span>
                       </h3>
 
