@@ -14,6 +14,7 @@ import { getPlusPrice } from "../utils/getPlusPrice.ts";
 import Sold from "../components/Sold.tsx";
 import Unsold from "../components/UnSold.tsx";
 import BottomBar from "../components/BottomBar.tsx";
+import UserTeam from "../components/UserTeam.tsx";
 // import { socketState } from "../atoms/socketAtom.ts";
 
 interface ExtendedSocket extends Socket {
@@ -30,6 +31,7 @@ const RoomDetailsPage = () => {
   const [tempPlayers] = useState<any>(JSON.parse(JSON.stringify(bros)));
   const [curr, setCurr] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
+  const [showTeam, setShowTeam] = useState(false);
   const [loading, setLoading] = useState(true);
   // const [socketID, setSocketID] = useState<any>("");
   // const [socket, setSocket] = useState<Socket>(io("http://localhost:5000"));
@@ -398,6 +400,9 @@ const RoomDetailsPage = () => {
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
+  const handleTeamShow = () => setShowTeam(true);
+  const handleTeamClose = () => setShowTeam(false);
+
   const handleBid = () => {
     const newBid = currentBid.bid + getPlusPrice(players[curr]);
     const remainingPurse =
@@ -756,6 +761,12 @@ const RoomDetailsPage = () => {
             <div className="bg-white p-4 rounded-lg shadow-sm text-center text-lg font-bold text-gray-500">
               <h2 className="text-xl font-bold mb-2">
                 Your Team: {userTeam?.name}
+                <button
+                  className="ml-2 text-sm bg-blue-600 text-white px-2 py-1 rounded-full hover:bg-blue-700 transition-colors shadow-sm"
+                  onClick={handleTeamShow}
+                >
+                  View Full Team
+                </button>
               </h2>
               <div className="grid grid-cols-2 gap-4 mb-2">
                 <div className="p-2 bg-orange-100 rounded">
@@ -787,6 +798,29 @@ const RoomDetailsPage = () => {
               >
                 View Other Teams
               </button>
+
+              {showTeam && (
+                <div
+                  className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                  onClick={() => setShowTeam(false)}
+                >
+                  <div
+                    className="relative bg-white w-full max-w-lg sm:max-w-md md:max-w-xl lg:max-w-2xl h-3/4 p-4 md:p-6 rounded-xl shadow-lg overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                      onClick={() => setShowTeam(false)}
+                    >
+                      ✖️
+                    </button>
+                    <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">
+                      Your Team
+                    </h2>
+                    <UserTeam team={userTeam} />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
