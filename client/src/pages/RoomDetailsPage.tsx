@@ -736,8 +736,13 @@ const RoomDetailsPage = () => {
                 </div>
               </div>
 
+
+            <h2 className="text-2xl font-bold text-blue-800">
+              {players[curr].First_Name + " " + players[curr].Surname}
+            </h2>
+
               {currentBid && (
-                <div className="bg-white p-4 rounded-lg shadow-sm mb-2 text-center">
+                <div className="bg-white p-2 rounded-lg shadow-sm text-center">
                   <div className="text-gray-600 mb-1 text-sm">Current Bid</div>
                   <div className="text-4xl font-bold text-green-600">
                     {CR(currentBid.bid || 0)} CR
@@ -748,7 +753,7 @@ const RoomDetailsPage = () => {
                 </div>
               )}
 
-              <div className="text-center mt-2">
+              <div className="text-center ">
                 <button
                   className="px-6 py-3 bg-blue-500 text-white text-lg font-medium rounded-lg hover:bg-blue-600 transition shadow-sm"
                   onClick={handleBid}
@@ -793,7 +798,7 @@ const RoomDetailsPage = () => {
                 </div>
               </div>
               <button
-                className="px-4 py-2 bg-blue-500 text-white text-lg font-medium rounded-lg hover:bg-blue-600 transition shadow-sm"
+                className="px-4 py-2 bg-blue-500 text-white text-lg font-medium rounded-lg hover:bg-blue-600 transition shadow-sm mb-10 md:mb-0"
                 onClick={() => navigate(`/teams-details/${roomId}/`)}
               >
                 View Other Teams
