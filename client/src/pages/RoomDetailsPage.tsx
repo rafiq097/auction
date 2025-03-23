@@ -310,7 +310,13 @@ const RoomDetailsPage = () => {
     }
 
     function onPlayerUnsold({ message, player, newIndex, participants }: any) {
-      console.log("Player unsold:", message, player.First_Name, newIndex, participants);
+      console.log(
+        "Player unsold:",
+        message,
+        player.First_Name,
+        newIndex,
+        participants
+      );
 
       toast.dismiss();
       toast.error(message, { duration: 3000 });
@@ -365,7 +371,7 @@ const RoomDetailsPage = () => {
     socket.on("player-unsold-noti", (data: any) => {
       setUnSoldNotification({
         show: true,
-        player: data.player
+        player: data.player,
       });
 
       setTimeout(() => {
@@ -531,7 +537,12 @@ const RoomDetailsPage = () => {
     };
   }, [curr]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-pulse text-lg font-semibold">Loading...</div>
+      </div>
+    );
   // console.log(room);
 
   return (
@@ -696,12 +707,10 @@ const RoomDetailsPage = () => {
               />
             </div>
           )}
-          
+
           {unSoldNotification.show && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <Unsold
-                player={unSoldNotification.player}
-              />
+              <Unsold player={unSoldNotification.player} />
             </div>
           )}
         </div>

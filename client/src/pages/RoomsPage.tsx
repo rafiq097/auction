@@ -147,7 +147,7 @@ const RoomsPage: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
         >
           Create Room
         </button>

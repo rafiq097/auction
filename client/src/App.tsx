@@ -47,6 +47,7 @@ function App(): JSX.Element {
         })
         .then((res) => {
           setUserData(res.data.user);
+          setLoading(false);
           // navigate("/");
         })
         .catch((err) => {
@@ -58,12 +59,17 @@ function App(): JSX.Element {
         });
     } else {
       setLoading(false);
-      navigate("/login");
+      // navigate("/login");
     }
     setLoading(false);
   }, [setUserData]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-pulse text-lg font-semibold">Loading...</div>
+      </div>
+    );
 
   return (
     <>
@@ -86,10 +92,7 @@ function App(): JSX.Element {
           path="/rooms/:roomId"
           element={!userData ? <LoginPage /> : <RoomDetailsPage />}
         />
-        <Route
-          path="/teams-details/:roomId"
-          element={<RoomTeamsPage />}
-        />
+        <Route path="/teams-details/:roomId" element={<RoomTeamsPage />} />
         <Route
           path="/login"
           element={!userData ? <LoginPage /> : <Navigate to="/" />}

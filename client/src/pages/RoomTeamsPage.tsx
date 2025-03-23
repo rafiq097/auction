@@ -49,7 +49,9 @@ const RoomTeamsPage = () => {
         {room?.teams?.map((team: any, idx: any) => (
           <div
             key={team.id || idx}
-            className={`bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 ${idx === 9 ? "mb-8" : "mb-1"}`}
+            className={`bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 ${
+              idx === 9 ? "mb-8" : "mb-1"
+            }`}
           >
             <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 font-semibold">
               {team.name}
@@ -68,6 +70,16 @@ const RoomTeamsPage = () => {
                     <div key={role} className="mb-4 last:mb-0">
                       <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
                         {role}
+                        <span className="ml-2 text-sm bg-blue-400 text-white px-2 py-1 rounded-full">
+                          {role === "BATTER"
+                            ? team.batters
+                            : role === "WICKETKEEPER"
+                            ? team.wks
+                            : role === "ALL-ROUNDER"
+                            ? team.allr
+                            : team.bowlers}{" "}
+                          players
+                        </span>
                       </h3>
 
                       <div className="space-y-2">

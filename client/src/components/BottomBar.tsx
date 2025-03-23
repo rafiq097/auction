@@ -6,9 +6,12 @@ import {
   FaPeopleArrows,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import userAtom from "../atoms/userAtom";
+import { useRecoilState } from "recoil";
 
 const BottomBar = () => {
   const navigate = useNavigate();
+  const [userData, ] = useRecoilState(userAtom);
 
   return (
     <nav className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-xl bg-transparent backdrop-blur-xl shadow-md p-2 flex justify-evenly rounded-t-lg">
@@ -48,7 +51,7 @@ const BottomBar = () => {
         <FaUsers size={24} />
         <span className="mt-1 text-sm">Teams</span>
       </button>
-      <button
+      {userData && <button
         className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
           localStorage.removeItem("token");
@@ -61,7 +64,7 @@ const BottomBar = () => {
       >
         <FaSignOutAlt size={24} />
         <span className="mt-1 text-sm">LogOut</span>
-      </button>
+      </button>}
     </nav>
   );
 };
