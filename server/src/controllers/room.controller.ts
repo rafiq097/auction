@@ -222,6 +222,11 @@ export const updateRoom = async (req: Request, res: Response) => {
         });
     }
 
+    const ind = room.teams.findIndex((team: any) => team.name === user.team);
+    if (ind !== -1) {
+      room.teams[ind].owner = user.name;
+    }
+
     room.participants.push({ ...user, online: true, team: user.team });
     await room.save();
 

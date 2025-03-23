@@ -53,11 +53,16 @@ const RoomTeamsPage = () => {
               idx === 9 ? "mb-8" : "mb-1"
             }`}
           >
-            <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 font-semibold">
-              {team.name}
-              <span className="ml-2 text-sm bg-white text-blue-600 px-2 py-1 rounded-full">
-                {team.players.length} players
-              </span>
+            <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 font-semibold flex justify-between items-center">
+              <div>
+                {team.name}
+                <span className="ml-2 text-sm bg-white text-blue-600 px-2 py-1 rounded-full">
+                  {team.players.length} players
+                </span>
+              </div>
+              <div className="text-sm bg-white text-blue-600 px-2 py-1 rounded-full">
+                Owner: {team.owner || null}
+              </div>
             </div>
 
             <div className="p-4">
