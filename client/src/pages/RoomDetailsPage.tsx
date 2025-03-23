@@ -401,7 +401,6 @@ const RoomDetailsPage = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const handleTeamShow = () => setShowTeam(true);
-  const handleTeamClose = () => setShowTeam(false);
 
   const handleBid = () => {
     const newBid = currentBid.bid + getPlusPrice(players[curr]);
