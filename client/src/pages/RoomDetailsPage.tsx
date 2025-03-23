@@ -38,9 +38,10 @@ const RoomDetailsPage = () => {
   // const [socket, setSocket] = useState<Socket>(
   //   io("https://iplauction.onrender.com")
   // );
+  const [time, ] = useState<number>(10);
   const [currentBid, setCurrentBid] = useState<any>({});
   const [auctionTimer, setAuctionTimer] = useState<any>(null);
-  const [countdown, setCountdown] = useState<number>(10);
+  const [countdown, setCountdown] = useState<number>(time);
   const [timerActive, setTimerActive] = useState<boolean>(false);
   const [soldNotification, setSoldNotification] = useState<any>({});
   const [unSoldNotification, setUnSoldNotification] = useState<any>({});
@@ -202,7 +203,7 @@ const RoomDetailsPage = () => {
       currentBidRef.current = { bid: player.Base, team: user.team };
 
       if (timerActive) {
-        setCountdown(10);
+        setCountdown(time);
       }
 
       toast.dismiss();
@@ -434,7 +435,7 @@ const RoomDetailsPage = () => {
       });
 
       if (timerActive) {
-        setCountdown(10);
+        setCountdown(time);
       }
     }
   };
@@ -445,7 +446,7 @@ const RoomDetailsPage = () => {
       setAuctionTimer(null);
     }
 
-    setCountdown(10);
+    setCountdown(time);
     setTimerActive(true);
 
     const timer = setInterval(() => {
@@ -525,7 +526,7 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     setCurrentBid(currentBidRef.current);
     if (currentBidRef.current && timerActive) {
-      setCountdown(10);
+      setCountdown(time);
     }
   }, [currentBidRef.current]);
 
@@ -726,7 +727,7 @@ const RoomDetailsPage = () => {
               <div className="flex justify-center mb-2">
                 <div
                   className={`text-xl font-bold px-6 py-3 rounded-full ${
-                    countdown <= 10
+                    countdown <= time
                       ? "bg-red-100 text-red-600 animate-pulse"
                       : "bg-blue-100 text-blue-800"
                   }`}
