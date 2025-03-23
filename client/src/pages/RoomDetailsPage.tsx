@@ -598,7 +598,7 @@ const RoomDetailsPage = () => {
                       >
                         {team.name}
                       </td>
-                      <td className="px-4 py-3 text-gray-700">{owner}</td>
+                      <td className="px-4 py-3 text-black">{owner}</td>
                       <td className="px-4 py-3 text-right text-red-600 font-medium">
                         {CR(team.spent)} CR
                       </td>
@@ -809,7 +809,7 @@ const RoomDetailsPage = () => {
                     onClick={(e) => e.stopPropagation()}
                   >
                     <button
-                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                      className="absolute top-2 right-2 text-gray-700 hover:text-gray-700"
                       onClick={() => setShowTeam(false)}
                     >
                       ✖️

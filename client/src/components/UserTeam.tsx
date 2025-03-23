@@ -25,7 +25,7 @@ const UserTeam = ({ team }: any) => {
 
           return (
             <div key={role} className="mb-4 last:mb-0">
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-2">
                 {role}
                 <span className="ml-2 text-sm bg-blue-400 text-white px-2 py-1 rounded-full">
                   {role === "BATTER"
@@ -43,10 +43,10 @@ const UserTeam = ({ team }: any) => {
                 {rolePlayers.map((player: any) => (
                   <div
                     key={player.id}
-                    className="flex justify-between items-center bg-gray-50 rounded-md p-3 hover:bg-gray-100 transition"
+                    className="flex justify-between items-center bg-gray-50 rounded-md p-3 hover:bg-gray-100 transition text-black"
                   >
                     <div className="flex items-center">
-                      <div className="font-medium">
+                      <div className="font-bold">
                         {player.First_Name} {player.Surname}
                       </div>
                       {player.Country !== "India" && (
