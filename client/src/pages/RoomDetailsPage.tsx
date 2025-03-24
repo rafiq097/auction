@@ -38,8 +38,8 @@ const RoomDetailsPage = () => {
   // const [socket, setSocket] = useState<Socket>(
   //   io("https://iplauction.onrender.com")
   // );
-  const [time, ] = useState<number>(10);
-  const [currentBid, setCurrentBid] = useState<any>({});
+  const [time] = useState<number>(10);
+  const [currentBid, setCurrentBid] = useState<any>({ bid: 0 });
   const [auctionTimer, setAuctionTimer] = useState<any>(null);
   const [countdown, setCountdown] = useState<number>(time);
   const [timerActive, setTimerActive] = useState<boolean>(false);
@@ -270,6 +270,14 @@ const RoomDetailsPage = () => {
       newIndex,
       teams,
     }: any) {
+      const newBid = currentBid.bid + getPlusPrice(currentBid?.bid);
+      const team1 = room.teams.find((t: any) => t.name === userData?.team);
+      const remainingPurse = team1?.remaining;
+
+      if (newBid > remainingPurse) {
+        toast.error("Not enough purse to bid, bro!");
+        return;
+      }
       console.log("Player sold:", message, player, team, amount, newIndex);
 
       toast.dismiss();
@@ -404,14 +412,18 @@ const RoomDetailsPage = () => {
   const handleTeamShow = () => setShowTeam(true);
 
   const handleBid = () => {
-    const newBid = currentBid.bid + getPlusPrice(players[curr]);
-    const remainingPurse =
-      room.teams[room.teams.indexOf(userData.team)]?.remaining;
+    const newBid = (currentBid.bid || players[curr].Base) + getPlusPrice(currentBid?.bid);
+    const team = room.teams.find((t: any) => t.name === userData?.team);
+    const remainingPurse = team?.remaining;
+    
+    console.log("Remaining purse:", remainingPurse);
+    console.log("Current bid:", currentBid);
 
     if (newBid > remainingPurse) {
       toast.error("Not enough purse to bid, bro!");
       return;
     }
+
     if (currentBid.team == userData.team) {
       toast.error("You are the current bidder for this player!");
       return;
@@ -736,10 +748,9 @@ const RoomDetailsPage = () => {
                 </div>
               </div>
 
-
-            <h2 className="text-2xl font-bold text-blue-800">
-              {players[curr].First_Name + " " + players[curr].Surname}
-            </h2>
+              <h2 className="text-2xl font-bold text-blue-800">
+                {players[curr].First_Name + " " + players[curr].Surname}
+              </h2>
 
               {currentBid && (
                 <div className="bg-white p-2 rounded-lg shadow-sm text-center">
