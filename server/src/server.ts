@@ -25,6 +25,7 @@ const io = new Server(server, {
 });
 
 const map = new Map();
+
 io.on("connection", (socket) => {
   console.log("New connection established:", socket.id);
 
@@ -285,8 +286,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("player-sold-noti", (data) => {
-    io.emit('player-sold-noti', data);
+  socket.on("player-sold-noti", ({ roomId, data }) => {
+    io.to(roomId).emit('player-sold-noti', data);
   });
   
   socket.on("player-unsold", async ({ roomId, player }) => {
@@ -322,8 +323,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("player-unsold-noti", (data) => {
-    io.emit('player-unsold-noti', data);
+  socket.on("player-unsold-noti", ({ roomId, data }) => {
+    io.to(roomId).emit('player-unsold-noti', data);
   });
 });
 

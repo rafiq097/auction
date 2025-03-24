@@ -43,6 +43,7 @@ const RoomDetailsPage = () => {
   const [auctionTimer, setAuctionTimer] = useState<any>(null);
   const [countdown, setCountdown] = useState<number>(time);
   const [timerActive, setTimerActive] = useState<boolean>(false);
+  // const [pause, setPause] = useState<boolean>(false);
   const [soldNotification, setSoldNotification] = useState<any>({});
   const [unSoldNotification, setUnSoldNotification] = useState<any>({});
 
@@ -284,10 +285,13 @@ const RoomDetailsPage = () => {
       toast.success(message, { duration: 3000 });
 
       socket.emit("player-sold-noti", {
-        player: `${player.First_Name} ${player.Surname}`,
-        team,
-        amount,
-        timestamp: new Date().toISOString(),
+        roomId,
+        data: {
+          player: `${player.First_Name} ${player.Surname}`,
+          team,
+          amount,
+          timestamp: new Date().toISOString(),
+        },
       });
 
       setRoom((prev: any) => {
@@ -333,8 +337,11 @@ const RoomDetailsPage = () => {
       toast.error(message, { duration: 3000 });
 
       socket.emit("player-unsold-noti", {
-        player: `${player.First_Name} ${player.Surname}`,
-        timestamp: new Date().toISOString(),
+        roomId,
+        data: {
+          player: `${player.First_Name} ${player.Surname}`,
+          timestamp: new Date().toISOString(),
+        },
       });
 
       setCurr(newIndex);
@@ -410,7 +417,10 @@ const RoomDetailsPage = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const handleTeamShow = () => setShowTeam(true);
-
+  // const togglePause = () => {
+  //   setPause((prev) => !prev);
+  // };
+  
   const handleBid = () => {
     const newBid = (currentBid.bid || players[curr].Base) + getPlusPrice(currentBid?.bid);
     const team = room.teams.find((t: any) => t.name === userData?.team);
@@ -420,7 +430,8 @@ const RoomDetailsPage = () => {
     console.log("Current bid:", currentBid);
 
     if (newBid > remainingPurse) {
-      toast.error("Not enough purse to bid, bro!");
+      toast.error("why vro?");
+      toast.error("Not enough purse to bid bro!");
       return;
     }
 

@@ -21,7 +21,7 @@ const BottomBar = () => {
           navigate("/");
         }}
       >
-        <FaHome size={24} />
+        <FaHome size={22} />
         <span className="mt-1 text-sm">Home</span>
       </button>
       <button
@@ -30,7 +30,7 @@ const BottomBar = () => {
           navigate("/auction");
         }}
       >
-        <FaTrophy size={24} />
+        <FaTrophy size={22} />
         <span className="mt-1 text-sm">Auction</span>
       </button>
       <button
@@ -39,7 +39,7 @@ const BottomBar = () => {
           navigate("/rooms");
         }}
       >
-        <FaPeopleArrows size={24} />
+        <FaPeopleArrows size={22} />
         <span className="mt-1 text-sm">Rooms</span>
       </button>
       <button
@@ -48,7 +48,7 @@ const BottomBar = () => {
           navigate("/teams");
         }}
       >
-        <FaUsers size={24} />
+        <FaUsers size={22} />
         <span className="mt-1 text-sm">Teams</span>
       </button>
       {userData && <button
@@ -62,7 +62,7 @@ const BottomBar = () => {
           window.location.href = "/login";
         }}
       >
-        <FaSignOutAlt size={24} />
+        <FaSignOutAlt size={22} />
         <span className="mt-1 text-sm">LogOut</span>
       </button>}
     </nav>
