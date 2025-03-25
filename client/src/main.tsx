@@ -10,8 +10,8 @@ import axios from "axios";
 
 axios.interceptors.request.use(
   function (config) {
-    config.baseURL = "https://iplauction.onrender.com";
-    // config.baseURL = "http://localhost:5000";
+    // config.baseURL = "https://iplauction.onrender.com";
+    config.baseURL = "http://localhost:5000";
     return config;
   },
   function (error) {

@@ -5,6 +5,7 @@ export interface IRoom extends Document {
   owner: string;
   participants: any[];
   curr: number;
+  pause: boolean;
   teams: any[];
 }
 
@@ -26,6 +27,10 @@ const roomSchema: Schema = new Schema(
     curr: {
       type: Number,
       default: 0,
+    },
+    pause: {
+      type: Boolean,
+      default: false,
     },
     teams: [{
       name: String,

@@ -23,6 +23,7 @@ interface ExtendedSocket extends Socket {
 
 const RoomDetailsPage = () => {
   const { roomId } = useParams();
+  const bro = import.meta.env.VITE_BRO;
   const navigate = useNavigate();
   const [room, setRoom] = useState<any>({});
   const [userData, setUserData] = useRecoilState(userAtom);
@@ -38,12 +39,12 @@ const RoomDetailsPage = () => {
   // const [socket, setSocket] = useState<Socket>(
   //   io("https://iplauction.onrender.com")
   // );
-  const [time] = useState<number>(10);
+  const [time, setTime] = useState<number>(10);
   const [currentBid, setCurrentBid] = useState<any>({ bid: 0 });
   const [auctionTimer, setAuctionTimer] = useState<any>(null);
   const [countdown, setCountdown] = useState<number>(time);
   const [timerActive, setTimerActive] = useState<boolean>(false);
-  // const [pause, setPause] = useState<boolean>(false);
+  const [pause, setPause] = useState<boolean>(false);
   const [soldNotification, setSoldNotification] = useState<any>({});
   const [unSoldNotification, setUnSoldNotification] = useState<any>({});
 
@@ -116,8 +117,8 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     if (!socketRef.current) {
       console.log("Creating new socket connection");
-      socketRef.current = io("https://iplauction.onrender.com");
-      // socketRef.current = io("http://localhost:5000");
+      // socketRef.current = io("https://iplauction.onrender.com");
+      socketRef.current = io("http://localhost:5000");
     }
 
     return () => {
@@ -417,15 +418,23 @@ const RoomDetailsPage = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const handleTeamShow = () => setShowTeam(true);
-  // const togglePause = () => {
-  //   setPause((prev) => !prev);
-  // };
-  
+  const togglePause = async () => {
+    try {
+      const response = await axios.post(`/rooms/${roomId}/toggle-pause`);
+      console.log(response);
+      setPause(response.data.pause);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error?.message);
+    }
+  };
+
   const handleBid = () => {
-    const newBid = (currentBid.bid || players[curr].Base) + getPlusPrice(currentBid?.bid);
+    const newBid =
+      (currentBid.bid || players[curr].Base) + getPlusPrice(currentBid?.bid);
     const team = room.teams.find((t: any) => t.name === userData?.team);
     const remainingPurse = team?.remaining;
-    
+
     console.log("Remaining purse:", remainingPurse);
     console.log("Current bid:", currentBid);
 
@@ -468,12 +477,17 @@ const RoomDetailsPage = () => {
       clearInterval(auctionTimer);
       setAuctionTimer(null);
     }
+    if (pause) return;
 
     setCountdown(time);
     setTimerActive(true);
 
     const timer = setInterval(() => {
       setCountdown((prevCount) => {
+        if (pause) {
+          return prevCount;
+        }
+
         if (prevCount <= 1) {
           clearInterval(timer);
           handlePlayerEnd();
@@ -545,6 +559,15 @@ const RoomDetailsPage = () => {
       }, 1000);
     }, 0);
   };
+
+  useEffect(() => {
+    if (pause && auctionTimer) {
+      clearInterval(auctionTimer);
+      setAuctionTimer(null);
+    } else if (!pause && timerActive) {
+      startAuctionTimer();
+    }
+  }, [pause]);
 
   useEffect(() => {
     setCurrentBid(currentBidRef.current);
@@ -637,6 +660,28 @@ const RoomDetailsPage = () => {
                 })}
               </tbody>
             </table>
+
+            {bro == userData?.email && (
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full mt-4">
+                <input
+                  type="number"
+                  value={time}
+                  onChange={(e) => {
+                    setTime(Number(e.target.value));
+                  }}
+                  className="w-full sm:w-32 px-2 py-1 border rounded-lg text-center"
+                  placeholder="Set Timer"
+                  min="7"
+                  max="60"
+                />
+                <button
+                  className="px-2 py-1 bg-red-500 text-white text-lg font-medium rounded-lg hover:bg-red-600 transition shadow-sm"
+                  onClick={togglePause}
+                >
+                  {pause ? "Resume" : "Pause"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

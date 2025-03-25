@@ -237,3 +237,22 @@ export const updateRoom = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error Updating room" });
   }
 };
+
+export const togglePause = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const room = await Room.findById(id);
+    if (!room)
+      return res.status(404).json({ message: "Room Not Found!" });
+
+    room.pause = !room.pause;
+    await room.save();
+
+    res.status(200).json({ message: "Pause Toggled", pause: room.pause });
+
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Error Updating Pause in room" });
+  }
+};
