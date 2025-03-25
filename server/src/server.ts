@@ -326,6 +326,10 @@ io.on("connection", (socket) => {
   socket.on("player-unsold-noti", ({ roomId, data }) => {
     io.to(roomId).emit('player-unsold-noti', data);
   });
+  
+  socket.on("toggle-pause", ({ roomId, pause }) => {
+    io.to(roomId).emit('toggle-pause', pause);
+  });
 });
 
 app.use(express.json());

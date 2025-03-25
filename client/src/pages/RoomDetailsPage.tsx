@@ -398,6 +398,12 @@ const RoomDetailsPage = () => {
       }, 2000);
     });
 
+    socket.on("toggle-pause", (pause: any) => {
+      setPause(pause);
+      if (pause) toast.error("Auction Paused!");
+      else toast.success("Auction Resumed!");
+    });
+
     return () => {
       socket.off("connect", onConnect);
       socket.off("room-state", onRoomState);
@@ -411,6 +417,7 @@ const RoomDetailsPage = () => {
       socket.off("player-unsold", onPlayerUnsold);
       socket.off("player-sold-noti");
       socket.off("player-unsold-noti");
+      socket.off("toggle-pause");
     };
   }, [roomId, userData, curr]);
 
@@ -423,6 +430,11 @@ const RoomDetailsPage = () => {
       const response = await axios.post(`/rooms/${roomId}/toggle-pause`);
       console.log(response);
       setPause(response.data.pause);
+
+      if (!socketRef.current || !userData || !userData.email) return;
+
+      const socket = socketRef.current;
+      socket.emit("toggle-pause", { roomId, pause });
     } catch (error: any) {
       console.log(error);
       toast.error(error?.message);
