@@ -428,13 +428,12 @@ const RoomDetailsPage = () => {
   const togglePause = async () => {
     try {
       const response = await axios.post(`/rooms/${roomId}/toggle-pause`);
-      console.log(response);
       setPause(response.data.pause);
 
       if (!socketRef.current || !userData || !userData.email) return;
 
       const socket = socketRef.current;
-      socket.emit("toggle-pause", { roomId, pause });
+      socket.emit("toggle-pause", { roomId, pause: response.data.pause });
     } catch (error: any) {
       console.log(error);
       toast.error(error?.message);
