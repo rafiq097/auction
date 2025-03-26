@@ -53,15 +53,15 @@ const RoomTeamsPage = () => {
               idx === 9 ? "mb-8" : "mb-1"
             }`}
           >
-            <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 font-semibold flex justify-between items-center">
+            <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 font-bold flex justify-between items-center">
               <div>
                 {team.name}
                 <span className="ml-2 text-sm bg-white text-blue-600 px-2 py-1 rounded-full">
                   {team.players.length} PLAYERS
                 </span>
               </div>
-              <div className="text-sm bg-white text-blue-600 px-2 py-1 rounded-full">
-                Owner: {team.owner || null}
+              <div className="text-sm bg-gray-100 text-blue-600 px-2 py-1 rounded-full">
+                Owner: {team.owner}
               </div>
             </div>
 
@@ -113,6 +113,15 @@ const RoomTeamsPage = () => {
                   );
                 }
               )}
+            </div>
+
+            <div className="text-white py-3 px-4 font-semibold flex justify-between items-center">
+              <div className="text-sm text-blue-600 px-2 py-1 rounded-full">
+                Spent: {CR(team.spent)} CR
+              </div>
+              <div className="text-sm text-blue-600 px-2 py-1 rounded-full">
+                Remaining: {CR(team.remaining)} CR
+              </div>
             </div>
           </div>
         ))}

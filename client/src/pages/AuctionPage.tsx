@@ -572,8 +572,8 @@ const AuctionPage: React.FC = () => {
                     className="flex justify-between items-center border-b border-gray-300"
                   >
                     <span>{team?.name}</span>
-                    <span>{team.spent.toFixed(2)}</span>
-                    <span>{team.remaining.toFixed(2)}</span>
+                    <span>{team?.spent.toFixed(2)}</span>
+                    <span>{team?.remaining.toFixed(2)}</span>
                   </li>
                 ))}
               </ul>
@@ -673,8 +673,8 @@ const AuctionPage: React.FC = () => {
                     className="flex justify-between items-center border-b border-gray-300"
                   >
                     <span>{team?.name}</span>
-                    <span>{CR(team.bid).toFixed(2)}</span>
-                    <span>{team.round}</span>
+                    <span>{CR(team?.bid).toFixed(2)}</span>
+                    <span>{team?.round}</span>
                   </li>
                 ))}
               </ul>
@@ -724,11 +724,11 @@ const AuctionPage: React.FC = () => {
                 {currentBid ? (
                   <>
                     <p className="text-4xl text-green-800 font-extrabold">
-                      ₹{CR(currentBid.bid).toFixed(2)} CR
+                      ₹{CR(currentBid?.bid).toFixed(2)} CR
                     </p>
                     <p className="text-lg text-red-800 font-medium mt-2">
                       Bidder:{" "}
-                      <span className="font-bold">{currentBid.name}</span>
+                      <span className="font-bold">{currentBid?.name}</span>
                     </p>
                   </>
                 ) : (
@@ -744,22 +744,22 @@ const AuctionPage: React.FC = () => {
                 </h1>
                 <ul className="text-black space-y-2">
                   <li className="flex justify-center ">
-                    Batters: {team.batters}
+                    Batters: {team?.batters}
                   </li>
                   <li className="flex justify-center ">
-                    Bowlers: {team.bowlers}
+                    Bowlers: {team?.bowlers}
                   </li>
                   <li className="flex justify-center ">
-                    All-Rounders: {team.allr}
+                    All-Rounders: {team?.allr}
                   </li>
                   <li className="flex justify-center ">
-                    Wicketkeepers: {team.wks}
+                    Wicketkeepers: {team?.wks}
                   </li>
                   <li className="flex justify-center ">
-                    Overseas Players: {team.overseas}
+                    Overseas Players: {team?.overseas}
                   </li>
                   <li className="flex justify-center font-bold text-lg">
-                    Total: {team.batters + team.bowlers + team.allr + team.wks} /
+                    Total: {team?.batters + team?.bowlers + team?.allr + team?.wks} /
                     25
                   </li>
                 </ul>

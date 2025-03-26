@@ -167,41 +167,51 @@ const RoomsPage: React.FC = () => {
                   <h3 className="text-lg font-semibold">{room.name}</h3>
                   <p className="text-gray-500">Owned by: {room.owner}</p>
                 </div>
-                <div className="mt-4 flex gap-2">
-                  <select
-                    name="team"
-                    value={selectedTeam}
-                    onChange={handleTeamChange}
-                    className="p-2 border rounded"
-                  >
-                    <option value="" disabled>
-                      Select
-                    </option>
-                    <option value="RCB">RCB</option>
-                    <option value="CSK">CSK</option>
-                    <option value="MI">MI</option>
-                    <option value="KKR">KKR</option>
-                    <option value="SRH">SRH</option>
-                    <option value="DC">DC</option>
-                    <option value="RR">RR</option>
-                    <option value="LSG">LSG</option>
-                    <option value="GT">GT</option>
-                    <option value="PBKS">PBKS</option>
-                  </select>
-                  <button
-                    onClick={() => handleJoinRoom(room._id)}
-                    className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700"
-                  >
-                    Join
-                  </button>
-                  {(room.owner === userData?.email || userData?.email == bro) && (
-                    <button
-                      onClick={() => handleDeleteRoom(room._id)}
-                      className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
+                <div className="mt-4 flex flex-col space-y-2">
+                  <div className="flex space-x-2">
+                    <select
+                      name="team"
+                      value={selectedTeam}
+                      onChange={handleTeamChange}
+                      className="w-1/2 p-2 border rounded"
                     >
-                      Delete
+                      <option value="" disabled>
+                        Team
+                      </option>
+                      <option value="RCB">RCB</option>
+                      <option value="CSK">CSK</option>
+                      <option value="MI">MI</option>
+                      <option value="KKR">KKR</option>
+                      <option value="SRH">SRH</option>
+                      <option value="DC">DC</option>
+                      <option value="RR">RR</option>
+                      <option value="LSG">LSG</option>
+                      <option value="GT">GT</option>
+                      <option value="PBKS">PBKS</option>
+                    </select>
+                    <button
+                      onClick={() => handleJoinRoom(room._id)}
+                      className="w-1/2 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 whitespace-nowrap"
+                    >
+                      Join
                     </button>
-                  )}
+                  </div>
+                  <div className="flex space-x-2">
+                    {(room.owner === userData?.email || userData?.email == bro) && (
+                      <button
+                        onClick={() => handleDeleteRoom(room._id)}
+                        className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
+                      >
+                        Delete
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {navigate(`/teams-details/${room._id}`)}}
+                      className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                    >
+                      Teams
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
