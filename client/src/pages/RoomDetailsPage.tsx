@@ -96,6 +96,11 @@ const RoomDetailsPage = () => {
         setUserTeam(userTeam);
 
         setCurr(response.data.curr);
+
+        const cb2 = {bid: response.data.currentBid.bid, team: response.data.currentBid.team};
+        setCurrentBid(cb2);
+        setCountdown(response.data.currentBid.time);
+        
         setLoading(false);
       } catch (err: any) {
         console.error(err?.message);
@@ -118,8 +123,8 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     if (!socketRef.current) {
       console.log("Creating new socket connection");
-      socketRef.current = io("https://iplauction.onrender.com");
-      // socketRef.current = io("http://localhost:5000");
+      // socketRef.current = io("https://iplauction.onrender.com");
+      socketRef.current = io("http://localhost:5000");
     }
 
     return () => {
@@ -491,6 +496,7 @@ const RoomDetailsPage = () => {
         roomId,
         user: userData,
         player: { ...players[curr], Base: players[curr].Base },
+        time: countdown,
       });
 
       if (timerActive) {
@@ -820,7 +826,7 @@ const RoomDetailsPage = () => {
               <div className="flex justify-center mb-2">
                 <div
                   className={`text-xl font-bold px-6 py-3 rounded-full ${
-                    countdown <= time
+                    countdown <= 10
                       ? "bg-red-100 text-red-600 animate-pulse"
                       : "bg-blue-100 text-blue-800"
                   }`}

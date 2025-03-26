@@ -7,6 +7,7 @@ export interface IRoom extends Document {
   curr: number;
   pause: boolean;
   teams: any[];
+  currentBid: any;
 }
 
 const roomSchema: Schema = new Schema(
@@ -43,6 +44,11 @@ const roomSchema: Schema = new Schema(
       wks: Number,
       overseas: Number,
     }],
+    currentBid: {
+      price: Number,
+      team: String,
+      time: Number,
+    }
   },
   {
     timestamps: true,
