@@ -404,6 +404,11 @@ const RoomDetailsPage = () => {
       else toast.success("Auction Resumed!");
     });
 
+    socket.on("set-time", (time: any) => {
+      console.log(time);
+      setTime(time);
+    });
+
     return () => {
       socket.off("connect", onConnect);
       socket.off("room-state", onRoomState);
@@ -418,6 +423,7 @@ const RoomDetailsPage = () => {
       socket.off("player-sold-noti");
       socket.off("player-unsold-noti");
       socket.off("toggle-pause");
+      socket.off("set-time");
     };
   }, [roomId, userData, curr]);
 
@@ -438,6 +444,15 @@ const RoomDetailsPage = () => {
       console.log(error);
       toast.error(error?.message);
     }
+  };
+
+  const handleSetTime = (e: any) => {
+    setTime(Number(e.target.value));
+
+    if (!socketRef.current || !userData || !userData.email) return;
+
+    const socket = socketRef.current;
+    socket.emit("set-time", { roomId, time: Number(e.target.value) });
   };
 
   const handleBid = () => {
@@ -677,9 +692,7 @@ const RoomDetailsPage = () => {
                 <input
                   type="number"
                   value={time}
-                  onChange={(e) => {
-                    setTime(Number(e.target.value));
-                  }}
+                  onChange={handleSetTime}
                   className="w-full sm:w-32 px-2 py-1 border rounded-lg text-center"
                   placeholder="Set Timer"
                   min="7"

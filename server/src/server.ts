@@ -330,6 +330,10 @@ io.on("connection", (socket) => {
   socket.on("toggle-pause", ({ roomId, pause }) => {
     io.to(roomId).emit('toggle-pause', pause);
   });
+
+  socket.on("set-time", ({ roomId, time }) => {
+    io.to(roomId).emit('set-time', time);
+  });
 });
 
 app.use(express.json());
