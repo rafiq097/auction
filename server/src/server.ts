@@ -205,39 +205,47 @@ io.on("connection", (socket) => {
     }
   });
 
-
   socket.on("player-sold", async ({ roomId, player, team, amount }) => {
     try {
       console.log("---Player-Sold---");
-      console.log(`Player ${player.First_Name} ${player.Surname} sold to ${team} for ${amount}`);
-      
+      console.log(
+        `Player ${player.First_Name} ${player.Surname} sold to ${team} for ${amount}`
+      );
+
       const room = await Room.findById(roomId);
       if (!room) {
         socket.emit("room-error", "Room not found");
         return;
       }
-      
-    const sold = room.teams.some((t) =>
-      t.players.some((p: any) => p.First_Name === player.First_Name && p.Surname === player.Surname)
-    );
 
-    if (sold) {
-      console.log(`Player ${player.First_Name} ${player.Surname} is already sold.`);
-      socket.emit("room-error", "Player already sold");
-      return;
-    }
-  
+      const sold = room.teams.some((t) =>
+        t.players.some(
+          (p: any) =>
+            p.First_Name === player.First_Name && p.Surname === player.Surname
+        )
+      );
+
+      if (sold) {
+        console.log(
+          `Player ${player.First_Name} ${player.Surname} is already sold.`
+        );
+        socket.emit("room-error", "Player already sold");
+        return;
+      }
+
       const teamIndex = room.teams.findIndex((t) => t.name === team);
       if (teamIndex !== -1) {
         room.teams[teamIndex].spent += amount;
         room.teams[teamIndex].remaining -= amount;
-          
+
         switch (player.Role) {
           case "BATTER":
-            room.teams[teamIndex].batters = (room.teams[teamIndex].batters || 0) + 1;
+            room.teams[teamIndex].batters =
+              (room.teams[teamIndex].batters || 0) + 1;
             break;
           case "BOWLER":
-            room.teams[teamIndex].bowlers = (room.teams[teamIndex].bowlers || 0) + 1;
+            room.teams[teamIndex].bowlers =
+              (room.teams[teamIndex].bowlers || 0) + 1;
             break;
           case "ALL-ROUNDER":
             room.teams[teamIndex].allr = (room.teams[teamIndex].allr || 0) + 1;
@@ -248,9 +256,10 @@ io.on("connection", (socket) => {
           default:
             break;
         }
-  
+
         if (player.Country !== "India") {
-          room.teams[teamIndex].overseas = (room.teams[teamIndex].overseas || 0) + 1;
+          room.teams[teamIndex].overseas =
+            (room.teams[teamIndex].overseas || 0) + 1;
         }
 
         room.teams[teamIndex].players.push({
@@ -258,19 +267,21 @@ io.on("connection", (socket) => {
           price: amount,
         });
       }
-  
+
       const newIndex = room.curr + 1;
       room.curr = newIndex;
-  
+
       room.participants.forEach((p) => {
         p.skip = false;
       });
-      
+
       await room.save();
       console.log(room);
-  
+
       io.to(roomId).emit("player-sold", {
-        message: `${player.First_Name} ${player.Surname} SOLD to ${team} for ${CR(amount)} CR!`,
+        message: `${player.First_Name} ${
+          player.Surname
+        } SOLD to ${team} for ${CR(amount)} CR!`,
         player,
         team,
         amount,
@@ -278,7 +289,7 @@ io.on("connection", (socket) => {
         teams: room.teams,
         participants: room.participants,
       });
-      
+
       console.log(`Player sold notification sent to room ${roomId}`);
     } catch (error) {
       console.error("Error handling player sold:", error);
@@ -287,35 +298,35 @@ io.on("connection", (socket) => {
   });
 
   socket.on("player-sold-noti", ({ roomId, data }) => {
-    io.to(roomId).emit('player-sold-noti', data);
+    io.to(roomId).emit("player-sold-noti", data);
   });
-  
+
   socket.on("player-unsold", async ({ roomId, player }) => {
     try {
       console.log(`Player ${player.First_Name} ${player.Surname} unsold`);
-      
+
       const room = await Room.findById(roomId);
       if (!room) {
         socket.emit("room-error", "Room not found");
         return;
       }
-  
+
       const newIndex = room.curr + 1;
       room.curr = newIndex;
-  
+
       room.participants.forEach((p) => {
         p.skip = false;
       });
-      
+
       await room.save();
-  
+
       io.to(roomId).emit("player-unsold", {
         message: `${player.First_Name} ${player.Surname} UNSOLD!`,
         player,
         newIndex,
         participants: room.participants,
       });
-      
+
       console.log(`Player unsold notification sent to room ${roomId}`);
     } catch (error) {
       console.error("Error handling player unsold:", error);
@@ -324,15 +335,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("player-unsold-noti", ({ roomId, data }) => {
-    io.to(roomId).emit('player-unsold-noti', data);
+    io.to(roomId).emit("player-unsold-noti", data);
   });
-  
+
   socket.on("toggle-pause", ({ roomId, pause }) => {
-    io.to(roomId).emit('toggle-pause', pause);
+    io.to(roomId).emit("toggle-pause", pause);
   });
 
   socket.on("set-time", ({ roomId, time }) => {
-    io.to(roomId).emit('set-time', time);
+    io.to(roomId).emit("set-time", time);
   });
 });
 

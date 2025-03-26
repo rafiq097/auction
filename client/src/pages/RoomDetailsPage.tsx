@@ -24,6 +24,7 @@ interface ExtendedSocket extends Socket {
 const RoomDetailsPage = () => {
   const { roomId } = useParams();
   const bro = import.meta.env.VITE_BRO;
+  const bro2 = import.meta.env.VITE_BRO2;
   const navigate = useNavigate();
   const [room, setRoom] = useState<any>({});
   const [userData, setUserData] = useRecoilState(userAtom);
@@ -39,7 +40,7 @@ const RoomDetailsPage = () => {
   // const [socket, setSocket] = useState<Socket>(
   //   io("https://iplauction.onrender.com")
   // );
-  const [time, setTime] = useState<number>(10);
+  const [time, setTime] = useState<number>(15);
   const [currentBid, setCurrentBid] = useState<any>({ bid: 0 });
   const [auctionTimer, setAuctionTimer] = useState<any>(null);
   const [countdown, setCountdown] = useState<number>(time);
@@ -687,7 +688,7 @@ const RoomDetailsPage = () => {
               </tbody>
             </table>
 
-            {bro == userData?.email && (
+            {(bro == userData?.email || userData?.email == bro2) && (
               <div className="flex flex-col sm:flex-row items-center gap-4 w-full mt-4">
                 <input
                   type="number"
