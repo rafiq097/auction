@@ -131,28 +131,30 @@ const RoomsPage: React.FC = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold text-center mb-6">Rooms</h1>
 
-      <form
-        onSubmit={handleCreateRoom}
-        className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-md mb-8"
-      >
-        <h2 className="text-xl font-semibold mb-4">Create a Room</h2>
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Room Name"
-            value={roomName}
-            onChange={(e) => setRoomName(e.target.value)}
-            required
-            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+      {(userData?.email == bro || userData?.email == bro2) && (
+        <form
+          onSubmit={handleCreateRoom}
+          className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-md mb-8"
         >
-          Create Room
-        </button>
-      </form>
+          <h2 className="text-xl font-semibold mb-4">Create a Room</h2>
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Room Name"
+              value={roomName}
+              onChange={(e) => setRoomName(e.target.value)}
+              required
+              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+          >
+            Create Room
+          </button>
+        </form>
+      )}
 
       {loading ? (
         <p className="text-center text-gray-500">Loading rooms...</p>
@@ -198,7 +200,9 @@ const RoomsPage: React.FC = () => {
                     </button>
                   </div>
                   <div className="flex space-x-2">
-                    {(room.owner === userData?.email || userData?.email == bro || userData?.email == bro2) && (
+                    {(room.owner === userData?.email ||
+                      userData?.email == bro ||
+                      userData?.email == bro2) && (
                       <button
                         onClick={() => handleDeleteRoom(room._id)}
                         className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
@@ -207,7 +211,9 @@ const RoomsPage: React.FC = () => {
                       </button>
                     )}
                     <button
-                      onClick={() => {navigate(`/teams-details/${room._id}`)}}
+                      onClick={() => {
+                        navigate(`/teams-details/${room._id}`);
+                      }}
                       className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
                     >
                       Teams
