@@ -131,7 +131,7 @@ const RoomsPage: React.FC = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold text-center mb-6">Rooms</h1>
 
-      {(userData?.email == bro || userData?.email == bro2) && (
+      {/* {(userData?.email == bro || userData?.email == bro2) && ( */}
         <form
           onSubmit={handleCreateRoom}
           className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-md mb-8"
@@ -154,7 +154,7 @@ const RoomsPage: React.FC = () => {
             Create Room
           </button>
         </form>
-      )}
+      {/* )} */}
 
       {loading ? (
         <p className="text-center text-gray-500">Loading rooms...</p>

@@ -698,7 +698,9 @@ const RoomDetailsPage = () => {
               </tbody>
             </table>
 
-            {(bro == userData?.email || userData?.email == bro2) && (
+            {(bro == userData?.email ||
+              userData?.email == bro2 ||
+              room.owner === userData?.email) && (
               <div className="flex flex-col sm:flex-row items-center gap-4 w-full mt-4">
                 <input
                   type="number"
