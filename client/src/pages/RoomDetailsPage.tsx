@@ -97,10 +97,14 @@ const RoomDetailsPage = () => {
 
         setCurr(response.data.curr);
 
-        const cb2 = {bid: response.data.currentBid.bid, team: response.data.currentBid.team};
+        const cb2 = {
+          bid: response.data.currentBid.bid,
+          team: response.data.currentBid.team,
+        };
         setCurrentBid(cb2);
         setCountdown(response.data.currentBid.time);
-        
+        setPause(response.data.pause);
+
         setLoading(false);
       } catch (err: any) {
         console.error(err?.message);
@@ -820,7 +824,7 @@ const RoomDetailsPage = () => {
         </div>
 
         {/* Bid */}
-        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100">
+        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col items-center justify-center bg-white p-4 rounded-lg shadow-sm">
               <div className="flex justify-center mb-2">
