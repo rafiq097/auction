@@ -1,6 +1,6 @@
 import {
   FaHome,
-  FaUsers,
+  // FaUsers,
   FaTrophy,
   FaSignOutAlt,
   FaPeopleArrows,
@@ -24,6 +24,7 @@ const BottomBar = () => {
         <FaHome size={22} />
         <span className="mt-1 text-sm">Home</span>
       </button>
+
       <button
         className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
@@ -31,8 +32,9 @@ const BottomBar = () => {
         }}
       >
         <FaTrophy size={22} />
-        <span className="mt-1 text-sm">Auction</span>
+        <span className="mt-1 text-sm">Computer</span>
       </button>
+
       <button
         className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
@@ -40,9 +42,10 @@ const BottomBar = () => {
         }}
       >
         <FaPeopleArrows size={22} />
-        <span className="mt-1 text-sm">Rooms</span>
+        <span className="mt-1 text-sm">Online</span>
       </button>
-      <button
+
+      {/* <button
         className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
           navigate("/teams");
@@ -50,7 +53,8 @@ const BottomBar = () => {
       >
         <FaUsers size={22} />
         <span className="mt-1 text-sm">Teams</span>
-      </button>
+      </button> */}
+
       {userData && <button
         className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
