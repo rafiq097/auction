@@ -127,8 +127,8 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     if (!socketRef.current) {
       console.log("Creating new socket connection");
-      // socketRef.current = io("https://iplauction.onrender.com");
-      socketRef.current = io("http://localhost:5000");
+      socketRef.current = io("https://iplauction.onrender.com");
+      // socketRef.current = io("http://localhost:5000");
     }
 
     return () => {
@@ -467,12 +467,13 @@ const RoomDetailsPage = () => {
 
   const handleBid = () => {
     const newBid =
-      (currentBid.bid || players[curr].Base) + getPlusPrice(currentBid?.bid);
+      (currentBid.bid || players[curr].Base) + getPlusPrice((currentBid.bid || players[curr].Base));
     const team = room.teams.find((t: any) => t.name === userData?.team);
     const remainingPurse = team?.remaining;
 
-    console.log("Remaining purse:", remainingPurse);
-    console.log("Current bid:", currentBid);
+    console.log("Current Bid: ", currentBid?.bid);
+    console.log("Remaining purse: ", remainingPurse);
+    console.log("Bid: ", newBid);
 
     if (newBid > remainingPurse) {
       toast.error("why vro?");
