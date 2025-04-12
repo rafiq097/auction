@@ -127,8 +127,8 @@ const RoomDetailsPage = () => {
   useEffect(() => {
     if (!socketRef.current) {
       console.log("Creating new socket connection");
-      socketRef.current = io("https://iplauction.onrender.com");
-      // socketRef.current = io("http://localhost:5000");
+      // socketRef.current = io("https://iplauction.onrender.com");
+      socketRef.current = io("http://localhost:5000");
     }
 
     return () => {

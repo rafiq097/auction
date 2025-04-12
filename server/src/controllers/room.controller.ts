@@ -42,7 +42,7 @@ export const createRoom = async (req: Request, res: Response) => {
       {
         name: "RCB",
         spent: 0,
-        remaining: 12000,
+        remaining: 0,
         players: [] as any[],
         batters: 0,
         bowlers: 0,
