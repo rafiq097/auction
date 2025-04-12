@@ -120,16 +120,16 @@ const StartPage: React.FC = () => {
           </select>
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out"
+            className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out"
           >
-            Enter
+            Play Against Computer
           </button>
         </form>
         <button
           onClick={() => navigate("/rooms")}
-          className="mt-4 w-full bg-gradient-to-br from-red-400 to-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out"
+          className="mt-4 w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out"
         >
-          Compete with Friends!
+          Compete with Friemds!
         </button>
       </div>
 
