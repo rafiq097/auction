@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from "react";
 import { CR } from "../utils/getCR";
 
 interface SoldProps {
@@ -41,20 +42,45 @@ const teamBros: Record<
 };
 
 const Sold: React.FC<SoldProps> = ({ player, team, price }) => {
-  console.log(player, team, price);
-  const teamBro = teamBros[team] || teamBros["default"];
+  const [animate, setAnimate] = useState(false);
+  const [showBadge, setShowBadge] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const [hammerState, setHammerState] = useState(0); // 0: hidden, 1: raised, 2: hitting
 
+  const teamBro = teamBros[team] || teamBros["default"];
   const bgColor = teamBro.secondary.replace("text-", "bg-");
+  const textColor = teamBro.primary.replace("bg-", "text-");
+
+  useEffect(() => {
+    // Raise the hammer
+    setTimeout(() => setHammerState(1), 200);
+    
+    // Begin circle animation
+    setTimeout(() => setAnimate(true), 400);
+    
+    // Hammer hits
+    setTimeout(() => setHammerState(2), 800);
+    
+    // Show badge effect
+    setTimeout(() => setShowBadge(true), 1000);
+    
+    // Show details
+    setTimeout(() => setShowDetails(true), 1500);
+  }, []);
 
   return (
-    <div className="relative inline-flex flex-col items-center z-10">
-      <div className="relative w-40 h-40 rounded-full shadow-lg transform transition-transform hover:scale-105 overflow-hidden">
+    <div className="relative inline-flex flex-col items-center z-10 py-6 px-4">
+      <div
+        className={`relative w-40 h-40 rounded-full shadow-lg overflow-hidden 
+          ${animate ? "animate-bounce-once" : "scale-0"}
+          transition-all duration-500 ease-out`}
+      >
         <div
           className="absolute inset-0 w-full h-full bg-cover bg-center"
           style={{
             backgroundImage: `url(/${teamBro.bg})`,
             backgroundSize: "cover",
-            filter: "contrast(1.2) brightness(1.1)",
+            filter: "contrast(1.3) brightness(1.1)",
           }}
         />
 
@@ -62,10 +88,23 @@ const Sold: React.FC<SoldProps> = ({ player, team, price }) => {
           className={`absolute inset-0 w-full h-full ${teamBro.primary} opacity-20`}
         ></div>
 
+        {animate && (
+          <>
+            <div
+              className={`absolute inset-0 w-full h-full rounded-full ${teamBro.primary} opacity-30 animate-ping-slow`}
+            ></div>
+            <div
+              className={`absolute inset-0 w-full h-full rounded-full ${teamBro.primary} opacity-20 animate-ping-slower`}
+            ></div>
+          </>
+        )}
+
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="rounded-full bg-opacity-30 p-4 flex flex-col items-center justify-center">
             <span
-              className="text-xl font-bold uppercase mb-1 text-white drop-shadow-lg"
+              className={`text-xl font-bold uppercase mb-1 text-white drop-shadow-lg ${
+                animate ? "animate-pulse" : ""
+              }`}
               style={{ textShadow: "0 0 3px rgba(0,0,0,0.8)" }}
             >
               Sold
@@ -80,25 +119,157 @@ const Sold: React.FC<SoldProps> = ({ player, team, price }) => {
         </div>
       </div>
 
-      <div className="mt-4 text-center">
+      <div
+        className={`mt-4 text-center transform transition-all duration-500 ${
+          showDetails ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
         <span className="block text-lg text-gray-200">to</span>
-        <span
-          className={`block font-bold text-2xl ${teamBro.primary.replace(
-            "bg-",
-            "text-"
-          )}`}
-        >
-          {team}
-        </span>
+        <span className={`block font-bold text-2xl ${textColor}`}>{team}</span>
+
+        <div className="mt-4">
+          <div
+            className={`inline-block ${bgColor} px-4 py-2 rounded-lg shadow-lg`}
+          >
+            <span className="text-lg font-bold">{player}</span>
+          </div>
+        </div>
       </div>
 
       <div
-        className={`absolute -top-12 left-1/2 transform -translate-x-1/2 ${bgColor} text-gray-800 px-3 py-2 rounded text-base font-semibold whitespace-nowrap z-50 shadow-md`}
+        className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+          pointer-events-none transition-all duration-300 
+          ${showBadge ? "opacity-0 scale-150" : "opacity-0 scale-50"}`}
       >
-        {player}
+        <svg className="w-64 h-64" viewBox="0 0 100 100">
+          <circle
+            cx="50"
+            cy="50"
+            r="48"
+            fill="none"
+            stroke="#ff0000"
+            strokeWidth="4"
+          />
+          <text
+            x="50"
+            y="55"
+            textAnchor="middle"
+            fill="#ff0000"
+            fontWeight="bold"
+            fontSize="20"
+          >
+            SOLD
+          </text>
+        </svg>
       </div>
+      
+      {/* Hammer animation from the second file */}
+      {hammerState > 0 && (
+        <div 
+          className={`absolute top-0 right-0 transform transition-all duration-300 ${
+            hammerState === 1 ? "-rotate-45 translate-y-0" : "rotate-12 translate-y-24"
+          }`}
+          style={{ transformOrigin: "90% 10%" }}
+        >
+          <svg width="100" height="160" viewBox="0 0 50 120">
+            <rect x="22" y="10" width="6" height="70" fill="#8B4513" />
+            <rect x="10" y="0" width="30" height="15" fill="#A0522D" rx="2" />
+          </svg>
+        </div>
+      )}
+      
+      {/* Impact effect when hammer hits */}
+      {hammerState === 2 && (
+        <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="red" strokeWidth="2" className="animate-ping" />
+            <circle cx="50" cy="50" r="30" fill="none" stroke="red" strokeWidth="2" className="animate-ping-slow" />
+            <circle cx="50" cy="50" r="20" fill="none" stroke="red" strokeWidth="2" className="animate-ping-slower" />
+          </svg>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Sold;
+const Styles: any = (): any => (
+  <style>{`
+    @keyframes bounce-once {
+      0%,
+      20%,
+      50%,
+      80%,
+      100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-30px);
+      }
+      60% {
+        transform: translateY(-15px);
+      }
+    }
+
+    @keyframes ping-slow {
+      0% {
+        transform: scale(1);
+        opacity: 0.3;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ping-slower {
+      0% {
+        transform: scale(1);
+        opacity: 0.2;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
+    @keyframes ink-fade {
+      0% { opacity: 0; transform: scale(0); }
+      10% { opacity: 0.8; transform: scale(1.2); }
+      100% { opacity: 0; transform: scale(1.5); }
+    }
+    
+    @keyframes flash {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .animate-bounce-once {
+      animation: bounce-once 1s ease-out;
+    }
+
+    .animate-ping-slow {
+      animation: ping-slow 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .animate-ping-slower {
+      animation: ping-slower 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    
+    .animate-ink-fade {
+      animation: ink-fade 1s ease-out forwards;
+    }
+    
+    .animate-flash {
+      animation: flash 0.3s ease-out;
+    }
+  `}</style>
+);
+
+const SoldWithAnimations = (props: SoldProps) => (
+  <>
+    <Styles />
+    <Sold {...props} />
+  </>
+);
+
+export default SoldWithAnimations;
