@@ -45,27 +45,28 @@ const Sold: React.FC<SoldProps> = ({ player, team, price }) => {
   const [animate, setAnimate] = useState(false);
   const [showBadge, setShowBadge] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [hammerState, setHammerState] = useState(0); // 0: hidden, 1: raised, 2: hitting
+  const [hammerState, setHammerState] = useState(0); // 0: hidden, 1: raised, 2: hitting, 3: dropping
+  const [showImpact, setShowImpact] = useState(false);
 
   const teamBro = teamBros[team] || teamBros["default"];
   const bgColor = teamBro.secondary.replace("text-", "bg-");
   const textColor = teamBro.primary.replace("bg-", "text-");
 
   useEffect(() => {
-    // Raise the hammer
-    setTimeout(() => setHammerState(1), 200);
+    setTimeout(() => setAnimate(true), 200);
     
-    // Begin circle animation
-    setTimeout(() => setAnimate(true), 400);
+    setTimeout(() => setHammerState(1), 500);
     
-    // Hammer hits
-    setTimeout(() => setHammerState(2), 800);
+    setTimeout(() => {
+      setHammerState(2);
+      setTimeout(() => setShowImpact(true), 20);
+    }, 1100);
     
-    // Show badge effect
-    setTimeout(() => setShowBadge(true), 1000);
+    setTimeout(() => setHammerState(3), 1300);
     
-    // Show details
-    setTimeout(() => setShowDetails(true), 1500);
+    setTimeout(() => setShowBadge(true), 1500);
+    
+    setTimeout(() => setShowDetails(true), 1700);
   }, []);
 
   return (
@@ -117,6 +118,13 @@ const Sold: React.FC<SoldProps> = ({ player, team, price }) => {
             </span>
           </div>
         </div>
+        
+        {showImpact && (
+          <div className="absolute inset-0 pointer-events-none">
+            {/* <div className={`absolute inset-0 ${bgColor} opacity-30 animate-flash`}></div> */}
+            <div className="absolute inset-0 rounded-full animate-ping-impact"></div>
+          </div>
+        )}
       </div>
 
       <div
@@ -131,7 +139,7 @@ const Sold: React.FC<SoldProps> = ({ player, team, price }) => {
           <div
             className={`inline-block ${bgColor} px-4 py-2 rounded-lg shadow-lg`}
           >
-            <span className="text-lg font-bold">{player}</span>
+            <span className="text-lg font-bold">{player} at {CR(price)} CR</span>
           </div>
         </div>
       </div>
@@ -163,28 +171,23 @@ const Sold: React.FC<SoldProps> = ({ player, team, price }) => {
         </svg>
       </div>
       
-      {/* Hammer animation from the second file */}
       {hammerState > 0 && (
         <div 
-          className={`absolute top-0 right-0 transform transition-all duration-300 ${
-            hammerState === 1 ? "-rotate-45 translate-y-0" : "rotate-12 translate-y-24"
+          className={`absolute transform transition-all duration-500 ease-in-out ${
+            hammerState === 1 ? "top-0 right-4 -rotate-45" : 
+            hammerState === 2 ? "top-1/4 right-8 rotate-15" : 
+            "top-full right-4 rotate-90"
           }`}
-          style={{ transformOrigin: "90% 10%" }}
+          style={{ 
+            transformOrigin: "80% 20%",
+            zIndex: hammerState === 3 ? 0 : 20
+          }}
         >
           <svg width="100" height="160" viewBox="0 0 50 120">
+            {/* Handle */}
             <rect x="22" y="10" width="6" height="70" fill="#8B4513" />
+            {/* Head */}
             <rect x="10" y="0" width="30" height="15" fill="#A0522D" rx="2" />
-          </svg>
-        </div>
-      )}
-      
-      {/* Impact effect when hammer hits */}
-      {hammerState === 2 && (
-        <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-          <svg width="100" height="100" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="red" strokeWidth="2" className="animate-ping" />
-            <circle cx="50" cy="50" r="30" fill="none" stroke="red" strokeWidth="2" className="animate-ping-slow" />
-            <circle cx="50" cy="50" r="20" fill="none" stroke="red" strokeWidth="2" className="animate-ping-slower" />
           </svg>
         </div>
       )}
@@ -231,16 +234,25 @@ const Styles: any = (): any => (
         opacity: 0;
       }
     }
-
-    @keyframes ink-fade {
-      0% { opacity: 0; transform: scale(0); }
-      10% { opacity: 0.8; transform: scale(1.2); }
-      100% { opacity: 0; transform: scale(1.5); }
-    }
     
+    @keyframes ping-impact {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+        opacity: 1;
+      }
+      70% {
+        box-shadow: 0 0 0 20px rgba(255, 0, 0, 0);
+        opacity: 0.5;
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+        opacity: 0;
+      }
+    }
+
     @keyframes flash {
-      0%, 100% { opacity: 0; }
-      50% { opacity: 1; }
+      0% { opacity: 0.7; }
+      100% { opacity: 0; }
     }
 
     .animate-bounce-once {
@@ -255,12 +267,12 @@ const Styles: any = (): any => (
       animation: ping-slower 2s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
     
-    .animate-ink-fade {
-      animation: ink-fade 1s ease-out forwards;
+    .animate-ping-impact {
+      animation: ping-impact 0.8s cubic-bezier(0, 0, 0.2, 1);
     }
     
     .animate-flash {
-      animation: flash 0.3s ease-out;
+      animation: flash 0.4s ease-out;
     }
   `}</style>
 );
