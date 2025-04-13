@@ -20,7 +20,7 @@ import BottomBar from "../components/BottomBar.tsx";
 
 const AuctionPage: React.FC = () => {
   const navigate = useNavigate();
-  const IMAGE_URL = import.meta.env.IMAGE_URL;
+  const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
   const [team, setTeam] = useRecoilState(userTeamAtom);
   const [teams, setTeams] = useRecoilState(teamsAtom);
   const [curr, setCurr] = useRecoilState(currAtom);
