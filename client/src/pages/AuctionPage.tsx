@@ -599,7 +599,7 @@ const AuctionPage: React.FC = () => {
                     }.jpg`}
                     onError={(e: any) => {
                       e.target.onerror = null;
-                      e.target.src = "/images/no-bro.jpg";
+                      e.target.src = `${IMAGE_URL}/no-bro.jpg`;
                     }}
                     alt={`${players[curr].First_Name} ${players[curr].Surname}`}
                     className="h-40 object-contain mx-auto"

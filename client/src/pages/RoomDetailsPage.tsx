@@ -631,7 +631,9 @@ const RoomDetailsPage = () => {
   if (loading)
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-pulse text-lg font-semibold">Loading...</div>
+        <div className="animate-pulse text-lg font-semibold">
+          Lightening Up...
+        </div>
       </div>
     );
   // console.log(room);
@@ -733,7 +735,7 @@ const RoomDetailsPage = () => {
             }.jpg`}
             onError={(e: any) => {
               e.target.onerror = null;
-              e.target.src = "/images/no-bro.jpg";
+              e.target.src = `${IMAGE_URL}/no-bro.jpg`;
             }}
             alt={`${players[curr].First_Name} ${players[curr].Surname}`}
             className="h-60 w-auto object-contain mt-2 mb-4"
