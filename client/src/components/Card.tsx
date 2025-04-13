@@ -323,7 +323,7 @@ const Card: React.FC<{ player: Player; onClose: any }> = ({
                       />
                     </svg>
                     <h3 className="text-gray-500 text-lg">
-                      No detailed statistics available for this player
+                      No detailed statistics available
                     </h3>
                   </div>
                 </div>

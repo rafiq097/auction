@@ -582,18 +582,27 @@ const AuctionPage: React.FC = () => {
             {/* // Player bros Bid */}
             <div className="bg-gray-800 bg-opacity-0 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
               {curr < players.length ? (
-                <div className="p-6 bg-gray-800 rounded-lg shadow-lg max-w-lg">
+                <div className="p-2  rounded-lg shadow-lg max-w-lg">
                   <div className="flex justify-center">
                     <button
-                      className="px-6 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mb-2"
+                      className="px-4 py-1 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300 mb-2"
                       onClick={handleReset}
                     >
                       Reset Auction
                     </button>
                   </div>
-                  <h1 className="flex justify-center text-2xl font-bold mb-2">
-                    Set: {players[curr].Set}
-                  </h1>
+
+                  <img
+                    src={`/images/${
+                      players[curr].First_Name + " " + players[curr].Surname
+                    }.jpg`}
+                    onError={(e: any) => {
+                      e.target.onerror = null;
+                      e.target.src = "/images/no-bro.jpg";
+                    }}
+                    alt={`${players[curr].First_Name} ${players[curr].Surname}`}
+                    className="h-40 object-contain mx-auto"
+                  />
                   <h2 className="flex justify-center text-xl font-semibold mb-2">
                     {players[curr].First_Name +
                       " " +
@@ -606,20 +615,20 @@ const AuctionPage: React.FC = () => {
                       Full Info
                     </button>
                   </h2>
-                  <p className="flex justify-center text-gray-100 mb-2">
+                  {/* <p className="flex justify-center text-gray-100 mb-2">
                     Role:{" "}
                     {players[curr].Role === "BATTER"
                       ? `${players[curr].Role} - ${players[curr].Bat_type}`
                       : players[curr].Role === "BOWLER"
                       ? `${players[curr].Role} - ${players[curr].Bowl_type}`
                       : players[curr].Role}
-                  </p>
+                  </p> */}
                   <p className="flex justify-center text-gray-100 mb-2">
                     Base Price: {CR(tempPlayers[curr].Base)} CR
                   </p>
-                  <p className="flex justify-center text-gray-100 mb-4">
+                  {/* <p className="flex justify-center text-gray-100 mb-4">
                     Country: {players[curr].Country}
-                  </p>
+                  </p> */}
 
                   <div className="flex justify-evenly">
                     <button
@@ -738,38 +747,38 @@ const AuctionPage: React.FC = () => {
             </div>
 
             {/* // User Team Information */}
-              <div className="bg-gray-800 bg-opacity-0 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
-                <h1 className="flex justify-center text-xl font-bold text-black mb-4">
-                  Your Team: {team?.name}
-                </h1>
-                <ul className="text-black space-y-2">
-                  <li className="flex justify-center ">
-                    Batters: {team?.batters}
-                  </li>
-                  <li className="flex justify-center ">
-                    Bowlers: {team?.bowlers}
-                  </li>
-                  <li className="flex justify-center ">
-                    All-Rounders: {team?.allr}
-                  </li>
-                  <li className="flex justify-center ">
-                    Wicketkeepers: {team?.wks}
-                  </li>
-                  <li className="flex justify-center ">
-                    Overseas Players: {team?.overseas}
-                  </li>
-                  <li className="flex justify-center font-bold text-lg">
-                    Total: {team?.batters + team?.bowlers + team?.allr + team?.wks} /
-                    25
-                  </li>
-                </ul>
-                <button
-                  className="mt-2 w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"
-                  onClick={() => navigate("/teams")}
-                >
-                  View Other Teams
-                </button>
-              </div>
+            <div className="bg-gray-800 bg-opacity-0 text-white h-full overflow-y-auto p-4 rounded-lg shadow-lg">
+              <h1 className="flex justify-center text-xl font-bold text-black mb-4">
+                Your Team: {team?.name}
+              </h1>
+              <ul className="text-black space-y-2">
+                <li className="flex justify-center ">
+                  Batters: {team?.batters}
+                </li>
+                <li className="flex justify-center ">
+                  Bowlers: {team?.bowlers}
+                </li>
+                <li className="flex justify-center ">
+                  All-Rounders: {team?.allr}
+                </li>
+                <li className="flex justify-center ">
+                  Wicketkeepers: {team?.wks}
+                </li>
+                <li className="flex justify-center ">
+                  Overseas Players: {team?.overseas}
+                </li>
+                <li className="flex justify-center font-bold text-lg">
+                  Total:{" "}
+                  {team?.batters + team?.bowlers + team?.allr + team?.wks} / 25
+                </li>
+              </ul>
+              <button
+                className="mt-2 w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"
+                onClick={() => navigate("/teams")}
+              >
+                View Other Teams
+              </button>
+            </div>
           </div>
         </div>
 

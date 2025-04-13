@@ -467,7 +467,8 @@ const RoomDetailsPage = () => {
 
   const handleBid = () => {
     const newBid =
-      (currentBid.bid || players[curr].Base) + getPlusPrice((currentBid.bid || players[curr].Base));
+      (currentBid.bid || players[curr].Base) +
+      getPlusPrice(currentBid.bid || players[curr].Base);
     const team = room.teams.find((t: any) => t.name === userData?.team);
     const remainingPurse = team?.remaining;
 
@@ -724,7 +725,18 @@ const RoomDetailsPage = () => {
         </div>
 
         {/* Bro */}
-        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
+        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-start overflow-hidden">
+          <img
+            src={`/images/${
+              players[curr].First_Name + " " + players[curr].Surname
+            }.jpg`}
+            onError={(e: any) => {
+              e.target.onerror = null;
+              e.target.src = "/images/no-bro.jpg";
+            }}
+            alt={`${players[curr].First_Name} ${players[curr].Surname}`}
+            className="h-60 w-auto object-contain mt-2 mb-4"
+          />
           <div className="text-center mb-1 pb-3 border-b border-blue-200">
             <div className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mb-2">
               Set: {players[curr].Set}
@@ -771,7 +783,7 @@ const RoomDetailsPage = () => {
               <div className="text-gray-800">{players[curr].Age}</div>
             </div>
 
-            <div className="flex flex-col bg-white p-3 rounded-lg shadow-sm">
+            {/* <div className="flex flex-col bg-white p-3 rounded-lg shadow-sm">
               <div className="font-semibold text-gray-700 mb-1">Caps:</div>
               <div className="flex flex-wrap gap-2">
                 <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
@@ -784,23 +796,23 @@ const RoomDetailsPage = () => {
                   {players[curr].T20_caps || 0} T20s
                 </span>
               </div>
-            </div>
+            </div> */}
 
-            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+            {/* <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
               <div className="w-32 font-semibold text-gray-700">
                 IPL Matches:
               </div>
               <div className="text-gray-800">{players[curr].IPL_caps}</div>
-            </div>
+            </div> */}
 
-            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
+            {/* <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
               <div className="w-32 font-semibold text-gray-700">
                 Last IPL Team:
               </div>
               <div className="text-gray-800">
                 {players[curr].Last_Team || "None"}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {showModal && (
