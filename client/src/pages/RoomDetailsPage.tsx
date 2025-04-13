@@ -23,6 +23,7 @@ interface ExtendedSocket extends Socket {
 
 const RoomDetailsPage = () => {
   const { roomId } = useParams();
+  const IMAGE_URL = import.meta.env.IMAGE_URL;
   const bro = import.meta.env.VITE_BRO;
   const bro2 = import.meta.env.VITE_BRO2;
   const navigate = useNavigate();
@@ -727,7 +728,7 @@ const RoomDetailsPage = () => {
         {/* Bro */}
         <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-start overflow-hidden">
           <img
-            src={`/images/${
+            src={`${IMAGE_URL}/${
               players[curr].First_Name + " " + players[curr].Surname
             }.jpg`}
             onError={(e: any) => {
