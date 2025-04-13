@@ -12,10 +12,17 @@ import roomRoutes from "./routes/room.routes";
 import Room from "./models/room.model";
 import { getPlusPrice } from "./utils/getPlusPrice";
 import { CR } from "./utils/getCR";
+import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 const app: Application = express();
 const server = http.createServer(app);
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const io = new Server(server, {
   cors: {

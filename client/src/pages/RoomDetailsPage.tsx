@@ -753,34 +753,36 @@ const RoomDetailsPage = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-3">
-            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
-              <div className="w-32 font-semibold text-gray-700">
-                Base Price:
+            <div className="grid grid-cols-2 gap-3 w-full">
+              <div className="bg-white p-3 rounded-lg shadow-sm">
+                <div className="font-semibold text-gray-700 mb-1">
+                  Base Price:
+                </div>
+                <div className="text-green-600 font-bold">
+                  {CR(tempPlayers[curr].Base)} CR
+                </div>
               </div>
-              <div className="text-green-600 font-bold">
-                {CR(tempPlayers[curr].Base)} CR
+
+              <div className="bg-white p-3 rounded-lg shadow-sm">
+                <div className="font-semibold text-gray-700 mb-1">Role:</div>
+                <div className="text-gray-800">
+                  {players[curr].Role === "BATTER"
+                    ? `${players[curr].Role} - ${players[curr].Bat_type}`
+                    : players[curr].Role === "BOWLER"
+                    ? `${players[curr].Role} - ${players[curr].Bowl_type}`
+                    : players[curr].Role}
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
-              <div className="w-32 font-semibold text-gray-700">Role:</div>
-              <div className="text-gray-800">
-                {players[curr].Role === "BATTER"
-                  ? `${players[curr].Role} - ${players[curr].Bat_type}`
-                  : players[curr].Role === "BOWLER"
-                  ? `${players[curr].Role} - ${players[curr].Bowl_type}`
-                  : players[curr].Role}
+              <div className="bg-white p-3 rounded-lg shadow-sm">
+                <div className="font-semibold text-gray-700 mb-1">Country:</div>
+                <div className="text-gray-800">{players[curr].Country}</div>
               </div>
-            </div>
 
-            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
-              <div className="w-32 font-semibold text-gray-700">Country:</div>
-              <div className="text-gray-800">{players[curr].Country}</div>
-            </div>
-
-            <div className="flex items-center bg-white p-3 rounded-lg shadow-sm">
-              <div className="w-32 font-semibold text-gray-700">Age:</div>
-              <div className="text-gray-800">{players[curr].Age}</div>
+              <div className="bg-white p-3 rounded-lg shadow-sm">
+                <div className="font-semibold text-gray-700 mb-1">Age:</div>
+                <div className="text-gray-800">{players[curr].Age}</div>
+              </div>
             </div>
 
             {/* <div className="flex flex-col bg-white p-3 rounded-lg shadow-sm">
