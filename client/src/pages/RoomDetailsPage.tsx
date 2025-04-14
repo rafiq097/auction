@@ -637,11 +637,11 @@ const RoomDetailsPage = () => {
   // console.log(room);
 
   return (
-    <div className="p-4 h-screen bg-gray-50">
+    <div className="p-4 h-screen bg-blue-400">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
         {/* Teams Purse */}
-        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
-          <h2 className="text-2xl font-bold text-blue-800 text-center mb-4 pb-2 border-b border-blue-200">
+        <div className="p-6 bg-gradient-to-br from-blue-500 to-blue-400 rounded-xl shadow-lg border border-blue-300 flex flex-col items-center justify-center">
+          <h2 className="text-2xl font-bold text-blue-800 text-center mb-4 pb-2 border-b border-blue-300">
             Teams Purse
           </h2>
 
@@ -675,21 +675,21 @@ const RoomDetailsPage = () => {
                   return (
                     <tr
                       key={team.name}
-                      className="border-b border-blue-100 hover:bg-white transition-colors"
+                      className="border-b border-blue-100 hover:bg-blue-500 transition-colors"
                     >
                       <td
-                        className={`px-4 py-3 font-medium text-blue-800 ${
+                        className={`px-4 py-3 font-medium text-white ${
                           isLast ? "rounded-bl-lg" : ""
                         }`}
                       >
                         {team.name}
                       </td>
-                      <td className="px-4 py-3 text-black">{owner}</td>
+                      <td className="px-4 py-3 text-white">{owner}</td>
                       <td className="px-4 py-3 text-right text-red-600 font-medium">
                         {CR(team.spent)} CR
                       </td>
                       <td
-                        className={`px-4 py-3 text-right text-green-600 font-medium ${
+                        className={`px-4 py-3 text-right text-green-900 font-medium ${
                           isLast ? "rounded-br-lg" : ""
                         }`}
                       >
