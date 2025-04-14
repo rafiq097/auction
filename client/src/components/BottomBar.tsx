@@ -16,7 +16,7 @@ const BottomBar = () => {
   return (
     <nav className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-xl bg-transparent backdrop-blur-xl shadow-md p-2 flex justify-evenly rounded-t-lg">
       <button
-        className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
+        className="text-white flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
           navigate("/");
         }}
@@ -26,7 +26,7 @@ const BottomBar = () => {
       </button>
 
       <button
-        className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
+        className="text-white flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
           navigate("/auction");
         }}
@@ -36,7 +36,7 @@ const BottomBar = () => {
       </button>
 
       <button
-        className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
+        className="text-white flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
           navigate("/rooms");
         }}
@@ -56,7 +56,7 @@ const BottomBar = () => {
       </button> */}
 
       {userData && <button
-        className="text-black flex flex-col items-center hover:scale-110 transition-transform duration-200"
+        className="text-white flex flex-col items-center hover:scale-110 transition-transform duration-200"
         onClick={() => {
           localStorage.removeItem("token");
           localStorage.removeItem("team");
