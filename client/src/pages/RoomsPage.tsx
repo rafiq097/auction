@@ -128,7 +128,7 @@ const RoomsPage: React.FC = () => {
   console.log(rooms);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-blue-400 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 to-blue-300 p-6">
       <h1 className="text-3xl font-bold text-center mb-6">Rooms</h1>
 
       {/* {(userData?.email == bro || userData?.email == bro2) && ( */}

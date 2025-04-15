@@ -675,7 +675,7 @@ const RoomDetailsPage = () => {
                   return (
                     <tr
                       key={team.name}
-                      className="border-b border-blue-100 hover:bg-white transition-colors"
+                      className="border-b border-blue-100 hover:bg-blue-300 transition-colors"
                     >
                       <td
                         className={`px-4 py-3 font-medium text-blue-800 ${
@@ -709,7 +709,7 @@ const RoomDetailsPage = () => {
                   type="number"
                   value={time}
                   onChange={handleSetTime}
-                  className="w-full sm:w-32 px-2 py-1 border rounded-lg text-center"
+                  className="w-full sm:w-32 px-2 py-1 border rounded-lg text-center bg-blue-100"
                   placeholder="Set Timer"
                   min="7"
                   max="60"
@@ -844,7 +844,7 @@ const RoomDetailsPage = () => {
         {/* Bid */}
         <div className="p-6 bg-gradient-to-br from-blue-200 to-blue-300 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200 p-4 rounded-lg shadow-sm">
+            <div className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-200 to-blue-250 p-4 rounded-lg shadow-sm">
               <div className="flex justify-center mb-2">
                 <div
                   className={`text-xl font-bold px-6 py-3 rounded-full ${
@@ -862,7 +862,7 @@ const RoomDetailsPage = () => {
               </h2>
 
               {currentBid && (
-                <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-2 rounded-lg shadow-sm text-center">
+                <div className="bg-gradient-to-br from-blue-200 to-blue-250 p-2 rounded-lg shadow-sm text-center">
                   <div className="text-gray-600 mb-1 text-sm">Current Bid</div>
                   <div className="text-4xl font-bold text-green-600">
                     {CR(currentBid.bid || 0)} CR
@@ -883,7 +883,7 @@ const RoomDetailsPage = () => {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-4 rounded-lg shadow-sm text-center text-lg font-bold text-gray-500">
+            <div className="bg-gradient-to-br from-blue-200 to-blue-250 p-4 rounded-lg shadow-sm text-center text-lg font-bold text-gray-500">
               <h2 className="text-xl font-bold mb-2">
                 Your Team: {userTeam?.name}
                 <button
@@ -909,7 +909,7 @@ const RoomDetailsPage = () => {
                 <div className="p-2 bg-purple-200 rounded">
                   Overseas: {userTeam?.overseas || 0}
                 </div>
-                <div className="p-2 bg-blue-300 rounded">
+                <div className="p-2 bg-slate-200 rounded">
                   Total:{" "}
                   {userTeam?.batters +
                     userTeam?.bowlers +
