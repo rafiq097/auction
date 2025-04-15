@@ -60,7 +60,7 @@ function LoginPage(): JSX.Element {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col md:flex-row bg-gray-200">
+      <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-blue-200 to-blue-400">
         <div className="w-full h-1/2 md:w-1/2 md:h-screen">
           <img
             src="/ipl.png"
