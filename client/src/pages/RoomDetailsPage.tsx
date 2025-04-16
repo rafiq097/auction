@@ -284,7 +284,7 @@ const RoomDetailsPage = () => {
       teams,
     }: any) {
       const newBid = currentBid.bid + getPlusPrice(currentBid?.bid);
-      const team1 = room.teams.find((t: any) => t.name === userData?.team);
+      const team1 = room?.teams?.find((t: any) => t.name === userData?.team);
       const remainingPurse = team1?.remaining;
 
       if (newBid > remainingPurse) {
@@ -470,7 +470,7 @@ const RoomDetailsPage = () => {
     const newBid =
       (currentBid.bid || players[curr].Base) +
       getPlusPrice(currentBid.bid || players[curr].Base);
-    const team = room.teams.find((t: any) => t.name === userData?.team);
+    const team = room?.teams?.find((t: any) => t.name === userData?.team);
     const remainingPurse = team?.remaining;
 
     console.log("Current Bid: ", currentBid?.bid);
