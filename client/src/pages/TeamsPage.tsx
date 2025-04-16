@@ -67,14 +67,14 @@ const TeamsPage: React.FC = () => {
     players?.filter((player: any) => player.Role === role);
 
   return (
-    <div className="mx-auto px-6 py-6 bg-gradient-to-br from-blue-200 to-blue-300">
+    <div className="mx-auto px-6 py-6">
       <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">Teams Overview</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {teams?.map((team, idx) => (
           <div
             key={team?.name}
-            className={`bg-gradient-to-br from-blue-200 to-blue-300 rounded-lg shadow-md overflow-hidden border border-gray-200 ${idx === 9 ? "mb-8" : "mb-1"}
+            className={`bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 ${idx === 9 ? "mb-8" : "mb-1"}
             `}
           >
             <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 font-semibold">
@@ -93,7 +93,7 @@ const TeamsPage: React.FC = () => {
                       {rolePlayers?.map((player: any) => (
                         <div
                           key={player.First_Name}
-                          className="flex justify-between items-center bg-blue-100 rounded-md p-3 hover:bg-blue-300 transition"
+                          className="flex justify-between items-center bg-gra-50 rounded-md p-3 hover:bg-gray-100 transition"
                         >
                           <span className="flex items-center gap-2 text-gray-800 font-medium">
                             {player.First_Name} {player.Surname}

@@ -157,7 +157,7 @@ const RoomsPage: React.FC = () => {
       {/* )} */}
 
       {loading ? (
-        <p className="text-center text-gray-500">Loading rooms...</p>
+        <p className="text-center text-gray-500">Loading...</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {rooms?.length > 0 ? (
@@ -179,7 +179,7 @@ const RoomsPage: React.FC = () => {
                       className="w-1/2 p-2 border rounded"
                     >
                       <option value="" disabled>
-                        Team
+                        Select Team
                       </option>
                       <option value="RCB">RCB</option>
                       <option value="CSK">CSK</option>

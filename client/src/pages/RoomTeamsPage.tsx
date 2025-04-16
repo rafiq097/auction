@@ -34,13 +34,13 @@ const RoomTeamsPage = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-pulse text-lg font-semibold">Loading...</div>
+        <div className="animate-pulse text-lg font-semibold">Setting Up Fire...</div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-br from-blue-200 to-blue-300 mx-auto px-6 py-6">
+    <div className="mx-auto px-6 py-6">
       <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
         Teams Overview
       </h1>
@@ -49,7 +49,7 @@ const RoomTeamsPage = () => {
         {room?.teams?.map((team: any, idx: any) => (
           <div
             key={team.id || idx}
-            className={`bg-gradient-to-br from-blue-200 to-blue-300 rounded-lg shadow-md overflow-hidden border border-gray-200 ${
+            className={`bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 ${
               idx === 9 ? "mb-8" : "mb-1"
             }`}
           >
@@ -91,7 +91,7 @@ const RoomTeamsPage = () => {
                         {rolePlayers.map((player: any) => (
                           <div
                             key={player.id}
-                            className="flex justify-between items-center bg-blue-100 rounded-md p-3 hover:bg-blue-300 transition"
+                            className="flex justify-between items-center bg-gray-50 rounded-md p-3 hover:bg-gray-100 transition"
                           >
                             <div className="flex items-center">
                               <div className="font-medium">
