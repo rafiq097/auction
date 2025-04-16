@@ -9,7 +9,7 @@ const UserTeam = ({ team }: any) => {
   return (
     <div
       key={team.id}
-      className={`bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg shadow-md overflow-hidden border border-gray-200`}
+      className={`bg-white rounded-lg shadow-md overflow-hidden border border-gray-200`}
     >
       <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white py-3 px-4 font-semibold">
         {team.name}

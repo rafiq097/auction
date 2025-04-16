@@ -631,16 +631,18 @@ const RoomDetailsPage = () => {
   if (loading)
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-pulse text-lg font-semibold">Lightening Up...</div>
+        <div className="animate-pulse text-lg font-semibold">
+          Lightening Up...
+        </div>
       </div>
     );
   // console.log(room);
 
   return (
-    <div className="p-4 h-screen bg-gradient-to-br from-blue-200 to-blue-300">
+    <div className="p-4 h-screen bg-gray-50">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
         {/* Teams Purse */}
-        <div className="p-6 bg-gradient-to-br from-blue-200 to-blue-300 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
+        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
           <h2 className="text-2xl font-bold text-blue-800 text-center mb-4 pb-2 border-b border-blue-200">
             Teams Purse
           </h2>
@@ -675,7 +677,7 @@ const RoomDetailsPage = () => {
                   return (
                     <tr
                       key={team.name}
-                      className="border-b border-blue-100 hover:bg-blue-300 transition-colors"
+                      className="border-b border-blue-100 hover:bg-white transition-colors"
                     >
                       <td
                         className={`px-4 py-3 font-medium text-blue-800 ${
@@ -709,7 +711,7 @@ const RoomDetailsPage = () => {
                   type="number"
                   value={time}
                   onChange={handleSetTime}
-                  className="w-full sm:w-32 px-2 py-1 border rounded-lg text-center bg-blue-100"
+                  className="w-full sm:w-32 px-2 py-1 border rounded-lg text-center bg-white"
                   placeholder="Set Timer"
                   min="7"
                   max="60"
@@ -726,7 +728,8 @@ const RoomDetailsPage = () => {
         </div>
 
         {/* Bro */}
-        <div className="p-6 bg-gradient-to-br from-blue-200 to-blue-300 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
+        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
+          {" "}
           <img
             src={`${IMAGE_URL}/${
               players[curr].First_Name + " " + players[curr].Surname
@@ -752,10 +755,9 @@ const RoomDetailsPage = () => {
               </button>
             </h2>
           </div>
-
           <div className="grid grid-cols-1 gap-3">
             <div className="grid grid-cols-2 gap-3 w-full">
-              <div className="bg-blue-100 p-3 rounded-lg shadow-sm">
+            <div className="bg-white p-3 rounded-lg shadow-sm">
                 <div className="font-semibold text-gray-700 mb-1">
                   Base Price:
                 </div>
@@ -764,9 +766,9 @@ const RoomDetailsPage = () => {
                 </div>
               </div>
 
-              <div className="bg-blue-100 p-3 rounded-lg shadow-sm">
-                <div className="font-semibold text-gray-700 mb-1">Role:</div>
-                <div className="text-gray-800">
+              <div className="bg-white p-3 rounded-lg shadow-sm">
+                 <div className="font-semibold text-gray-700 mb-1">Role:</div>
+                 <div className="text-gray-800">
                   {players[curr].Role === "BATTER"
                     ? `${players[curr].Role} - ${players[curr].Bat_type}`
                     : players[curr].Role === "BOWLER"
@@ -775,14 +777,14 @@ const RoomDetailsPage = () => {
                 </div>
               </div>
 
-              <div className="bg-blue-100 p-3 rounded-lg shadow-sm">
-                <div className="font-semibold text-gray-700 mb-1">Country:</div>
-                <div className="text-gray-800">{players[curr].Country}</div>
+              <div className="bg-white p-3 rounded-lg shadow-sm">
+                 <div className="font-semibold text-gray-700 mb-1">Country:</div>
+                 <div className="text-gray-800">{players[curr].Country}</div>
               </div>
 
-              <div className="bg-blue-100 p-3 rounded-lg shadow-sm">
-                <div className="font-semibold text-gray-700 mb-1">Age:</div>
-                <div className="text-gray-800">{players[curr].Age}</div>
+              <div className="bg-white p-3 rounded-lg shadow-sm">
+                 <div className="font-semibold text-gray-700 mb-1">Age:</div>
+                 <div className="text-gray-800">{players[curr].Age}</div>
               </div>
             </div>
 
@@ -817,13 +819,11 @@ const RoomDetailsPage = () => {
               </div>
             </div> */}
           </div>
-
           {showModal && (
             <div className="fixed inset-0 bg-black text-gray-100 bg-opacity-50 flex items-center justify-center z-50">
               <Card player={players[curr]} onClose={handleCloseModal} />
             </div>
           )}
-
           {soldNotification.show && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
               <Sold
@@ -833,7 +833,6 @@ const RoomDetailsPage = () => {
               />
             </div>
           )}
-
           {unSoldNotification.show && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
               <Unsold player={unSoldNotification.player} />
@@ -842,9 +841,9 @@ const RoomDetailsPage = () => {
         </div>
 
         {/* Bid */}
-        <div className="p-6 bg-gradient-to-br from-blue-200 to-blue-300 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-200 to-blue-250 p-4 rounded-lg shadow-sm">
+        <div className="p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 flex flex-col items-center justify-center">
+           <div className="flex flex-col gap-4">
+             <div className="flex flex-col items-center justify-center bg-white p-4 rounded-lg shadow-sm">
               <div className="flex justify-center mb-2">
                 <div
                   className={`text-xl font-bold px-6 py-3 rounded-full ${
@@ -862,9 +861,9 @@ const RoomDetailsPage = () => {
               </h2>
 
               {currentBid && (
-                <div className="bg-gradient-to-br from-blue-200 to-blue-250 p-2 rounded-lg shadow-sm text-center">
-                  <div className="text-gray-600 mb-1 text-sm">Current Bid</div>
-                  <div className="text-4xl font-bold text-green-600">
+                <div className="bg-white p-2 rounded-lg shadow-sm text-center">
+                <div className="text-gray-600 mb-1 text-sm">Current Bid</div>
+                <div className="text-4xl font-bold text-green-600">
                     {CR(currentBid.bid || 0)} CR
                   </div>
                   <div className="text-red-800 text-3xl font-bold">
@@ -873,7 +872,7 @@ const RoomDetailsPage = () => {
                 </div>
               )}
 
-              <div className="text-center ">
+              <div className="text-center">
                 <button
                   className="px-6 py-3 bg-blue-500 text-white text-lg font-medium rounded-lg hover:bg-blue-600 transition shadow-sm"
                   onClick={handleBid}
@@ -883,8 +882,8 @@ const RoomDetailsPage = () => {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-200 to-blue-250 p-4 rounded-lg shadow-sm text-center text-lg font-bold text-gray-500">
-              <h2 className="text-xl font-bold mb-2">
+            <div className="bg-white p-4 rounded-lg shadow-sm text-center text-lg font-bold text-gray-500">
+               <h2 className="text-xl font-bold mb-2">
                 Your Team: {userTeam?.name}
                 <button
                   className="ml-2 text-sm bg-blue-600 text-white px-2 py-1 rounded-full hover:bg-blue-700 transition-colors shadow-sm"
@@ -894,19 +893,19 @@ const RoomDetailsPage = () => {
                 </button>
               </h2>
               <div className="grid grid-cols-2 gap-4 mb-2">
-                <div className="p-2 bg-orange-200 rounded">
+                <div className="p-2 bg-orange-100 rounded">
                   Batters: {userTeam?.batters || 0}
                 </div>
-                <div className="p-2 bg-green-200 rounded">
+                <div className="p-2 bg-green-100 rounded">
                   Bowlers: {userTeam?.bowlers || 0}
                 </div>
-                <div className="p-2 bg-yellow-200 rounded">
+                <div className="p-2 bg-yellow-100 rounded">
                   All-Rounders: {userTeam?.allr || 0}
                 </div>
-                <div className="p-2 bg-red-200 rounded">
+                <div className="p-2 bg-red-100 rounded">
                   WKs: {userTeam?.wks || 0}
                 </div>
-                <div className="p-2 bg-purple-200 rounded">
+                <div className="p-2 bg-purple-100 rounded">
                   Overseas: {userTeam?.overseas || 0}
                 </div>
                 <div className="p-2 bg-slate-200 rounded">
@@ -930,7 +929,7 @@ const RoomDetailsPage = () => {
                   onClick={() => setShowTeam(false)}
                 >
                   <div
-                    className="relative bg-gradient-to-br from-blue-200 to-blue-300 w-full max-w-lg sm:max-w-md md:max-w-xl lg:max-w-2xl h-3/4 p-4 md:p-6 rounded-xl shadow-lg overflow-y-auto"
+                    className="relative bg-white w-full max-w-lg sm:max-w-md md:max-w-xl lg:max-w-2xl h-3/4 p-4 md:p-6 rounded-xl shadow-lg overflow-y-auto"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <button
